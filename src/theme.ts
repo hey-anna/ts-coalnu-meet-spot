@@ -2,60 +2,44 @@ import { createTheme } from '@mui/material';
 
 const theme = createTheme({
   palette: {
-    mode: 'dark',
+    mode: 'light',
     primary: {
-      main: '#1ed760',
-    },
-    secondary: {
-      main: '#ffffff',
+      main: '#667eea',
     },
     background: {
-      default: '#000',
-      paper: '#121212',
+      default: '#f8f9fa',
+      paper: '#ffffff',
     },
     text: {
-      primary: '#fff',
-      secondary: '#b3b3b3',
+      primary: '#333333',
+      secondary: '#666666',
     },
-    action: {
-      hover: '#282828',
-      active: '#333',
+    warning: {
+      main: '#ffc107',
     },
-  },
-  typography: {
-    fontFamily: 'Roboto, Arial, sans-serif',
-    h1: {
-      fontWeight: 700,
-      fontSize: '24px',
+    error: {
+      main: '#cc0000',
     },
-    h2: {
-      fontSize: '1rem',
+    info: {
+      main: '#0066cc',
     },
-    body1: {
-      fontSize: '14px',
-    },
-    subtitle1: {
-      fontSize: '0.6875rem',
+    custom: {
+      bgTertiary: '#fafbfc',
+      bgHover: '#f0f3ff',
+      borderLight: '#e1e5e9',
+      borderMedium: '#e9ecef',
+      infoBg: '#e7f3ff',
+      warningBg: '#fff3cd',
+      errorBg: '#ffe7e7',
+      ratingBg: '#fff3cd',
     },
   },
   components: {
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: '30px',
-          textTransform: 'none',
-        },
-        containedSecondary: {
-          backgroundColor: '#ffffff',
-          color: '#000000',
-          '&:hover': {
-            backgroundColor: '#e0e0e0',
-          },
-        },
-        sizeLarge: {
-          padding: '8px 32px',
-          fontWeight: 700,
-          fontSize: '16px',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          color: '#fff',
         },
       },
     },
