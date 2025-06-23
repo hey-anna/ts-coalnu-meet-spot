@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useUserStore } from '../../User/store/userStore';
+import { Box } from '@mui/material';
 
 // zustand 기본 테스트
 const TestPage = () => {
@@ -8,6 +9,14 @@ const TestPage = () => {
 
   return (
     <div>
+      <Box
+        sx={(theme) => ({
+          backgroundColor: theme.palette.custom?.bgHover,
+          borderColor: theme.palette.custom?.borderLight,
+        })}
+      >
+        커스텀 색상 사용 박스
+      </Box>
       {userIdList.map((id) => (
         <div>
           <p>{id}</p>
