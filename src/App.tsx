@@ -1,11 +1,18 @@
+import React, { Suspense } from 'react';
 import './App.css';
+import { Route, Routes } from 'react-router';
+
+const MainPage = React.lazy(() => import('./Pages/main/mainPage'));
+const TestPage = React.lazy(() => import('./Pages/test/testPage'));
 
 function App() {
   return (
-    <>
-      <div>테스트</div>
-      <div>테스트2</div>
-    </>
+    <Suspense>
+      <Routes>
+        <Route path="/" element={<MainPage />} />
+        <Route path="/test" element={<TestPage />} />
+      </Routes>
+    </Suspense>
   );
 }
 
