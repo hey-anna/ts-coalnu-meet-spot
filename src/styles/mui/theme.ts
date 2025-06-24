@@ -34,16 +34,7 @@ const theme = createTheme({
       ratingBg: '#fff3cd',
     },
   },
-  components: {
-    // MuiButton: {
-    //   styleOverrides: {
-    //     root: {
-    //       background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    //       color: '#fff',
-    //     },
-    //   },
-    // },
-  },
+  components: {},
 });
 
 export default theme;
