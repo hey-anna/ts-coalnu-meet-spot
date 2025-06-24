@@ -35,14 +35,14 @@ const theme = createTheme({
     },
   },
   components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: '#fff',
-        },
-      },
-    },
+    // MuiButton: {
+    //   styleOverrides: {
+    //     root: {
+    //       background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    //       color: '#fff',
+    //     },
+    //   },
+    // },
   },
 });
 
