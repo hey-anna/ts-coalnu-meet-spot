@@ -1,9 +1,9 @@
 import React, { Suspense } from 'react';
-import './App.css';
+import './styles/App.css';
 import { Route, Routes } from 'react-router';
 
-const MainPage = React.lazy(() => import('./Pages/main/mainPage'));
-const TestPage = React.lazy(() => import('./Pages/test/testPage'));
+const MainPage = React.lazy(() => import('./pages/main/MainPage'));
+const TestPage = React.lazy(() => import('./pages/test/testPage'));
 
 function App() {
   return (
