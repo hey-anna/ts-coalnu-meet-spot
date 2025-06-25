@@ -3,6 +3,12 @@ import { persist } from 'zustand/middleware';
 import type { User } from '../models/model';
 import { immer } from 'zustand/middleware/immer';
 
+// 예진
+interface User {
+  email: string;
+  id: string;
+}
+
 interface UserStore {
   user: User | null;
   setUser: (user: User | null) => void;

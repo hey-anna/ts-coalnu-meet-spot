@@ -1,5 +1,6 @@
-import AddFriendLocationCard from '@/domain/user/ui/addFriendsLocation/addFriendsLocation';
+
 import { Box } from '@mui/material';
+import AddFriendLocationCard from '../../domain/user/ui/AddFriendsLocation/AddFriendsLocation';
 
 const TestPage = () => {
   return (
