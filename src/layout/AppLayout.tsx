@@ -11,21 +11,8 @@ const Layout = styled("div")({
     overflow: "hidden", // 전체 레이아웃 스크롤 막기
 });
 
-const LeftSideBar = styled("div")(({theme})=>({
-    width:"331px",
-    height:"100%",
-    display:"flex",
-    flexDirection:"column",
-    [theme.breakpoints.down("sm")]:{
-        display:"none",
-    },
-    marginRight:"5px",
-    paddingBottom:"8px",
-    overflow: "hidden", // 사이드바 스크롤 막기
-}));
-
 const RightSideBar = styled("div")(({theme})=>({
-    width:"331px",
+    width:"30%",
     height:"100%",
     display:"flex",
     flexDirection:"column",
@@ -127,17 +114,10 @@ const OutletArea = styled(Box)({
 const AppLayout = () => {
   return (
         <Layout>
-            <LeftSideBar>
-                <ContentBox>
-                    LeftSideBar
-                </ContentBox>
-            </LeftSideBar>
-            
             <MainContentArea>
                 <NavbarArea>
                     <Navbar/>
                 </NavbarArea>
-                <RecommandList/>
                 <OutletArea>
                     <Outlet />
                 </OutletArea>
@@ -147,7 +127,7 @@ const AppLayout = () => {
             </MainContentArea>
             <RightSideBar>
                 <ContentBox>
-                    RightSideBar
+                    <RecommandList/>
                 </ContentBox>
             </RightSideBar>
         </Layout>
