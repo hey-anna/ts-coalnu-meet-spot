@@ -8,25 +8,7 @@ const LinkBtn = styled(Box)({
 });
 
 const MainPage = () => {
-  return (
-    <div>
-      <Typography sx={{ color: 'primary.main' }}>테스트</Typography>
-
-      <Box display="flex" gap="10px">
-        <LinkBtn>
-          <NavLink to={'/join'} style={{ textDecoration: 'none' }}>
-            회원가입
-          </NavLink>
-        </LinkBtn>
-
-        <LinkBtn>
-          <NavLink to={'/login'} style={{ textDecoration: 'none' }}>
-            로그인
-          </NavLink>
-        </LinkBtn>
-      </Box>
-    </div>
-  );
+  return <div>main 페이지</div>;
 };
 
 export default MainPage;

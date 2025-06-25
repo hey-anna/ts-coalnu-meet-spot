@@ -4,7 +4,7 @@ import LoginForm from '../../domain/auth/ui/LoginForm';
 
 const LoginPage = () => {
   return (
-    <Box>
+    <Box display="flex" justifyContent="center" alignItems="center">
       <LoginForm />
     </Box>
   );
