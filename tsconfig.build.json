@@ -1,7 +1,11 @@
+// tsconfig.build.json
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "noEmit": true,
+    "outDir": "dist", // 실제로 타입스크립트 결과를 내보내는 디렉토리
+    "declaration": true, // 타입 선언 파일 생성
+    "declarationMap": true,
+    "emitDeclarationOnly": true, // JS는 Vite가 생성하므로 .d.ts만 emit
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
