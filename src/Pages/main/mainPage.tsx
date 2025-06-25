@@ -1,5 +1,7 @@
+import React from 'react';
 import { Box, styled, Typography } from '@mui/material';
 import { NavLink } from 'react-router';
+import RecommendStationBox from '../../domain/recommendation/ui/recommendStation/recommendStationBox';
 
 const LinkBtn = styled(Box)({
   padding: '8px',
@@ -7,8 +9,14 @@ const LinkBtn = styled(Box)({
   color: 'black',
 });
 
-const MainPage = () => {
-  return <div>main 페이지</div>;
+const MainPage: React.FC = () => {
+  return (
+    <div>
+      <Typography sx={{ color: 'primary.main' }}>테스트</Typography>
+
+      <RecommendStationBox />
+    </div>
+  );
 };
 
 export default MainPage;

@@ -4,7 +4,7 @@ const theme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#667eea',
+      main: '#6c5ce7',
     },
     background: {
       default: '#f8f9fa',
@@ -33,17 +33,11 @@ const theme = createTheme({
       errorBg: '#ffe7e7',
       ratingBg: '#fff3cd',
     },
+    user: {
+      main: '#764ba2',
+    },
   },
-  components: {
-    // MuiButton: {
-    //   styleOverrides: {
-    //     root: {
-    //       background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    //       color: '#fff',
-    //     },
-    //   },
-    // },
-  },
+  components: {},
 });
 
 export default theme;

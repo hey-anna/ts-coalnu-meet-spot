@@ -94,9 +94,13 @@ const YejinTestPage = () => {
           <SubmitButton type="submit">저장</SubmitButton>
         </form>
       </Box>
-      <Typography>Friend Insert Test</Typography>
+      <Typography variant="h5" sx={{ margin: '10px' }}>
+        Friend Insert Test
+      </Typography>
       <FriendInset />
-      <Typography variant="h5">select 결과</Typography>
+      <Typography variant="h5" sx={{ marginTop: '10px' }}>
+        select 결과
+      </Typography>
       <Box
         sx={{ marginTop: '20px' }}
         display="flex"
