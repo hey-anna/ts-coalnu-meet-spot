@@ -10,8 +10,7 @@ import {
   Stack,
 } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
-
-import AddFriendsGroupForm from '@/domain/user/ui/addFriendsGroupForm/AddFriendsGroupForm';
+import AddFriendsGroupForm from '../addFriendsGroupForm/addFriendsGroupForm';
 
 export default function AddFriendLocationCard() {
   const theme = useTheme();

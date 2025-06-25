@@ -1,5 +1,5 @@
+import AddFriendLocationCard from '@/domain/user/ui/addFriendsLocation/addFriendsLocation';
 import { Box } from '@mui/material';
-import AddFriendLocationCard from '../../domain/user/ui/addFriendsLocation/AddFriendsLocation';
 
 // 주석
 
