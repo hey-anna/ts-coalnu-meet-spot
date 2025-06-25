@@ -1,0 +1,9 @@
+[build]
+  command = "npm run build"  # 빌드 명령어
+  publish = "dist"           # 정적 파일 폴더
+  functions = "netlify/functions"  # Functions 폴더 경로
+
+[dev]
+  command = "npm run dev"    # 로컬 개발 서버
+  port = 3000
+  functions = "netlify/functions"
