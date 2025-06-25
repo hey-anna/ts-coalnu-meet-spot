@@ -1,0 +1,8 @@
+.friendInfoForm {
+  display: flex;
+  align-items: center;
+
+  input {
+    width: 100px;
+  }
+}

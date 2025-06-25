@@ -4,6 +4,7 @@ import Navbar from './components/navbar';
 import MobileNavbar from './components/mobileNavbar';
 import TodayRecommend from '../domain/recommendation/ui/todayRecommend/todayRecommend';
 
+
 const Layout = styled("div")(({theme})=>({
     display:"flex",
     height:"100vh",
@@ -68,22 +69,24 @@ const ContentBox = styled(Box)(({theme})=>({
 }));
 
 // 메인 콘텐츠 영역 (Navbar + Outlet)
-const MainContentArea = styled(Box)(({theme})=>({
-    borderRadius:"8px",
-    backgroundColor:theme.palette.background.paper,
-    color:theme.palette.text.primary,
-    width:"100%",
-    height: "100%", // 전체 높이 사용
-    padding:"8px",
-    boxSizing: "border-box",
-    display: "flex",
-    flexDirection: "column",
-    overflow: "hidden", // 메인 영역 스크롤 막기
+const MainContentArea = styled(Box)(({ theme }) => ({
+  borderRadius: '8px',
+  backgroundColor: theme.palette.background.paper,
+  color: theme.palette.text.primary,
+  width: '100%',
+  height: '100%', // 전체 높이 사용
+  padding: '8px',
+  boxSizing: 'border-box',
+  display: 'flex',
+  flexDirection: 'column',
+  overflow: 'hidden', // 메인 영역 스크롤 막기
 }));
 
 // Navbar 영역 (고정)
 const NavbarArea = styled(Box)({
-    flexShrink: 0, // 크기 고정
+  flexShrink: 0, // 크기 고정
+  display: 'flex',
+  justifyContent: 'space-between',
 });
 
 // Outlet 영역 (스크롤 가능)
@@ -125,6 +128,7 @@ const OutletArea = styled(Box)(({theme})=>({
 
 const AppLayout = () => {
   return (
+
         <Layout>
             <MainContentArea>
                 <NavbarArea>
@@ -146,4 +150,4 @@ const AppLayout = () => {
   )
 }
 
-export default AppLayout
+export default AppLayout;
