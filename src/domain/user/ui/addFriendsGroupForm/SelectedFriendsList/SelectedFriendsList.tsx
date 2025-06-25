@@ -1,6 +1,6 @@
 import type { Dispatch, SetStateAction } from 'react';
-import type { SelsectedFriendsList } from '../../../models/user';
 import { Box, Tooltip, Typography } from '@mui/material';
+import type { SelsectedFriendsList } from '@/domain/user/models/user';
 
 const columnStyles = [
   { flex: 1 }, // 이름

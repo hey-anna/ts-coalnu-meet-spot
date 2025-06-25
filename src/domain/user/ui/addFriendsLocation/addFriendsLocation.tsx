@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import {
   Box,
   Button,
@@ -8,8 +10,8 @@ import {
   Stack,
 } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
-import { useState } from 'react';
-import AddFriendsGroupForm from '../addFriendsGroupForm/AddFriendsGroupForm';
+
+import AddFriendsGroupForm from '@/domain/user/ui/addFriendsGroupForm/AddFriendsGroupForm';
 
 export default function AddFriendLocationCard() {
   const theme = useTheme();

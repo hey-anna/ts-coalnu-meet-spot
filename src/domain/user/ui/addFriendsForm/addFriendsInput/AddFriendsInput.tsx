@@ -5,8 +5,9 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+
 import type { Dispatch, SetStateAction } from 'react';
-import type { Station, StationInfoList } from '../../../models/subway';
+import type { Station, StationInfoList } from '@/domain/user/models/subway';
 
 export const AddFriendsInput = ({
   name,

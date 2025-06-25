@@ -1,6 +1,6 @@
 import { useState, type Dispatch, type SetStateAction } from 'react';
 
-import type { SelsectedFriendsList } from '../../models/user';
+import type { SelsectedFriendsList } from '@/domain/user/models/user';
 
 import {
   Box,
@@ -12,10 +12,10 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-import ModalPortal from '../../../../shared/component/ModalPortal';
-import AddFriendsForm from '../addFriendsForm/addFriendsForm';
+import ModalPortal from '@/shared/component/ModalPortal';
 import { GroupManager } from './GroupManager/GroupManager';
 import { SelectedFriendsList } from './SelectedFriendsList/SelectedFriendsList';
+import AddFriendsForm from '../addFriendsForm/addFriendsForm';
 
 const AddFriendsGroupForm = ({ onClose }: { onClose: () => void }) => {
   const theme = useTheme();

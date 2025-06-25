@@ -1,3 +1,4 @@
+import type { Dispatch, SetStateAction } from 'react';
 import {
   Box,
   InputAdornment,
@@ -6,8 +7,7 @@ import {
   Typography,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import type { SelsectedFriendsList } from '../../../models/user';
-import type { Dispatch, SetStateAction } from 'react';
+import type { SelsectedFriendsList } from '@/domain/user/models/user';
 
 const allColumnStyles = [
   { flex: 1, minWidth: 80 },

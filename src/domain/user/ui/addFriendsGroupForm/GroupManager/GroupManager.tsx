@@ -1,7 +1,3 @@
-import { Box, Typography } from '@mui/material';
-import { GroupManagerCreateGroup } from './GroupManagerCreateGroup';
-import { GroupManagerFriendsList } from './GroupManagerFriendsList';
-import { GroupManagerGroupList } from './GroupManagerGroupList';
 import {
   useEffect,
   useMemo,
@@ -9,7 +5,14 @@ import {
   type Dispatch,
   type SetStateAction,
 } from 'react';
-import type { SelsectedFriendsList } from '../../../models/user';
+
+import { Box, Typography } from '@mui/material';
+
+import type { SelsectedFriendsList } from '@/domain/user/models/user';
+
+import { GroupManagerCreateGroup } from './GroupManagerCreateGroup';
+import { GroupManagerFriendsList } from './GroupManagerFriendsList';
+import { GroupManagerGroupList } from './GroupManagerGroupList';
 
 // 데이터 지금 없어서 강제로 해놓음
 const groups = ['토트넘', 'PSG', '전북 현대', '동호회', '게임 친구'];

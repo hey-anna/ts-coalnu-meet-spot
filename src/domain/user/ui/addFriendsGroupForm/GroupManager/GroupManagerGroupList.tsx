@@ -1,5 +1,5 @@
-import { Box, Button, Tooltip } from '@mui/material';
 import type { Dispatch, SetStateAction } from 'react';
+import { Box, Button, Tooltip } from '@mui/material';
 
 interface FriendGroupListProps {
   groups: string[];

@@ -1,3 +1,5 @@
+import { useMemo, useState, type Dispatch, type SetStateAction } from 'react';
+
 import {
   Box,
   Button,
@@ -5,14 +7,16 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import ModalPortal from '../../../../shared/component/ModalPortal';
 import { IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { useMemo, useState, type Dispatch, type SetStateAction } from 'react';
-import { getSubwayInfoList } from '../../../../shared/lib/utils';
+
 import type { SelsectedFriendsList, Station } from '../../models/user';
+
+import ModalPortal from '@/shared/component/ModalPortal';
 import { AddFriendsInput } from './addFriendsInput/AddFriendsInput';
 import { AddFriendsGroupList } from './addFriendsGroupList/AddFriendsGroupList';
+
+import { getSubwayInfoList } from '@/shared/lib/utils';
 
 const groups = ['토트넘', 'PSG', '전북 현대', '동호회', '게임 친구'];
 
@@ -29,8 +33,6 @@ const AddFriendsForm = ({
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
-  // 그룹데이터는 훅으로 불러오기 groups 사용안하기
 
   return (
     <ModalPortal>
