@@ -9,7 +9,8 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
-import type { RECOMMEND_SUBWAY_STATIONS } from '../../models/model';
+import { STATION_CONFIG } from '../../../../shared/config/stationConfig';
+import type { StationData, StationResponse } from '../../../../shared/models/station';
 
 // Styled Components
 const SearchTextField = styled(TextField)(({ theme }) => ({
@@ -51,14 +52,7 @@ const SearchCardContent = styled(CardContent)({
   padding: '16px 20px !important'
 });
 
-const TagsContainer = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  gap: theme.spacing(0.8),
-  justifyContent: 'flex-start',
-  flexWrap: 'wrap'
-}));
-
-const StationTag = styled(Chip)(({ theme }) => ({
+const LineChip = styled(Chip)(({ theme }) => ({
   fontSize: '0.7rem',
   height: 22,
   borderRadius: '11px',
@@ -81,18 +75,18 @@ const EmptyStateBox = styled(Box)(({ theme }) => ({
 
 // Props 인터페이스
 interface StationSearchProps {
-  stations: RECOMMEND_SUBWAY_STATIONS;
   onStationSelect: (stationName: string) => void;
   placeholder?: string;
+  maxResults?: number;
 }
 
-const StationSearch: React.FC<StationSearchProps> = ({
-  stations,
+const recommendStationSearch: React.FC<StationSearchProps> = ({
   onStationSelect,
-  placeholder = "지하철역 이름을 검색해보세요"
+  placeholder = "지하철역 이름을 검색해보세요",
+  maxResults = 10
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<RECOMMEND_SUBWAY_STATIONS>([]);
+  const [searchResults, setSearchResults] = useState<StationData[]>([]);
 
   // 검색 기능
   const handleSearch = (query: string) => {
@@ -103,13 +97,35 @@ const StationSearch: React.FC<StationSearchProps> = ({
       return;
     }
 
-    const filtered = stations.filter(station =>
-      station.name.toLowerCase().includes(query.toLowerCase()) ||
-      station.description.toLowerCase().includes(query.toLowerCase()) ||
-      station.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase()))
-    );
+    // stationConfig의 DATA에서 검색
+    const filtered = STATION_CONFIG.DATA.filter((station: StationData) =>
+      station.station_nm.includes(query) ||
+      station.line_num.includes(query) ||
+      station.fr_code.includes(query)
+    ).slice(0, maxResults); // 결과 개수 제한
     
     setSearchResults(filtered);
+  };
+
+  // 호선별 색상 매핑 (선택사항)
+  const getLineColor = (lineNum: string) => {
+    const colors: { [key: string]: string } = {
+      '01호선': '#0052A4',
+      '02호선': '#00A84D',
+      '03호선': '#EF7C1C',
+      '04호선': '#00A5DE',
+      '05호선': '#996CAC',
+      '06호선': '#CD7C2F',
+      '07호선': '#747F00',
+      '08호선': '#E6186C',
+      '09호선': '#BB8336',
+      '경의선': '#77C4A3',
+      '수인분당선': '#FFCD12',
+      '신분당선': '#D4003B',
+      '공항철도': '#0090D2',
+      'GTX-A': '#9E4FC7'
+    };
+    return colors[lineNum] || '#666666';
   };
 
   return (
@@ -131,28 +147,41 @@ const StationSearch: React.FC<StationSearchProps> = ({
         <Box>
           {searchResults.map((station) => (
             <SearchResultCard 
-              key={station.name}
-              onClick={() => onStationSelect(station.name)}
+              key={`${station.station_cd}-${station.line_num}`}
+              onClick={() => onStationSelect(station.station_nm)}
             >
               <SearchCardContent>
-                <Typography variant="h6" fontWeight={600} gutterBottom sx={{ fontSize: '1.1rem' }}>
-                  {station.name}
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
+                  <Typography variant="h6" fontWeight={600} sx={{ fontSize: '1.1rem' }}>
+                    {station.station_nm}
+                  </Typography>
+                  <LineChip 
+                    label={station.line_num}
+                    size="small"
+                    sx={{ 
+                      backgroundColor: `${getLineColor(station.line_num)}15`,
+                      color: getLineColor(station.line_num),
+                      border: `1px solid ${getLineColor(station.line_num)}30`
+                    }}
+                  />
+                </Box>
+                <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
+                  역코드: {station.station_cd} | 외부코드: {station.fr_code}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5, lineHeight: 1.5 }}>
-                  {station.description}
-                </Typography>
-                <TagsContainer>
-                  {station.tags.map((tag, index) => (
-                    <StationTag 
-                      key={index}
-                      label={tag}
-                      size="small"
-                    />
-                  ))}
-                </TagsContainer>
               </SearchCardContent>
             </SearchResultCard>
           ))}
+          
+          {/* 더 많은 결과가 있을 때 안내 */}
+          {STATION_CONFIG.DATA.filter((station: StationData) =>
+            station.station_nm.includes(searchQuery) ||
+            station.line_num.includes(searchQuery) ||
+            station.fr_code.includes(searchQuery)
+          ).length > maxResults && (
+            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', mt: 2 }}>
+              더 많은 결과가 있습니다. 검색어를 더 구체적으로 입력해보세요.
+            </Typography>
+          )}
         </Box>
       )}
 
@@ -162,10 +191,13 @@ const StationSearch: React.FC<StationSearchProps> = ({
           <Typography color="text.secondary" sx={{ fontSize: '0.95rem' }}>
             "{searchQuery}"에 대한 검색 결과가 없습니다.
           </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1, fontSize: '0.85rem' }}>
+            역명, 호선명, 또는 역코드로 검색해보세요.
+          </Typography>
         </EmptyStateBox>
       )}
     </Box>
   );
 };
 
-export default StationSearch;
+export default recommendStationSearch;

@@ -188,7 +188,6 @@ const RecommendStationBox: React.FC = () => {
           {tabValue === 1 && (
             allStations.length > 0 ? (
               <StationSearch
-                stations={allStations}
                 onStationSelect={handleStationSelect}
                 placeholder="지하철역 이름을 검색해보세요"
               />
