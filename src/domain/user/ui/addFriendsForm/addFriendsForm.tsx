@@ -12,7 +12,7 @@ import { useMemo, useState, type Dispatch, type SetStateAction } from 'react';
 import { getSubwayInfoList } from '../../../../shared/lib/utils';
 import type { SelsectedFriendsList, Station } from '../../models/user';
 import { AddFriendsInput } from './addFriendsInput/AddFriendsInput';
-import { AddFriendsGroupList } from './addFriendsGroupList/addFriendsGroupList';
+import { AddFriendsGroupList } from './addFriendsGroupList/AddFriendsGroupList';
 
 const groups = ['토트넘', 'PSG', '전북 현대', '동호회', '게임 친구'];
 
@@ -116,6 +116,7 @@ const AddFriendsForm = ({
             </Box>
 
             <AddFriendsInput
+              name={name}
               setName={setName}
               subwayInfoList={subwayInfoList}
               station={station}

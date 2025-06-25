@@ -9,11 +9,13 @@ import type { Dispatch, SetStateAction } from 'react';
 import type { Station, StationInfoList } from '../../../models/subway';
 
 export const AddFriendsInput = ({
+  name,
   setName,
   subwayInfoList,
   station,
   setStation,
 }: {
+  name: string;
   setName: Dispatch<SetStateAction<string>>;
   subwayInfoList: StationInfoList;
   station: Station | null;

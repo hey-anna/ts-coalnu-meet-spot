@@ -99,25 +99,12 @@ export const GroupManager = ({
         setSelectedGroup={setSelectedGroup}
       />
 
-      {!isCreatingGroup && filteredFriends.length > 0 ? (
-        <GroupManagerFriendsList
-          filteredFriends={filteredFriends}
-          setSearchName={setSearchName}
-          searchName={searchName}
-          setSelectedFriendsList={setSelectedFriendsList}
-        />
-      ) : (
-        <Box
-          sx={{
-            display: 'flex',
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <Typography> 검색된 친구가 없습니다. </Typography>
-        </Box>
-      )}
+      <GroupManagerFriendsList
+        filteredFriends={filteredFriends}
+        setSearchName={setSearchName}
+        searchName={searchName}
+        setSelectedFriendsList={setSelectedFriendsList}
+      />
     </Box>
   );
 };

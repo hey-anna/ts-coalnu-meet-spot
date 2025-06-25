@@ -8,12 +8,13 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import type { SelsectedFriendsList } from '../../../models/user';
 import type { Dispatch, SetStateAction } from 'react';
+
 const allColumnStyles = [
-  { flex: 1 }, // 이름
-  { flex: 1 }, // 그룹
-  { flex: 1 }, // 위치
-  { flex: 1 }, // 추가
-  { flex: 1 }, // 제거
+  { flex: 1, minWidth: 80 },
+  { flex: 1, minWidth: 80 },
+  { flex: 1, minWidth: 80 },
+  { flex: 1, minWidth: 60 },
+  { flex: 1, minWidth: 60 },
 ];
 
 const allHeaders = ['이름', '그룹', '위치', '추가', '제거'];
@@ -77,6 +78,10 @@ export const GroupManagerFriendsList = ({
           width: '100%',
           border: '1px solid #ccc',
           borderRadius: 2,
+          minHeight: 240,
+          maxHeight: 400,
+          overflowY: 'auto',
+          flexShrink: 0,
         }}
       >
         <Box sx={{ display: 'flex', p: 1, backgroundColor: '#f5f5f5' }}>
@@ -97,115 +102,174 @@ export const GroupManagerFriendsList = ({
           ))}
         </Box>
 
-        {filteredFriends.map((row, rowIndex) => {
-          const displayRow = {
-            name: row.name.length > 5 ? row.name.slice(0, 5) + '...' : row.name,
-            group:
-              row.group && row.group?.length > 5
-                ? row.name.slice(0, 5) + '...'
-                : row.group,
-            station:
-              row.station && row.station?.name.length > 5
-                ? row.station?.name.slice(0, 5) + '...'
-                : row.station?.name,
-          };
+        {filteredFriends.length === 0 ? (
+          <Box
+            sx={{
+              flex: 1,
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              minHeight: 160,
+            }}
+          >
+            <Typography color="text.secondary">
+              검색 결과가 없습니다.
+            </Typography>
+          </Box>
+        ) : (
+          filteredFriends.map((row, rowIndex) => {
+            const displayRow = {
+              name:
+                row.name.length > 5 ? row.name.slice(0, 5) + '...' : row.name,
+              group:
+                row.group && row.group.length > 5
+                  ? row.group.slice(0, 5) + '...'
+                  : row.group,
+              station:
+                row.station && row.station.name.length > 5
+                  ? row.station.name.slice(0, 5) + '...'
+                  : row.station?.name,
+            };
 
-          return (
-            <Box
-              key={rowIndex}
-              sx={{
-                display: 'flex',
-                p: 1,
-                borderTop: '1px solid #eee',
-                '&:hover': { backgroundColor: '#fafafa' },
-              }}
-            >
+            return (
               <Box
+                key={rowIndex}
                 sx={{
-                  ...allColumnStyles[0],
                   display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
+                  p: 1,
+                  borderTop: '1px solid #eee',
+                  '&:hover': { backgroundColor: '#fafafa' },
                 }}
               >
-                <Tooltip title={row.name} arrow>
-                  <Typography>{displayRow.name}</Typography>
-                </Tooltip>
-              </Box>
-              <Box
-                sx={{
-                  ...allColumnStyles[1],
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Tooltip title={row.group} arrow>
-                  <Typography>{displayRow.group}</Typography>
-                </Tooltip>
-              </Box>
-              <Box
-                sx={{
-                  ...allColumnStyles[2],
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Tooltip title={row.station?.name} arrow>
-                  <Typography>{displayRow.station}</Typography>
-                </Tooltip>
-              </Box>
-              <Box
-                sx={{
-                  ...allColumnStyles[3],
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Typography
-                  onClick={() => {
-                    setSelectedFriendsList((prev) => {
-                      if (prev.length >= 4) return prev;
-
-                      if (
-                        prev.some(
-                          (friend) =>
-                            friend.name === row.name &&
-                            friend.group === row.group,
-                        )
-                      ) {
-                        console.log('이미 있음');
-                        return prev;
-                      }
-
-                      return [...prev, row];
-                    });
+                <Box
+                  sx={{
+                    ...allColumnStyles[0],
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                   }}
                 >
-                  추가
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  ...allColumnStyles[4],
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Typography
-                  onClick={() => {
-                    console.log('그룹에서 제거');
+                  <Tooltip title={row.name} arrow>
+                    <Typography
+                      noWrap
+                      sx={{
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        minWidth: 60,
+                        textAlign: 'center',
+                      }}
+                    >
+                      {displayRow.name}
+                    </Typography>
+                  </Tooltip>
+                </Box>
+
+                <Box
+                  sx={{
+                    ...allColumnStyles[1],
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                   }}
                 >
-                  제거
-                </Typography>
+                  <Tooltip title={row.group} arrow>
+                    <Typography
+                      noWrap
+                      sx={{
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        minWidth: 60,
+                        textAlign: 'center',
+                      }}
+                    >
+                      {displayRow.group}
+                    </Typography>
+                  </Tooltip>
+                </Box>
+
+                <Box
+                  sx={{
+                    ...allColumnStyles[2],
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Tooltip title={row.station?.name} arrow>
+                    <Typography
+                      noWrap
+                      sx={{
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        minWidth: 60,
+                        textAlign: 'center',
+                      }}
+                    >
+                      {displayRow.station}
+                    </Typography>
+                  </Tooltip>
+                </Box>
+
+                <Box
+                  sx={{
+                    ...allColumnStyles[3],
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      cursor: 'pointer',
+                      minWidth: 40,
+                      textAlign: 'center',
+                    }}
+                    onClick={() => {
+                      setSelectedFriendsList((prev) => {
+                        if (prev.length >= 4) return prev;
+                        if (
+                          prev.some(
+                            (friend) =>
+                              friend.name === row.name &&
+                              friend.group === row.group,
+                          )
+                        ) {
+                          console.log('이미 있음');
+                          return prev;
+                        }
+                        return [...prev, row];
+                      });
+                    }}
+                  >
+                    추가
+                  </Typography>
+                </Box>
+
+                <Box
+                  sx={{
+                    ...allColumnStyles[4],
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      cursor: 'pointer',
+                      minWidth: 40,
+                      textAlign: 'center',
+                    }}
+                    onClick={() => {
+                      console.log('그룹에서 제거');
+                    }}
+                  >
+                    제거
+                  </Typography>
+                </Box>
               </Box>
-            </Box>
-          );
-        })}
+            );
+          })
+        )}
       </Box>
     </Box>
   );
