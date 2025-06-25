@@ -130,7 +130,11 @@ const FriendInset = () => {
           </InputLabel>
           <Select
             id="friend_group"
-            value={newFriend.friend_group_id}
+            value={
+              newFriend.friend_group_id === null
+                ? ''
+                : String(newFriend.friend_group_id)
+            }
             label="friend_group"
             onChange={(e) =>
               setNewFriend({
