@@ -5,8 +5,6 @@ const places = async (location: string, keyword: string = '맛집') => {
     );
 
     const data = await response.json();
-
-    console.log(data);
     return data;
   } catch (error) {
     console.error('장소 검색 실패:', error);
