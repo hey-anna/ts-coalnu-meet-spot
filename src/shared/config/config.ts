@@ -1,4 +1,4 @@
-import type { RECOMMEND_SUBWAY_STATIONS } from "../../domain/recommandation/models/model";
+import type { RECOMMEND_SUBWAY_STATIONS } from "../../domain/recommendation/models/model";
 
 export const SUBWAY_STATIONS: RECOMMEND_SUBWAY_STATIONS = 
 [

@@ -41,7 +41,7 @@ const placeCategoryStyle = {
   color: theme.palette.text.secondary
 };
 
-const recommandListItem = ({ place }: { place: PlaceData }) => (
+const recommendListItem = ({ place }: { place: PlaceData }) => (
   <Box 
     sx={placeItemStyle}
     onClick={() => window.open(place.place_url, '_blank')}
@@ -57,4 +57,4 @@ const recommandListItem = ({ place }: { place: PlaceData }) => (
   </Box>
 );
 
-export default recommandListItem;
+export default recommendListItem;

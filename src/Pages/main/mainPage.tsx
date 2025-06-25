@@ -1,5 +1,7 @@
+import React from 'react';
 import { Box, styled, Typography } from '@mui/material';
 import { NavLink } from 'react-router';
+import RecommendStationBox from '../../domain/recommendation/ui/recommendStation/recommendStationBox'
 
 const LinkBtn = styled(Box)({
   padding: '8px',
@@ -7,7 +9,7 @@ const LinkBtn = styled(Box)({
   color: 'black',
 });
 
-const MainPage = () => {
+const MainPage: React.FC = () => {
   return (
     <div>
       <Typography sx={{ color: 'primary.main' }}>테스트</Typography>
@@ -25,6 +27,8 @@ const MainPage = () => {
           </NavLink>
         </LinkBtn>
       </Box>
+      <RecommendStationBox/>
+      
     </div>
   );
 };
