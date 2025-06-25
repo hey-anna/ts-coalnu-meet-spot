@@ -3,7 +3,7 @@ import './styles/App.css';
 import { Route, Routes } from 'react-router';
 import AppLayout from './layout/AppLayout';
 import TestPage from './Pages/test/TestPage';
-import MainPage from './Pages/main/MainPage.tsx';
+import MainPage from './Pages/main/MainPage';
 
 const JoinPage = React.lazy(() => import('./Pages/auth/JoinPage'));
 const LoginPage = React.lazy(() => import('./Pages/auth/LoginPage'));
