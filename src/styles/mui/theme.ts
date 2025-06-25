@@ -33,6 +33,9 @@ const theme = createTheme({
       errorBg: '#ffe7e7',
       ratingBg: '#fff3cd',
     },
+    user: {
+      main: '#764ba2',
+    },
   },
   components: {},
 });

@@ -8,12 +8,13 @@ import {
   Stack,
 } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
+import { useState } from 'react';
+import AddFriendsGroupForm from '../addFriendsGroupForm/AddFriendsGroupForm';
 
-export default function FriendLocationCard() {
+export default function AddFriendLocationCard() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
-  console.log(isMobile);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <Box
@@ -29,6 +30,7 @@ export default function FriendLocationCard() {
         '&:hover': {
           backgroundColor: 'custom.bgHover',
         },
+        minWidth: 300,
       }}
     >
       <Stack
@@ -39,7 +41,7 @@ export default function FriendLocationCard() {
         mb={2}
       >
         <Typography variant="subtitle1" fontWeight="bold">
-          {isMobile ? '친구 위치 추가' : '친구들과 함께'}
+          친구 추가
         </Typography>
         <Avatar
           sx={{
@@ -54,6 +56,7 @@ export default function FriendLocationCard() {
       </Stack>
 
       <Button
+        onClick={() => setIsOpen(true)}
         fullWidth={true}
         variant="outlined"
         sx={{
@@ -70,7 +73,7 @@ export default function FriendLocationCard() {
           borderRadius: 2,
         }}
       >
-        {isMobile ? '+ 친구 추가' : '+ 친구 위치 추가하기'}
+        '위치 추가 하기'
       </Button>
 
       {!isMobile && (
@@ -92,6 +95,8 @@ export default function FriendLocationCard() {
           최적의 중간 지점을 찾아드려요!
         </Typography>
       )}
+
+      {isOpen && <AddFriendsGroupForm onClose={() => setIsOpen(false)} />}
     </Box>
   );
 }
