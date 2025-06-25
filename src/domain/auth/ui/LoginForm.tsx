@@ -1,12 +1,23 @@
-import { Button, FormControl, OutlinedInput, Typography } from '@mui/material';
+import { Button, Link, styled, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useLogin from '../hooks/useLogin';
-import { useLoginUserStore } from '../../user/store/userStore';
+import { useUserStore } from '../../user/store/userStore';
 import useLogout from '../hooks/useLogout';
+import './authdomain.css';
+import { useNavigate } from 'react-router';
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
+
+const JoinLink = styled(Link)(({ theme }) => ({
+  cursor: 'pointer',
+  alignSelf: 'flex-end',
+  alignItems: 'center',
+  display: 'flex',
+}));
 
 const LoginForm = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const navigate = useNavigate();
 
   const {
     mutate: loginWithEmail,
@@ -17,7 +28,7 @@ const LoginForm = () => {
   } = useLogin();
   const { mutate: logout, isSuccess: logoutSuccess } = useLogout();
 
-  const { user } = useLoginUserStore();
+  const { user } = useUserStore();
 
   useEffect(() => {
     if (user) {
@@ -40,23 +51,41 @@ const LoginForm = () => {
 
   return (
     <>
-      <form noValidate autoComplete="off" onSubmit={handleSubmit}>
-        <FormControl sx={{ width: '25ch', mb: 2 }}>
-          <OutlinedInput
-            placeholder="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </FormControl>
+      <form
+        noValidate
+        autoComplete="off"
+        onSubmit={handleSubmit}
+        className="loginFormContainer"
+      >
+        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+          로그인
+        </Typography>
+        <TextField
+          id="email-input"
+          label="Email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
 
-        <FormControl sx={{ width: '25ch', mb: 2 }}>
-          <OutlinedInput
-            placeholder="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </FormControl>
+        <TextField
+          id="password-input"
+          label="Password"
+          type="password"
+          autoComplete="current-password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+
+        <JoinLink
+          variant="body2"
+          onClick={() => {
+            navigate('/join');
+          }}
+        >
+          회원가입
+          <ArrowRightAltIcon />
+        </JoinLink>
 
         <Button type="submit" variant="contained" color="primary">
           {user ? '로그아웃' : '로그인'}

@@ -34,6 +34,8 @@ export const loginWithEmail = async (params: LoginRequest) => {
       throw new Error(error.message);
     }
 
+    console.log('loginWithEmail 정보 : ', data);
+
     return data;
   } catch (error) {
     throw new Error('fail to login with email');
