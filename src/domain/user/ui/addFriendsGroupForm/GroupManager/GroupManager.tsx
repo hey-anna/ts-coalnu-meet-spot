@@ -8,7 +8,7 @@ import {
 
 import { Box, Typography } from '@mui/material';
 
-import type { SelsectedFriendsList } from '@/domain/user/models/user';
+import type { SelsectedFriendsList } from '@/domain/user/models/model';
 
 import { GroupManagerCreateGroup } from './GroupManagerCreateGroup';
 import { GroupManagerFriendsList } from './GroupManagerFriendsList';

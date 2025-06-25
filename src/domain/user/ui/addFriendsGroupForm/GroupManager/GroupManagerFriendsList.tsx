@@ -7,7 +7,7 @@ import {
   Typography,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import type { SelsectedFriendsList } from '@/domain/user/models/user';
+import type { SelsectedFriendsList } from '@/domain/user/models/model';
 
 const allColumnStyles = [
   { flex: 1, minWidth: 80 },

@@ -1,6 +1,6 @@
 import { useState, type Dispatch, type SetStateAction } from 'react';
 
-import type { SelsectedFriendsList } from '@/domain/user/models/user';
+import type { SelsectedFriendsList } from '@/domain/user/models/model';
 
 import {
   Box,

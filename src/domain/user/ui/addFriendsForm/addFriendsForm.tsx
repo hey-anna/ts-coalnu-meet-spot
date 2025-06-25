@@ -10,7 +10,7 @@ import {
 import { IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
-import type { SelsectedFriendsList, Station } from '../../models/user';
+import type { SelsectedFriendsList, Station } from '../../models/model';
 
 import ModalPortal from '@/shared/component/ModalPortal';
 import { AddFriendsInput } from './addFriendsInput/AddFriendsInput';
