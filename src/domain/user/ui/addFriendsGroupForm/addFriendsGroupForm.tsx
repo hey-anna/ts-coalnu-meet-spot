@@ -28,6 +28,7 @@ const AddFriendsGroupForm = ({ onClose }: { onClose: () => void }) => {
     console.log('fetchForm');
   };
 
+  // 주석
   return (
     <ModalPortal>
       {({ overlayRef }) => (

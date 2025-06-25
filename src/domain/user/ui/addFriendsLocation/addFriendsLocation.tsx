@@ -18,6 +18,8 @@ export default function AddFriendLocationCard() {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [isOpen, setIsOpen] = useState(false);
 
+  // 주석
+
   return (
     <Box
       sx={{

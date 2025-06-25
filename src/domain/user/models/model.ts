@@ -1,4 +1,3 @@
-
 export interface User {
   email: string;
   id: string;
@@ -43,3 +42,5 @@ export type FriendInfo = {
 };
 
 export type SelsectedFriendsList = FriendInfo[];
+
+export type StationInfoList = Station[];
