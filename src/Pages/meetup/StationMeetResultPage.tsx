@@ -17,8 +17,8 @@ type StationCoords = {
 };
 
 const StationTestPage = () => {
-  const [keyword, setKeyword] = useState<string>('종각');
-  const [selectedStationName, setSelectedStationName] = useState('서울');
+  const [keyword, setKeyword] = useState<string>(''); // 초기 검색어 없음
+  const [selectedStationName, setSelectedStationName] = useState(''); // 초기 선택 없음
   const [results, setResults] = useState<
     { name: string; time: number | null }[]
   >([]);
@@ -27,6 +27,8 @@ const StationTestPage = () => {
   const { data: stationList = [] } = useSearchSubwayStationQuery(keyword);
   console.log('stationList', stationList);
   useEffect(() => {
+    if (!selectedStationName) return;
+
     const fetchTimes = async () => {
       try {
         // setError(null);
@@ -80,7 +82,6 @@ const StationTestPage = () => {
       />
       <Grid container spacing={4} mt={3}>
         {/* 왼쪽: 장소 정보 + 친구 이동 시간 */}
-
         <Grid
           size={{
             xs: 12,

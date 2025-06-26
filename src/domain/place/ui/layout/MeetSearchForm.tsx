@@ -37,18 +37,29 @@ const MeetSearchForm = ({
             value={selectedStationName}
             onChange={onStationSelect}
             fullWidth
+            // helperText={
+            //   keyword && stationList.length === 0
+            //     ? '검색 결과가 없습니다.'
+            //     : ' '
+            // }
           >
+            {/* 검색 결과 없을 때 안내 메시지 표시 */}
+            {stationList.length === 0 && keyword && (
+              <MenuItem disabled>선택할 수 있는 역이 없습니다</MenuItem>
+            )}
+
+            {/* 검색 결과 있을 때만 실제 항목 렌더링 */}
             {stationList.map((s) => (
               <MenuItem key={s.stationID} value={s.stationName}>
                 {s.stationName}
               </MenuItem>
             ))}
           </TextField>
-          {stationList.length === 0 && (
+          {/* {stationList.length === 0 && (
             <Typography variant="body2" color="text.secondary">
               검색 결과가 없습니다.
             </Typography>
-          )}
+          )} */}
         </Stack>
       </Box>
     </BasicStyledCard>
