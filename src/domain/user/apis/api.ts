@@ -26,7 +26,7 @@ export const getCurrentUserInfo = async () => {
   }
 };
 
-// 현재 로그인한 user가 가ㅣ지고 있는 group list
+// 현재 로그인한 user가 가지고 있는 group list
 export const getCurrentUserGroup = async (
   id: string,
 ): Promise<Group[] | null> => {

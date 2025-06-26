@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router';
 import AppLayout from './layout/AppLayout';
 import TestPage from './Pages/test/TestPage';
 import StationMeetResultPage from './Pages/meetup/StationMeetResultPage';
+import TestPage from './Pages/test/TestPage';
 // import MainPage from './Pages/main/MainPage';
 
 const JoinPage = React.lazy(() => import('./Pages/auth/JoinPage'));
@@ -23,8 +24,8 @@ function App() {
           <Route path="/meetup/result" element={<StationMeetResultPage />} />
           <Route path="/yejintest" element={<YejinTestPage />} />
           <Route path="/yejintest" element={<YejinTestPage />} />
+          <Route path="/test" element={<TestPage />} />
         </Route>
-        <Route path="/test" element={<TestPage />} />
       </Routes>
     </Suspense>
   );
