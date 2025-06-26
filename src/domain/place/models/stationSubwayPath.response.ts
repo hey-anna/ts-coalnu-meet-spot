@@ -1,4 +1,4 @@
-export interface SubwayPathResult {
+export interface StationSubwayPathResult {
   globalStartName: string;
   globalEndName: string;
   globalTravelTime: number;
@@ -7,17 +7,17 @@ export interface SubwayPathResult {
   fare: number;
   cashFare: number;
   driveInfoSet: {
-    driveInfo: SubwayPathDriveInfo[];
+    driveInfo: StationSubwayPathDriveInfo[];
   };
   exChangeInfoSet?: {
-    exChangeInfo: SubwayPathExChangeInfo[];
+    exChangeInfo: StationSubwayPathExChangeInfo[];
   };
   stationSet: {
-    stations: SubwayPathStationInfo[];
+    stations: StationSubwayPathStationInfo[];
   };
 }
 
-export interface SubwayPathDriveInfo {
+export interface StationSubwayPathDriveInfo {
   laneID: string;
   laneName: string;
   startName: string;
@@ -26,7 +26,7 @@ export interface SubwayPathDriveInfo {
   wayName: string;
 }
 
-export interface SubwayPathExChangeInfo {
+export interface StationSubwayPathExChangeInfo {
   laneName: string;
   startName: string;
   exName: string;
@@ -36,7 +36,7 @@ export interface SubwayPathExChangeInfo {
   exWalkTime: number;
 }
 
-export interface SubwayPathStationInfo {
+export interface StationSubwayPathStationInfo {
   startID: number;
   startName: string;
   endSID: number;

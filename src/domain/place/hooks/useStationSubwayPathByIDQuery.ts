@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getStationSubwayPathByID } from '../apis/stationSubwayApi';
-import type { SubwayPathResult } from '../models/stationSubwayPath.response';
+import type { StationSubwayPathResult } from '../models/stationSubwayPath.response';
 
 interface SubwayPathByIDParams {
   startID: number;
@@ -8,7 +8,7 @@ interface SubwayPathByIDParams {
 }
 
 export const useSubwayPathByIDQuery = (params?: SubwayPathByIDParams) => {
-  return useQuery<SubwayPathResult>({
+  return useQuery<StationSubwayPathResult>({
     queryKey: ['subway-path-by-ID', params],
     queryFn: () => {
       if (!params) throw new Error('파라미터가 필요합니다.');

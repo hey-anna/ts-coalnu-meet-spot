@@ -1,5 +1,5 @@
 // 좌표 기반 경로 조회용
-export interface SubwayPathParams {
+export interface StationSubwayPathParams {
   startX: number;
   startY: number;
   endX: number;
@@ -7,7 +7,7 @@ export interface SubwayPathParams {
 }
 
 // stationID 기반 경로 조회용
-export interface SubwayPathRequest {
+export interface StationSubwayPathRequest {
   CID: number;
   SID: number;
   EID: number;

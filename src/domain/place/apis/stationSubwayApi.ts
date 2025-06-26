@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { SubwayPathParams } from '../models/stationSubwayPath.request';
+import type { StationSubwayPathParams } from '../models/stationSubwayPath.request';
 import type { StationSubwaySearchResult } from '../models/stationSubwayPath.response';
 
 const API_KEY = import.meta.env.VITE_PUBLIC_TRANSPORT_API_KEY;
@@ -10,7 +10,7 @@ export const getStationSubwayPath = async ({
   startY,
   endX,
   endY,
-}: SubwayPathParams) => {
+}: StationSubwayPathParams) => {
   const url = 'https://api.odsay.com/v1/api/subwayPath';
 
   const { data } = await axios.get(url, {
