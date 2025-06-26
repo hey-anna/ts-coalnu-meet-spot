@@ -21,6 +21,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/meetup/result" element={<StationMeetResultPage />} />
           <Route path="/yejintest" element={<YejinTestPage />} />
+          <Route path="/yejintest" element={<YejinTestPage />} />
         </Route>
       </Routes>
     </Suspense>
