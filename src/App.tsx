@@ -4,7 +4,7 @@ import { Route, Routes } from 'react-router';
 import JoinPage from './Pages/auth/JoinPage';
 import LoginPage from './Pages/auth/LoginPage';
 import AppLayout from './layout/AppLayout';
-import StationTest from './Pages/test/StationTest';
+import StationMeetResultPage from './Pages/meetup/StationMeetResultPage';
 
 const MainPage = React.lazy(() => import('./Pages/main/mainPage'));
 
@@ -16,7 +16,7 @@ function App() {
           <Route index element={<MainPage />}></Route>
           <Route path="/join" element={<JoinPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/stationTest" element={<StationTest />} />
+          <Route path="/meetup/result" element={<StationMeetResultPage />} />
         </Route>
       </Routes>
     </Suspense>
