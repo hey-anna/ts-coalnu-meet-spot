@@ -5,19 +5,18 @@ import {
   Chip
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import type { RECOMMEND_SUBWAY_STATIONS } from '../../models/model';
 
 // Styled Components
-const StationCard = styled(Box, {
+const FriendCard = styled(Box, {
   shouldForwardProp: (prop) => prop !== 'selected'
 })<{ selected?: boolean }>(({ theme, selected }) => ({
   cursor: 'pointer',
   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-  border: `1px solid ${selected ? theme.palette.primary.main : 'rgba(0,0,0,0.08)'}`,
+  border: `1px solid ${selected ? theme.palette.custom.secondary : 'rgba(0,0,0,0.08)'}`,
   borderRadius: '12px',
   textAlign: 'center',
   background: selected 
-    ? `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.primary.dark} 100%)`
+    ? `linear-gradient(135deg, ${theme.palette.custom.secondary} 0%, ${theme.palette.primary.dark} 100%)`
     : '#ffffff',
   color: selected ? 'white' : theme.palette.text.primary,
   boxShadow: selected 
@@ -34,7 +33,7 @@ const StationCard = styled(Box, {
   padding: '8px 6px',
   
   '&:hover': {
-    borderColor: theme.palette.primary.main,
+    borderColor: theme.palette.custom.secondary,
     transform: 'translateY(-2px)',
     boxShadow: selected 
       ? `0 6px 20px rgba(108, 92, 231, 0.35)`
@@ -50,7 +49,7 @@ const StationCard = styled(Box, {
   }
 }));
 
-const StationName = styled(Typography)(({ theme }) => ({
+const FriendName = styled(Typography)(({ theme }) => ({
   fontWeight: 700,
   fontSize: '0.9rem',
   marginBottom: theme.spacing(0.5),
@@ -71,53 +70,6 @@ const StationName = styled(Typography)(({ theme }) => ({
   }
 }));
 
-const TagsContainer = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  gap: theme.spacing(0.3),
-  justifyContent: 'center',
-  flexWrap: 'wrap',
-  alignItems: 'center',
-  width: '100%',
-  
-  // 반응형 간격 조정
-  [theme.breakpoints.down('sm')]: {
-    gap: theme.spacing(0.2),
-  }
-}));
-
-const StationTag = styled(Chip, {
-  shouldForwardProp: (prop) => prop !== 'selected'
-})<{ selected?: boolean }>(({ theme, selected }) => ({
-  fontSize: '0.6rem',
-  height: 16,
-  borderRadius: '8px',
-  backgroundColor: selected 
-    ? 'rgba(255, 255, 255, 0.25)' 
-    : 'rgba(108, 92, 231, 0.08)',
-  color: selected ? 'white' : theme.palette.primary.main,
-  border: 'none',
-  '& .MuiChip-label': {
-    padding: '0 4px',
-    fontWeight: 500,
-    lineHeight: 1
-  },
-  
-  // 반응형 태그 크기
-  [theme.breakpoints.down('md')]: {
-    fontSize: '0.55rem',
-    height: 14,
-    '& .MuiChip-label': {
-      padding: '0 3px',
-    }
-  },
-  [theme.breakpoints.down('sm')]: {
-    fontSize: '0.5rem',
-    height: 12,
-    '& .MuiChip-label': {
-      padding: '0 2px',
-    }
-  }
-}));
 
 const GridContainer = styled(Box)(({ theme }) => ({
   display: 'grid',
@@ -147,42 +99,32 @@ const GridContainer = styled(Box)(({ theme }) => ({
 }));
 
 // Props 인터페이스
-interface StationCardGridProps {
-  stations: RECOMMEND_SUBWAY_STATIONS;
-  selectedStations: string[];
-  onStationSelect: (stationName: string) => void;
+interface FriendCardProps {
+  friendGroups: string[];
+  selectedFriends: string[];
+  onFriendSelect: (stationName: string) => void;
 }
 
-const RecommendStationCard: React.FC<StationCardGridProps> = ({
-  stations,
-  selectedStations,
-  onStationSelect
+const todayFriendCard: React.FC<FriendCardProps> = ({
+  friendGroups,
+  selectedFriends,
+  onFriendSelect
 }) => {
   return (
     <GridContainer>
-      {stations.map((station) => (
-        <StationCard 
-          key={station.name}
-          selected={selectedStations.includes(station.name)}
-          onClick={() => onStationSelect(station.name)}
+      {friendGroups.map((friendGroup) => (
+        <FriendCard 
+          key={friendGroup}
+          selected={selectedFriends.includes(friendGroup)}
+          onClick={() => onFriendSelect(friendGroup)}
         >
-          <StationName>
-            {station.name}
-          </StationName>
-          <TagsContainer>
-            {station.tags.slice(0, 3).map((tag, index) => ( // 최대 3개 태그만 표시
-              <StationTag 
-                key={index}
-                label={tag}
-                size="small"
-                selected={selectedStations.includes(station.name)}
-              />
-            ))}
-          </TagsContainer>
-        </StationCard>
+          <FriendName>
+            {friendGroup}
+          </FriendName>
+        </FriendCard>
       ))}
     </GridContainer>
   );
 };
 
-export default RecommendStationCard;
+export default todayFriendCard;

@@ -24,6 +24,7 @@ const theme = createTheme({
       main: '#0066cc',
     },
     custom: {
+      secondary:'#d63384',
       bgTertiary: '#fafbfc',
       bgHover: '#f0f3ff',
       borderLight: '#e1e5e9',
