@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import './styles/App.css';
 import { Route, Routes } from 'react-router';
 import AppLayout from './layout/AppLayout';
-import TestPage from './pages/test/TestPage';
+import TestPage from './Pages/test/TestPage';
 
 const MainPage = React.lazy(() => import('./Pages/main/MainPage'));
 const JoinPage = React.lazy(() => import('./Pages/auth/JoinPage'));

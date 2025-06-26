@@ -46,7 +46,14 @@ export const getUserFriendList = async (
   try {
     const { data } = await supabase
       .from('friend')
-      .select(`*, friend_group(id, group_name)`)
+      .select(
+        `*, friend_link_group:friend_link_group(
+          group_id,
+          group:group_id(
+            group_name
+          )
+        )`,
+      )
       .eq('user_id', id);
 
     return data;

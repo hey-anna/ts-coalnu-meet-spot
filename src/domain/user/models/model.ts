@@ -1,4 +1,3 @@
-
 export interface User {
   email: string;
   id: string;
@@ -15,12 +14,23 @@ export interface Friend {
   user_id: string;
   name: string;
   start_station: string;
-  friend_group_id?: number | null;
   subway_line?: string | null;
 }
 
+export interface FriendLinkGroup {
+  friend_id: number;
+  group_id: number;
+}
+
 export interface FriendWithGroup extends Friend {
-  friend_group?: Group | null;
+  friend_group?:
+    | {
+        group_id: number;
+        group: {
+          group_name: string;
+        };
+      }[]
+    | null;
 }
 
 export interface AddNewGroupRequest {
