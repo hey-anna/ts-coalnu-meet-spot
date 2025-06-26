@@ -7,10 +7,18 @@ import TodayRecommend from '../domain/recommendation/ui/todayRecommend/todayReco
 
 const Layout = styled("div")(({theme})=>({
     display:"flex",
+    flexDirection: "column",
     height:"100vh",
     padding:"8px",
     backgroundColor: theme.palette.background.default,
     overflow: "hidden", // 전체 레이아웃 스크롤 막기
+}));
+
+const MainLayout = styled("div")(({ theme }) => ({
+  display: "flex",
+  height: "calc(100vh - 70px)", // Navbar 높이만큼 빼기
+  padding: "8px",
+  overflow: "hidden",
 }));
 
 const RightSideBar = styled("div")(({theme})=>({
@@ -71,7 +79,7 @@ const ContentBox = styled(Box)(({theme})=>({
 // 메인 콘텐츠 영역 (Navbar + Outlet)
 const MainContentArea = styled(Box)(({ theme }) => ({
   borderRadius: '8px',
-  backgroundColor: theme.palette.background.paper,
+  backgroundColor: theme.palette.background.default,
   color: theme.palette.text.primary,
   width: '100%',
   height: '100%', // 전체 높이 사용
@@ -83,11 +91,12 @@ const MainContentArea = styled(Box)(({ theme }) => ({
 }));
 
 // Navbar 영역 (고정)
-const NavbarArea = styled(Box)({
+const NavbarArea = styled(Box)(({theme})=>({
+  width: "100%",
   flexShrink: 0, // 크기 고정
-  display: 'flex',
-  justifyContent: 'space-between',
-});
+  zIndex: 1000, // 다른 요소들 위에 표시
+  backgroundColor: theme.palette.background.paper,
+}));
 
 // Outlet 영역 (스크롤 가능)
 const OutletArea = styled(Box)(({theme})=>({
@@ -130,22 +139,24 @@ const AppLayout = () => {
   return (
 
         <Layout>
-            <MainContentArea>
-                <NavbarArea>
-                    <Navbar/>
-                </NavbarArea>
-                <OutletArea>
-                    <Outlet />
-                </OutletArea>
-                <NavbarArea>
-                    <MobileNavbar/>
-                </NavbarArea>
-            </MainContentArea>
-            <RightSideBar>
-                <ContentBox>
-                    <TodayRecommend/>
-                </ContentBox>
-            </RightSideBar>
+            <NavbarArea>
+                <Navbar/>
+            </NavbarArea>
+            <MainLayout>
+                <MainContentArea>
+                    <OutletArea>
+                        <Outlet />
+                    </OutletArea>
+                    <NavbarArea>
+                        <MobileNavbar/>
+                    </NavbarArea>
+                </MainContentArea>
+                <RightSideBar>
+                    <ContentBox>
+                        <TodayRecommend/>
+                    </ContentBox>
+                </RightSideBar>
+            </MainLayout>
         </Layout>
   )
 }
