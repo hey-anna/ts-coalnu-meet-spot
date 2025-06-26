@@ -12,6 +12,8 @@ const YejinTestPage = React.lazy(
   () => import('./Pages/yejinTest/YejinTestPage'),
 );
 
+// 파일변경 필요 업로드용 주석
+
 function App() {
   return (
     <Suspense>
