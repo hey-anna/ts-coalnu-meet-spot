@@ -23,6 +23,7 @@ function App() {
           <Route path="/yejintest" element={<YejinTestPage />} />
           <Route path="/yejintest" element={<YejinTestPage />} />
         </Route>
+        <Route path="/test" element={<TestPage />} />
       </Routes>
     </Suspense>
   );
