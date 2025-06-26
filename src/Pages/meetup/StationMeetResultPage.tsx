@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react';
 import { getStationSubwayCoords } from '../../domain/place/apis/stationSubwayApi';
 import { getStationSubwayPathByID } from '../../domain/place/apis/stationSubwayApi';
+import { Container, Grid, Stack } from '@mui/material';
 import { useSearchSubwayStationQuery } from '../../domain/place/hooks/useSearchSubwayStationQuery';
-import type { StationSubwaySearchResult } from '../../domain/place/models/stationSubwayPath.response';
+import MeetHeader from '../../domain/place/ui/MeetHeader';
+import MeetPointCard from '../../domain/place/ui/layout/MeetPointCard';
+import MeetFriendsTimeCard from '../../domain/place/ui/layout/MeetFriendsTimeCard';
+import MeetSearchForm from '../../domain/place/ui/layout/MeetSearchForm';
 
 type StationCoords = {
   name: string;
@@ -14,20 +18,21 @@ type StationCoords = {
 
 const StationTestPage = () => {
   const [keyword, setKeyword] = useState<string>('종각');
-
+  const [selectedStationName, setSelectedStationName] = useState('서울');
   const [results, setResults] = useState<
     { name: string; time: number | null }[]
   >([]);
-  const [error, setError] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null);
 
   const { data: stationList = [] } = useSearchSubwayStationQuery(keyword);
   console.log('stationList', stationList);
   useEffect(() => {
     const fetchTimes = async () => {
       try {
-        setError(null);
+        // setError(null);
 
-        const to: StationCoords = await getStationSubwayCoords('서울');
+        const to: StationCoords =
+          await getStationSubwayCoords(selectedStationName);
 
         const friends = [
           { name: '지민', from: '강남' },
@@ -37,9 +42,7 @@ const StationTestPage = () => {
 
         const resultList = await Promise.all(
           friends.map(async (friend) => {
-            const from: StationCoords = await getStationSubwayCoords(
-              friend.from,
-            );
+            const from = await getStationSubwayCoords(friend.from);
             console.log('from:', friend.name, from.stationID);
             console.log('to:', to.stationID);
             const result = await getStationSubwayPathByID({
@@ -56,41 +59,53 @@ const StationTestPage = () => {
         setResults(resultList);
       } catch (err) {
         console.error('에러 발생:', err);
-        setError('데이터를 가져오는 중 오류가 발생했습니다.');
+        // setError('데이터를 가져오는 중 오류가 발생했습니다.');
       }
     };
 
     fetchTimes();
-  }, []);
+  }, [selectedStationName]);
   useEffect(() => {
     console.log('불러온 역 리스트:', stationList);
   }, [stationList]);
   return (
-    <div style={{ padding: '2rem' }}>
-      <h2>지하철 경로 테스트</h2>
-      <input
-        type="text"
-        value={keyword}
-        onChange={(e) => setKeyword(e.target.value)}
-        placeholder="지하철역 검색"
+    <Container sx={{ py: 4 }}>
+      <MeetHeader />
+      <MeetSearchForm
+        keyword={keyword}
+        onKeywordChange={(e) => setKeyword(e.target.value)}
+        selectedStationName={selectedStationName}
+        onStationSelect={(e) => setSelectedStationName(e.target.value)}
+        stationList={stationList}
       />
+      <Grid container spacing={4} mt={3}>
+        {/* 왼쪽: 장소 정보 + 친구 이동 시간 */}
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-
-      {results.map((res) => (
-        <p key={res.name}>
-          <strong>{res.name}</strong>: {res.time ?? '정보 없음'}분
-        </p>
-      ))}
-
-      <select>
-        {stationList?.map((s: StationSubwaySearchResult) => (
-          <option key={s.stationID} value={s.stationID}>
-            {s.stationName}
-          </option>
-        ))}
-      </select>
-    </div>
+        <Grid
+          size={{
+            xs: 12,
+            //  md: 8
+          }}
+        >
+          <Stack spacing={3}>
+            <MeetPointCard
+              selectedStationName={selectedStationName}
+              averageTime={
+                results.length
+                  ? Math.round(
+                      results.reduce((sum, cur) => sum + (cur.time ?? 0), 0) /
+                        results.length,
+                    )
+                  : null
+              }
+            />
+            <MeetFriendsTimeCard results={results} />
+          </Stack>
+        </Grid>
+        {/* 오른쪽: 추천 리스트 */}
+        {/* <Grid size={{ xs: 12, md: 4 }}></Grid> */}
+      </Grid>
+    </Container>
   );
 };
 
