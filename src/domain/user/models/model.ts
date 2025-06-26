@@ -21,6 +21,7 @@ export interface FriendLinkGroupRequest {
   group_id: number;
 }
 
+// 친구 정보 그룹 리스트 정보와 함께 받기
 export interface FriendWithGroup extends Friend {
   friend_link_group?:
     | {
@@ -32,15 +33,22 @@ export interface FriendWithGroup extends Friend {
     | null;
 }
 
+// 그룹 추가 요청
 export interface AddNewGroupRequest {
   user_id: string;
   group_name: string;
 }
 
-// 새로운 친구 추가하기
+// 새로운 친구 추가 요청
 export type AddNewFriendRequest = Omit<Friend, 'id'> & {
   friend_group_id: number | null;
 };
+
+// 친구 목록 검색 요청
+export interface FilteredUserFriendList {
+  user_id: string;
+  group_id: number | null;
+}
 
 //// 필요한 api 목록
 

@@ -2,9 +2,9 @@ import React, { Suspense } from 'react';
 import './styles/App.css';
 import { Route, Routes } from 'react-router';
 import AppLayout from './layout/AppLayout';
-import TestPage from './Pages/test/TestPage';
 import StationMeetResultPage from './Pages/meetup/StationMeetResultPage';
 import TestPage from './Pages/test/TestPage';
+import YejinGetFriendListpage from './Pages/yejinTest/YejinGetFriendListpage';
 // import MainPage from './Pages/main/MainPage';
 
 const JoinPage = React.lazy(() => import('./Pages/auth/JoinPage'));
@@ -22,8 +22,10 @@ function App() {
           <Route path="/join" element={<JoinPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/meetup/result" element={<StationMeetResultPage />} />
-          <Route path="/yejintest" element={<YejinTestPage />} />
-          <Route path="/yejintest" element={<YejinTestPage />} />
+          <Route path="/yejintest">
+            <Route index element={<YejinTestPage />} />
+            <Route path="get" element={<YejinGetFriendListpage />} />
+          </Route>
           <Route path="/test" element={<TestPage />} />
         </Route>
       </Routes>

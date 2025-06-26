@@ -1,4 +1,4 @@
-import { idID } from '@mui/material/locale';
+import type { User } from '@supabase/supabase-js';
 import { supabase } from '../../../shared/config/supabaseClient';
 import type {
   AddNewFriendRequest,
@@ -10,7 +10,7 @@ import type {
 } from '../models/model';
 
 // 현재 로그인한 user의 정보
-export const getCurrentUserInfo = async () => {
+export const getCurrentUserInfo = async (): Promise<{ user: User } | null> => {
   try {
     const { data, error } = await supabase.auth.getUser();
 
