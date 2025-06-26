@@ -1,11 +1,13 @@
 import type { User } from '@supabase/supabase-js';
 import { supabase } from '../../../shared/config/supabaseClient';
 import type {
+  AddFriendListToGroupRequest,
   AddNewFriendRequest,
   AddNewGroupRequest,
   Friend,
   FriendLinkGroupRequest,
   FriendWithGroup,
+  GetUserFriendByGroupResponse,
   Group,
 } from '../models/model';
 
@@ -87,7 +89,9 @@ export const addNewGroup = async (
 };
 
 // 완전 새로운 친구 추가
-export const addNewFriend = async (params: AddNewFriendRequest) => {
+export const addNewFriend = async (
+  params: AddNewFriendRequest,
+): Promise<Friend> => {
   try {
     console.log('api 전달 전의 값 : ', params);
     const { friend_group_id, ...friendInfo } = params;
@@ -115,7 +119,9 @@ export const addNewFriend = async (params: AddNewFriendRequest) => {
 };
 
 // 친구 + 그룹 연결 테이블 insert api
-export const addFriendLinkGroup = async (params: FriendLinkGroupRequest) => {
+export const addFriendLinkGroup = async (
+  params: FriendLinkGroupRequest,
+): Promise<void> => {
   try {
     const { data } = await supabase
       .from('friend_link_group')
@@ -154,7 +160,9 @@ export const getUserNoGroupFriend = async (
 };
 
 // 친구 목록 그룹 별 묶어서 가져오기
-export const getUserFriendByGroup = async (id: string) => {
+export const getUserFriendByGroup = async (
+  id: string,
+): Promise<GetUserFriendByGroupResponse[] | null> => {
   try {
     const { data } = await supabase
       .from('friend_group')
@@ -175,6 +183,24 @@ export const getUserFriendByGroup = async (id: string) => {
     return data;
   } catch (error) {
     throw new Error();
+  }
+};
+
+// 친구 여러명 그룹에 한번에 추가하기
+export const addFriendListToGroup = async (
+  params: AddFriendListToGroupRequest,
+): Promise<void> => {
+  try {
+    if (params.friend_id_list.length > 0) {
+      for (const friendId of params.friend_id_list) {
+        await addFriendLinkGroup({
+          friend_id: friendId,
+          group_id: params.group_id,
+        });
+      }
+    }
+  } catch (error) {
+    throw new Error('fail to friend list add link group');
   }
 };
 
