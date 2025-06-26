@@ -26,6 +26,7 @@ const MeetSearchForm = ({
         <Stack spacing={2}>
           <TextField
             label="역 이름 검색"
+            type="search"
             placeholder="예: 종각, 강남"
             value={keyword}
             onChange={onKeywordChange}

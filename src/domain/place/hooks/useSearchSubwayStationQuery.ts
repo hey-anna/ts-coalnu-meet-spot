@@ -10,6 +10,6 @@ export const useSearchSubwayStationQuery = (keyword?: string) => {
       return searchSubwayStationByKeyword(keyword);
     },
     enabled: !!keyword,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 0,
   });
 };
