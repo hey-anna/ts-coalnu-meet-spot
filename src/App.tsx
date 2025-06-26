@@ -4,10 +4,11 @@ import { Route, Routes } from 'react-router';
 import AppLayout from './layout/AppLayout';
 import StationMeetResultPage from './Pages/meetup/StationMeetResultPage';
 import TestPage from './Pages/test/TestPage';
-// import MainPage from './Pages/main/MainPage';
+import MainPage from './Pages/main/MainPage';
 
 const JoinPage = React.lazy(() => import('./Pages/auth/JoinPage'));
 const LoginPage = React.lazy(() => import('./Pages/auth/LoginPage'));
+const FriendGroupPage = React.lazy(() => import('./Pages/friend/FriendGroupPage'));
 const YejinTestPage = React.lazy(
   () => import('./Pages/yejinTest/YejinTestPage'),
 );
@@ -17,9 +18,10 @@ function App() {
     <Suspense>
       <Routes>
         <Route path="/" element={<AppLayout />}>
-          {/* <Route index element={<MainPage />}></Route> */}
+          <Route index element={<MainPage />}></Route>
           <Route path="/join" element={<JoinPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/friend/group-management" element={<FriendGroupPage />} />
           <Route path="/meetup/result" element={<StationMeetResultPage />} />
           <Route path="/yejintest" element={<YejinTestPage />} />
           <Route path="/yejintest" element={<YejinTestPage />} />
