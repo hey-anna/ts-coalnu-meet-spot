@@ -1,4 +1,4 @@
-import { MemberSettingWidget } from '@/domain/user/ui/memberSettingWidget/memberSettingWidget';
+import { MemberSettingWidget } from '@/domain/user/ui/memberSettingWidget/MemberSettingWidget';
 import { Box } from '@mui/material';
 
 // 주석
