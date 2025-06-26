@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { getStationSubwayCoords } from '../../domain/place/apis/stationSubwayApi';
 import { getStationSubwayPathByID } from '../../domain/place/apis/stationSubwayApi';
 import { Container, Grid, Stack } from '@mui/material';
-import { useSearchSubwayStationQuery } from '../../domain/place/hooks/useSearchSubwayStationQuery';
+import { useStationSubwaySearchQuery } from '../../domain/place/hooks/useStationSubwaySearchQuery';
 import MeetHeader from '../../domain/place/ui/MeetHeader';
 import MeetPointCard from '../../domain/place/ui/layout/MeetPointCard';
 import MeetFriendsTimeCard from '../../domain/place/ui/layout/MeetFriendsTimeCard';
@@ -24,7 +24,7 @@ const StationTestPage = () => {
   >([]);
   // const [error, setError] = useState<string | null>(null);
 
-  const { data: stationList = [] } = useSearchSubwayStationQuery(keyword);
+  const { data: stationList = [] } = useStationSubwaySearchQuery(keyword);
   console.log('stationList', stationList);
   useEffect(() => {
     if (!selectedStationName) return;
