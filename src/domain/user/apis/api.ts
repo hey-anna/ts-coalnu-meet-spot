@@ -131,6 +131,53 @@ export const addFriendLinkGroup = async (params: FriendLinkGroupRequest) => {
   }
 };
 
+// 그룹없는 친구 필터해서 가져오기
+export const getUserNoGroupFriend = async (
+  id: string,
+): Promise<FriendWithGroup[] | null> => {
+  try {
+    const { data } = await supabase
+      .from('friend')
+      .select(
+        `*,
+        friend_link_group:friend_link_group(group_id)`,
+      )
+      .eq('user_id', id)
+      .is('friend_link_group', null);
+
+    console.log('그룹이 없는 친구 정보 : ', data);
+
+    return data;
+  } catch (error) {
+    throw new Error('fail to fetch get filtered friend list');
+  }
+};
+
+// 친구 목록 그룹 별 묶어서 가져오기
+export const getUserFriendByGroup = async (id: string) => {
+  try {
+    const { data } = await supabase
+      .from('friend_group')
+      .select(
+        `*,
+        friend_link_group:friend_link_group(
+          friend(
+            id,
+            name,
+            start_station
+          )
+        )`,
+      )
+      .eq('user_id', id);
+
+    console.log('그룹별 친구 리스트 : ', data);
+
+    return data;
+  } catch (error) {
+    throw new Error();
+  }
+};
+
 // : Promise<FriendWithGroup>
 // export const addNewFriend = async (
 //   params: AddNewFriendRequest,

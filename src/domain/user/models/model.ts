@@ -44,12 +44,6 @@ export type AddNewFriendRequest = Omit<Friend, 'id'> & {
   friend_group_id: number | null;
 };
 
-// 친구 목록 검색 요청
-export interface FilteredUserFriendList {
-  user_id: string;
-  group_id: number | null;
-}
-
 //// 필요한 api 목록
 
 export type FriendInfo = {
