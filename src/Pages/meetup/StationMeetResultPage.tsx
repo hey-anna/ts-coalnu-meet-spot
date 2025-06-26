@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { getStationSubwayCoords } from '../../domain/place/apis/stationSubwayApi';
 import { getStationSubwayPathByID } from '../../domain/place/apis/stationSubwayApi';
 import { Container, Grid, Stack } from '@mui/material';
-import { useStationSubwaySearchQuery } from '../../domain/place/hooks/useStationSubwaySearchQuery';
+import { useStationSubwaySearchQuery } from '@/domain/place/hooks/useStationSubwaySearchQuery';
 import MeetHeader from '../../domain/place/ui/MeetHeader';
 import MeetPointCard from '../../domain/place/ui/layout/MeetPointCard';
 import MeetFriendsTimeCard from '../../domain/place/ui/layout/MeetFriendsTimeCard';
