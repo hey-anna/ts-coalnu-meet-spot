@@ -6,9 +6,9 @@
   ],
   "compilerOptions": {
     "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    },
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "paths": { "@/*": ["src/*"] },
     "types": ["node"]
   }
 }

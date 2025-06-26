@@ -12,6 +12,9 @@ declare module '@mui/material/styles' {
       errorBg: string;
       ratingBg: string;
     };
+    user?: {
+      main: string;
+    };
   }
 
   interface PaletteOptions {
@@ -24,6 +27,9 @@ declare module '@mui/material/styles' {
       warningBg: string;
       errorBg: string;
       ratingBg: string;
+    };
+    user?: {
+      main: string;
     };
   }
 }

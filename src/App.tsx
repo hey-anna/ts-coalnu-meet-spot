@@ -1,12 +1,15 @@
 import React, { Suspense } from 'react';
 import './styles/App.css';
 import { Route, Routes } from 'react-router';
-import JoinPage from './Pages/auth/JoinPage';
-import LoginPage from './Pages/auth/LoginPage';
 import AppLayout from './layout/AppLayout';
 import StationMeetResultPage from './Pages/meetup/StationMeetResultPage';
+import MainPage from './Pages/main/MainPage';
 
-const MainPage = React.lazy(() => import('./Pages/main/mainPage'));
+const JoinPage = React.lazy(() => import('./Pages/auth/JoinPage'));
+const LoginPage = React.lazy(() => import('./Pages/auth/LoginPage'));
+const YejinTestPage = React.lazy(
+  () => import('./Pages/yejinTest/YejinTestPage'),
+);
 
 function App() {
   return (
@@ -17,6 +20,7 @@ function App() {
           <Route path="/join" element={<JoinPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/meetup/result" element={<StationMeetResultPage />} />
+          <Route path="/yejintest" element={<YejinTestPage />} />
         </Route>
       </Routes>
     </Suspense>

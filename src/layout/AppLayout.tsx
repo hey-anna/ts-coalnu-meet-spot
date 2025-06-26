@@ -2,30 +2,26 @@ import { Outlet } from 'react-router';
 import { Box, styled } from '@mui/material';
 import Navbar from './components/navbar';
 import MobileNavbar from './components/mobileNavbar';
-import RecommandList from '../domain/recommandation/ui/todayRecommand/recommandList';
+import TodayRecommend from '../domain/recommendation/ui/todayRecommend/todayRecommend';
 
-const Layout = styled('div')({
-  display: 'flex',
-  height: '100vh',
-  padding: '8px',
-  overflow: 'hidden', // 전체 레이아웃 스크롤 막기
-});
-
-const LeftSideBar = styled('div')(({ theme }) => ({
-  width: '331px',
-  height: '100%',
+const Layout = styled('div')(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
-  [theme.breakpoints.down('sm')]: {
-    display: 'none',
-  },
-  marginRight: '5px',
-  paddingBottom: '8px',
-  overflow: 'hidden', // 사이드바 스크롤 막기
+  height: '100vh',
+  padding: '8px',
+  backgroundColor: theme.palette.background.default,
+  overflow: 'hidden', // 전체 레이아웃 스크롤 막기
+}));
+
+const MainLayout = styled('div')(({ theme }) => ({
+  display: 'flex',
+  height: 'calc(100vh - 70px)', // Navbar 높이만큼 빼기
+  padding: '8px',
+  overflow: 'hidden',
 }));
 
 const RightSideBar = styled('div')(({ theme }) => ({
-  width: '331px',
+  width: '30%',
   height: '100%',
   display: 'flex',
   flexDirection: 'column',
@@ -34,22 +30,55 @@ const RightSideBar = styled('div')(({ theme }) => ({
   },
   marginRight: '5px',
   paddingBottom: '8px',
-  overflow: 'hidden', // 사이드바 스크롤 막기
+  overflowY: 'auto', // Y축 스크롤만 허용
+  overflowX: 'hidden', // X축 스크롤 차단
+
+  // 세련된 스크롤바 디자인
+  '&::-webkit-scrollbar': {
+    width: '4px',
+  },
+  '&::-webkit-scrollbar-track': {
+    background: 'transparent',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    background: 'rgba(108, 92, 231, 0.3)',
+    borderRadius: '2px',
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    '&:hover': {
+      background: 'rgba(108, 92, 231, 0.6)',
+      width: '6px',
+    },
+  },
+  '&:hover::-webkit-scrollbar-thumb': {
+    background: 'rgba(108, 92, 231, 0.5)',
+  },
+  '&::-webkit-scrollbar-corner': {
+    background: 'transparent',
+  },
+
+  // Firefox - 미니멀한 스타일
+  scrollbarWidth: 'thin',
+  scrollbarColor: 'rgba(108, 92, 231, 0.3) transparent',
+
+  // 스크롤 영역에 패딩 추가 (스크롤바 공간 확보)
+  paddingRight: '2px',
 }));
 
 const ContentBox = styled(Box)(({ theme }) => ({
   borderRadius: '8px',
-  backgroundColor: theme.palette.background.paper,
+  backgroundColor: theme.palette.background.default,
   color: theme.palette.text.primary,
   width: '100%',
   padding: '8px',
   boxSizing: 'border-box',
+  // 스크롤을 위한 최소 높이 설정
+  minHeight: '100%',
 }));
 
 // 메인 콘텐츠 영역 (Navbar + Outlet)
 const MainContentArea = styled(Box)(({ theme }) => ({
   borderRadius: '8px',
-  backgroundColor: theme.palette.background.paper,
+  backgroundColor: theme.palette.background.default,
   color: theme.palette.text.primary,
   width: '100%',
   height: '100%', // 전체 높이 사용
@@ -61,91 +90,71 @@ const MainContentArea = styled(Box)(({ theme }) => ({
 }));
 
 // Navbar 영역 (고정)
-const NavbarArea = styled(Box)({
+const NavbarArea = styled(Box)(({ theme }) => ({
+  width: '100%',
   flexShrink: 0, // 크기 고정
-});
+  zIndex: 1000, // 다른 요소들 위에 표시
+  backgroundColor: theme.palette.background.paper,
+}));
 
 // Outlet 영역 (스크롤 가능)
-const OutletArea = styled(Box)({
+const OutletArea = styled(Box)(({ theme }) => ({
   flex: 1, // 남은 공간 모두 차지
-  overflow: 'auto', // 여기서만 스크롤!
+  overflowY: 'auto', // Y축 스크롤만 허용
+  overflowX: 'hidden', // X축 스크롤 차단
   marginTop: '8px', // Navbar와 간격
-  overflowX: 'hidden',
-  // 커스텀 스크롤바 디자인
+
+  // 세련된 스크롤바 디자인
   '&::-webkit-scrollbar': {
-    width: '8px',
+    width: '4px',
   },
   '&::-webkit-scrollbar-track': {
-    background: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: '4px',
-    margin: '4px',
-  },
-  '&::-webkit-scrollbar-button': {
-    display: 'none',
+    background: 'transparent',
   },
   '&::-webkit-scrollbar-thumb': {
-    background: 'rgba(255, 255, 255, 0.3)',
-    borderRadius: '4px',
-    transition: 'background 0.2s ease',
+    background: 'rgba(108, 92, 231, 0.3)',
+    borderRadius: '2px',
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     '&:hover': {
-      background: 'rgba(255, 255, 255, 0.5)',
+      background: 'rgba(108, 92, 231, 0.6)',
     },
-    '&:active': {
-      background: 'rgba(255, 255, 255, 0.7)',
-    },
+  },
+  '&:hover::-webkit-scrollbar-thumb': {
+    background: 'rgba(108, 92, 231, 0.5)',
   },
   '&::-webkit-scrollbar-corner': {
     background: 'transparent',
   },
 
-  // Firefox 스크롤바 스타일
+  // Firefox - 미니멀한 스타일
   scrollbarWidth: 'thin',
-  scrollbarColor: 'rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1)',
-});
+  scrollbarColor: 'rgba(108, 92, 231, 0.3) transparent',
 
-// const Navlist = styled("ul")(({theme})=>({
-//     listStyle:"none",
-//     padding:0,
-//     margin:0
-// }));
-
-// const StyledNavLink = styled(NavLink)(({theme})=>({
-//     textDecoration:"none",
-//     display:"flex",
-//     alignItems:"center",
-//     gap:"20px",
-//     margin:"20px",
-//     color:theme.palette.text.secondary,
-//     "&:hover":{
-//         color:theme.palette.text.primary,
-//     },
-//     "&.active":{
-//         color:theme.palette.text.primary,
-//     },
-// }));
+  // 스크롤 영역에 패딩 추가
+  paddingRight: '2px',
+}));
 
 const AppLayout = () => {
   return (
     <Layout>
-      <LeftSideBar>
-        <ContentBox>LeftSideBar</ContentBox>
-      </LeftSideBar>
-
-      <MainContentArea>
-        <NavbarArea>
-          <Navbar />
-        </NavbarArea>
-        <RecommandList />
-        <OutletArea>
-          <Outlet />
-        </OutletArea>
-        <NavbarArea>
-          <MobileNavbar />
-        </NavbarArea>
-      </MainContentArea>
-      <RightSideBar>
-        <ContentBox>RightSideBar</ContentBox>
-      </RightSideBar>
+      <NavbarArea>
+        <Navbar />
+      </NavbarArea>
+      <MainLayout>
+        <MainContentArea>
+          <OutletArea>
+            <Outlet />
+          </OutletArea>
+          <NavbarArea>
+            <MobileNavbar />
+          </NavbarArea>
+        </MainContentArea>
+        <RightSideBar>
+          <ContentBox>
+            <TodayRecommend />
+          </ContentBox>
+        </RightSideBar>
+      </MainLayout>
     </Layout>
   );
 };
