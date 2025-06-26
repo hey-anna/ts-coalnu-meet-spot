@@ -67,9 +67,14 @@ const StationTestPage = () => {
 
     fetchTimes();
   }, [selectedStationName]);
+
   useEffect(() => {
+    // 검색결과에서 현재 선택한 값이 없으면 선택값 초기화
+    if (!stationList.find((s) => s.stationName === selectedStationName)) {
+      setSelectedStationName('');
+    }
     console.log('불러온 역 리스트:', stationList);
-  }, [stationList]);
+  }, [stationList, selectedStationName]);
   return (
     <Container sx={{ py: 4 }}>
       <MeetHeader />

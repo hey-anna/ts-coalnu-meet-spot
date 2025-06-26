@@ -26,7 +26,7 @@ const MeetSearchForm = ({
         <Stack spacing={2}>
           <TextField
             label="역 이름 검색"
-            type="search"
+            // type="search"
             placeholder="예: 종각, 강남"
             value={keyword}
             onChange={onKeywordChange}
@@ -35,7 +35,12 @@ const MeetSearchForm = ({
           <TextField
             select
             label="도착역 선택"
-            value={selectedStationName}
+            // value={selectedStationName || ''}
+            value={
+              stationList.find((s) => s.stationName === selectedStationName)
+                ? selectedStationName
+                : ''
+            }
             onChange={onStationSelect}
             fullWidth
             // helperText={
