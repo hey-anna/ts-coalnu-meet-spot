@@ -14,16 +14,15 @@ export interface Friend {
   user_id: string;
   name: string;
   start_station: string;
-  subway_line?: string | null;
 }
 
-export interface FriendLinkGroup {
+export interface FriendLinkGroupRequest {
   friend_id: number;
   group_id: number;
 }
 
 export interface FriendWithGroup extends Friend {
-  friend_group?:
+  friend_link_group?:
     | {
         group_id: number;
         group: {
@@ -38,18 +37,36 @@ export interface AddNewGroupRequest {
   group_name: string;
 }
 
-export type AddNewFriendRequest = Omit<Friend, 'id'>;
-
-export type Station = {
-  code: string;
-  name: string;
-  line: string;
+// 새로운 친구 추가하기
+export type AddNewFriendRequest = Omit<Friend, 'id'> & {
+  friend_group_id: number | null;
 };
+
+//// 필요한 api 목록
 
 export type FriendInfo = {
+  id?: number;
   name: string;
-  group?: string | null;
-  station: Station | null;
+  start_station: string;
 };
 
-export type SelsectedFriendsList = FriendInfo[];
+// 1. 그룹 정보 + 그룹에 속한 친구 목록
+// request : user_id 하나
+// response는 아래 타입
+export type GroupFriendsInfo = {
+  id: number;
+  group_name: string;
+  memberInfos: FriendInfo[];
+};
+
+// 2. 그룹에 안속한 친구 목록
+// request: user_id
+// response : Friend[]
+export type NoneGroupFriendsInfo = FriendInfo[];
+
+// 3. 그룹 추가 하기
+export type addGroupRequest = {
+  user_id: number;
+  group_name: string;
+  memberInfos: FriendInfo[]; // 화면에서는 새로 추가하는 친구의 경우 이 두 정보 밖에 없음
+};

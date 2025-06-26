@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 
 import type { Dispatch, SetStateAction } from 'react';
-import type { Station, StationInfoList } from '@/domain/user/models/subway';
+import type { Station, StationInfoList } from '@/domain/user/models/model';
 
 export const AddFriendsInput = ({
   name,

@@ -136,7 +136,6 @@ const YejinTestPage = () => {
               <TableCell>start_station</TableCell>
               <TableCell>group id</TableCell>
               <TableCell>group name</TableCell>
-              <TableCell>subway_line</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -145,9 +144,20 @@ const YejinTestPage = () => {
                 <TableCell>{friend.id}</TableCell>
                 <TableCell>{friend.name}</TableCell>
                 <TableCell>{friend.start_station}</TableCell>
-                <TableCell>{friend.friend_group_id}</TableCell>
-                <TableCell>{friend.friend_group?.group_name}</TableCell>
-                <TableCell>{friend.subway_line}</TableCell>
+                <TableCell>
+                  {friend.friend_link_group.length > 0
+                    ? friend.friend_link_group
+                        .map((group) => group.group_id)
+                        .join(', ')
+                    : null}
+                </TableCell>
+                <TableCell>
+                  {friend.friend_link_group.length > 0
+                    ? friend.friend_link_group
+                        .map((group) => group.group.group_name)
+                        .join(', ')
+                    : null}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

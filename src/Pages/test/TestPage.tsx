@@ -1,6 +1,7 @@
-
+import { MemberSettingWidget } from '@/domain/user/ui/memberSettingWidget/memberSettingWidget';
 import { Box } from '@mui/material';
-import AddFriendLocationCard from '../../domain/user/ui/AddFriendsLocation/AddFriendsLocation';
+
+// 주석
 
 const TestPage = () => {
   return (
@@ -15,7 +16,7 @@ const TestPage = () => {
         boxSizing: 'border-box',
       }}
     >
-      <AddFriendLocationCard />
+      <MemberSettingWidget />
     </Box>
   );
 };
