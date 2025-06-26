@@ -14,7 +14,6 @@ const LinkBtn = styled(Box)({
 const MainPage: React.FC = () => {
   return (
     <div>
-      <Typography sx={{ color: 'primary.main' }}>테스트</Typography>
       <TodayFriendBox/>
       <RecommendStationBox />
     </div>
