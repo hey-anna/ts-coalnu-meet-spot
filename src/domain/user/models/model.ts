@@ -29,18 +29,31 @@ export interface AddNewGroupRequest {
 
 export type AddNewFriendRequest = Omit<Friend, 'id'>;
 
-export type Station = {
-  code: string;
-  name: string;
-  line: string;
-};
+//// 필요한 api 목록
 
 export type FriendInfo = {
+  id?: number;
   name: string;
-  group?: string | null;
-  station: Station | null;
+  start_station: string;
 };
 
-export type SelsectedFriendsList = FriendInfo[];
+// 1. 그룹 정보 + 그룹에 속한 친구 목록
+// request : user_id 하나
+// response는 아래 타입
+export type GroupFriendsInfo = {
+  id: number;
+  group_name: string;
+  memberInfos: FriendInfo[];
+};
 
-export type StationInfoList = Station[];
+// 2. 그룹에 안속한 친구 목록
+// request: user_id
+// response : Friend[]
+export type NoneGroupFriendsInfo = FriendInfo[];
+
+// 3. 그룹 추가 하기
+export type addGroupRequest = {
+  user_id: number;
+  group_name: string;
+  memberInfos: FriendInfo[]; // 화면에서는 새로 추가하는 친구의 경우 이 두 정보 밖에 없음
+};

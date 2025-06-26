@@ -20,8 +20,8 @@ function App() {
           <Route path="/join" element={<JoinPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/yejintest" element={<YejinTestPage />} />
-          <Route path="/test" element={<TestPage />} />
         </Route>
+        <Route path="/test" element={<TestPage />} />
       </Routes>
     </Suspense>
   );
