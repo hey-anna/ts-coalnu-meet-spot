@@ -74,6 +74,13 @@ export interface UpdateGroupRequest {
   group_color?: string | null;
 }
 
+// 친구 정보 수정 요청
+export interface UpdateFriendRequest {
+  friend_id: number;
+  name?: string;
+  start_station?: string;
+}
+
 //// 필요한 api 목록
 
 export type FriendInfo = {
