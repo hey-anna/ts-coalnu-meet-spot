@@ -1,8 +1,8 @@
-import type { PlaceData } from "../../../../shared/config/config";
 import {
   Box, Typography,
 } from '@mui/material';
 import theme from "../../../../styles/mui/theme";
+import type { PlaceData } from '../../models/model';
 
 const placeItemStyle = {
   display: 'flex',
