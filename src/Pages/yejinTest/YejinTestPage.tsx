@@ -3,6 +3,8 @@ import { useUserStore } from '../../domain/user/store/userStore';
 import {
   Box,
   Button,
+  MenuItem,
+  Select,
   styled,
   Table,
   TableBody,
@@ -16,6 +18,7 @@ import useGetCurrentUserGroup from '../../domain/user/hooks/useGetCurrentUserGro
 import useGetUserFriendList from '../../domain/user/hooks/useGetUserFriendList';
 import useAddNewGroup from '../../domain/user/hooks/useAddNewGroup';
 import FriendInset from './FriendInset';
+import { colorPalette } from '@/shared/config/config';
 
 const SubmitButton = styled(Button)(({ theme }) => ({
   border: 'solid 1px',
@@ -27,6 +30,7 @@ const YejinTestPage = () => {
   const { user } = useUserStore();
   const [newGroupName, setNewGroupName] = useState<string>('');
   const [newGroupError, setNewGroupError] = useState<string>('');
+  const [selectColor, setSelectColor] = useState<string>('');
   const { mutate: addNewGroup } = useAddNewGroup();
 
   const { data: groupData } = useGetCurrentUserGroup({
@@ -46,7 +50,7 @@ const YejinTestPage = () => {
 
   const handleSaveGroup = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('세로운 그룹 이름 : ', newGroupName);
+    console.log('새로운 그룹 이름 : ', newGroupName);
 
     if (!user?.id) {
       return setNewGroupError('로그인 먼저 해주세요');
@@ -58,7 +62,11 @@ const YejinTestPage = () => {
 
     if (!isExisted) {
       setNewGroupError('');
-      addNewGroup({ user_id: user?.id, group_name: newGroupName });
+      addNewGroup({
+        user_id: user?.id,
+        group_name: newGroupName,
+        ...(selectColor && { group_color: selectColor || null }),
+      });
     }
   };
 
@@ -91,6 +99,21 @@ const YejinTestPage = () => {
             error={Boolean(newGroupError)}
             helperText={newGroupError ? newGroupError : null}
           />
+
+          <Select
+            id="group_color"
+            value={selectColor}
+            label="group_color"
+            onChange={(e) => setSelectColor(e.target.value)}
+          >
+            {colorPalette &&
+              colorPalette.map((color, colorIndex) => (
+                <MenuItem value={color} key={colorIndex}>
+                  {color}
+                </MenuItem>
+              ))}
+          </Select>
+
           <SubmitButton type="submit">저장</SubmitButton>
         </form>
       </Box>
@@ -136,7 +159,6 @@ const YejinTestPage = () => {
               <TableCell>start_station</TableCell>
               <TableCell>group id</TableCell>
               <TableCell>group name</TableCell>
-              <TableCell>subway_line</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -145,9 +167,20 @@ const YejinTestPage = () => {
                 <TableCell>{friend.id}</TableCell>
                 <TableCell>{friend.name}</TableCell>
                 <TableCell>{friend.start_station}</TableCell>
-                <TableCell>{friend.friend_group_id}</TableCell>
-                <TableCell>{friend.friend_group?.group_name}</TableCell>
-                <TableCell>{friend.subway_line}</TableCell>
+                <TableCell>
+                  {friend.friend_link_group.length > 0
+                    ? friend.friend_link_group
+                        .map((group) => group.group_id)
+                        .join(', ')
+                    : null}
+                </TableCell>
+                <TableCell>
+                  {friend.friend_link_group.length > 0
+                    ? friend.friend_link_group
+                        .map((group) => group.group.group_name)
+                        .join(', ')
+                    : null}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
