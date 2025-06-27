@@ -134,9 +134,6 @@ const navbar = () => {
 
         {/* 로그인/로그아웃 버튼 영역 */}
         <Box>
-          <Button onClick={() => navigate('/friend/group-management')}>
-            친구관리
-          </Button>
           {isLogin ? (
             <LogoutButton onClick={handleLogin}>로그아웃</LogoutButton>
           ) : (
