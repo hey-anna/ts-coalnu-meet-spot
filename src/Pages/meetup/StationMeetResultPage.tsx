@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getStationSubwayCoords } from '../../domain/place/apis/stationSubwayApi';
 import { getStationSubwayPathByID } from '../../domain/place/apis/stationSubwayApi';
-import { Container, Grid, Stack } from '@mui/material';
-import { useSearchSubwayStationQuery } from '../../domain/place/hooks/useSearchSubwayStationQuery';
+import { Container, Grid, Stack, Alert, Typography, Box } from '@mui/material';
 import MeetHeader from '../../domain/place/ui/MeetHeader';
 import MeetPointCard from '../../domain/place/ui/layout/MeetPointCard';
 import MeetFriendsTimeCard from '../../domain/place/ui/layout/MeetFriendsTimeCard';
-import MeetSearchForm from '../../domain/place/ui/layout/MeetSearchForm';
+import { useLocation, useNavigate } from 'react-router';
+import type { Friend } from '../../domain/user/models/model';
 
 type StationCoords = {
   name: string;
@@ -16,103 +16,163 @@ type StationCoords = {
   laneID?: string;
 };
 
-const StationTestPage = () => {
-  const [keyword, setKeyword] = useState<string>(''); // 초기 검색어 없음
-  const [selectedStationName, setSelectedStationName] = useState(''); // 초기 선택 없음
-  const [results, setResults] = useState<
-    { name: string; time: number | null }[]
-  >([]);
-  // const [error, setError] = useState<string | null>(null);
-
-  const { data: stationList = [] } = useSearchSubwayStationQuery(keyword);
-  console.log('stationList', stationList);
+const StationMeetResultPage = () => {
+  const [results, setResults] = useState([] as { name: string; time: number | null; station: string }[])
+  const [isLoading, setIsLoading] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  // 메인에서 받은 데이터
+  const { selectedFriends, selectedStations } = location.state || {};
+  
+  console.log('받은 친구 데이터:', selectedFriends);
+  console.log('받은 역 데이터:', selectedStations);
+  
+  // 데이터가 없을 때 메인으로 돌려보내기
   useEffect(() => {
-    if (!selectedStationName) return;
+    if (!selectedFriends || !selectedStations || selectedFriends.length === 0 || selectedStations.length === 0) {
+      alert('친구와 지하철역을 선택해주세요!');
+      navigate('/'); // 메인 페이지로 돌아가기
+    }
+  }, [selectedFriends, selectedStations, navigate]);
 
-    const fetchTimes = async () => {
+  // 모든 역에 대해 각 친구의 이동 시간 계산
+  useEffect(() => {
+    if (!selectedFriends || !selectedStations || selectedFriends.length === 0 || selectedStations.length === 0) {
+      return;
+    }
+
+    const calculateAllTimes = async () => {
+      setIsLoading(true);
       try {
-        // setError(null);
+        const allResults: { name: string; time: number | null; station: string }[] = [];
 
-        const to: StationCoords =
-          await getStationSubwayCoords(selectedStationName);
+        // 각 역에 대해 계산
+        for (const station of selectedStations) {
+          try {
+            const to: StationCoords = await getStationSubwayCoords(station);
 
-        const friends = [
-          { name: '지민', from: '강남' },
-          { name: '수아', from: '잠실' },
-          { name: '도윤', from: '종각' },
-        ];
+            // 각 친구의 이동 시간 계산
+            const stationResults = await Promise.all(
+              selectedFriends.map(async (friend: Friend) => {
+                try {
+                  const from = await getStationSubwayCoords(friend.start_station);
+                  console.log('from:', friend.name, from.stationID);
+                  console.log('to:', station, to.stationID);
+                  
+                  const result = await getStationSubwayPathByID({
+                    startID: from.stationID,
+                    endID: to.stationID,
+                  });
+                  
+                  return {
+                    name: friend.name,
+                    time: result.globalTravelTime,
+                    station: station
+                  };
+                } catch (friendError) {
+                  console.error(`${friend.name}의 ${station}역까지 경로 계산 오류:`, friendError);
+                  return {
+                    name: friend.name,
+                    time: null,
+                    station: station
+                  };
+                }
+              })
+            );
 
-        const resultList = await Promise.all(
-          friends.map(async (friend) => {
-            const from = await getStationSubwayCoords(friend.from);
-            console.log('from:', friend.name, from.stationID);
-            console.log('to:', to.stationID);
-            const result = await getStationSubwayPathByID({
-              startID: from.stationID,
-              endID: to.stationID,
+            allResults.push(...stationResults);
+          } catch (stationError) {
+            console.error(`${station}역 좌표 조회 오류:`, stationError);
+            // 해당 역에 대해 모든 친구의 시간을 null로 설정
+            selectedFriends.forEach((friend: Friend) => {
+              allResults.push({
+                name: friend.name,
+                time: null,
+                station: station
+              });
             });
-            return {
-              name: friend.name,
-              time: result.globalTravelTime,
-            };
-          }),
-        );
+          }
+        }
 
-        setResults(resultList);
+        setResults(allResults);
       } catch (err) {
-        console.error('에러 발생:', err);
-        // setError('데이터를 가져오는 중 오류가 발생했습니다.');
+        console.error('전체 계산 중 에러 발생:', err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchTimes();
-  }, [selectedStationName]);
+    calculateAllTimes();
+  }, [selectedFriends, selectedStations]);
 
-  useEffect(() => {
-    // 검색결과에서 현재 선택한 값이 없으면 선택값 초기화
-    if (!stationList.find((s) => s.stationName === selectedStationName)) {
-      setSelectedStationName('');
-    }
-    console.log('불러온 역 리스트:', stationList);
-  }, [stationList, selectedStationName]);
+  // 역별로 결과 그룹화
+  const getResultsByStation = (station: string) => {
+    return results.filter(result => result.station === station);
+  };
+
+  // 역별 평균 시간 계산
+  const getAverageTimeForStation = (station: string) => {
+    const stationResults = getResultsByStation(station);
+    const validTimes = stationResults.filter(r => r.time !== null);
+    
+    if (validTimes.length === 0) return null;
+    
+    return Math.round(
+      validTimes.reduce((sum, cur) => sum + (cur.time ?? 0), 0) / validTimes.length
+    );
+  };
+
+  // 데이터가 없으면 로딩 또는 에러 표시
+  if (!selectedFriends || !selectedStations) {
+    return <div>데이터를 불러오는 중...</div>;
+  }
+
   return (
     <Container sx={{ py: 4 }}>
       <MeetHeader />
-      <MeetSearchForm
-        keyword={keyword}
-        onKeywordChange={(e) => setKeyword(e.target.value)}
-        selectedStationName={selectedStationName}
-        onStationSelect={(e) => setSelectedStationName(e.target.value)}
-        stationList={stationList}
-      />
-      <Grid container spacing={4} mt={3}>
-        {/* 왼쪽: 장소 정보 + 친구 이동 시간 */}
-        <Grid
-          size={{
-            xs: 12,
-            //  md: 8
-          }}
-        >
-          <Stack spacing={3}>
-            <MeetPointCard
-              selectedStationName={selectedStationName}
-              averageTime={
-                results.length
-                  ? Math.round(
-                      results.reduce((sum, cur) => sum + (cur.time ?? 0), 0) /
-                        results.length,
-                    )
-                  : null
-              }
-            />
-            <MeetFriendsTimeCard results={results} />
-          </Stack>
+      
+      {/* 선택된 정보 요약 */}
+      <Box sx={{ mb: 4 }}>
+        <Alert severity="info" sx={{ mb: 2 }}>
+          <Typography variant="body1" sx={{ fontWeight: 600, mb: 1 }}>
+            선택된 정보
+          </Typography>
+          <Typography variant="body2">
+            <strong>친구들:</strong> {selectedFriends.map((f: Friend) => `${f.name}(${f.start_station})`).join(', ')}
+          </Typography>
+          <Typography variant="body2">
+            <strong>후보 장소:</strong> {selectedStations.join(', ')}
+          </Typography>
+        </Alert>
+      </Box>
+
+      {isLoading ? (
+        <Box sx={{ textAlign: 'center', py: 4 }}>
+          <Typography>이동 시간을 계산하는 중입니다...</Typography>
+        </Box>
+      ) : (
+        <Grid container spacing={4}>
+          {selectedStations.map((station: string) => (
+            <Grid key={station} size={{ xs: 12, md: 6 }}>
+              <Stack spacing={3}>
+                <MeetPointCard
+                  selectedStationName={station}
+                  averageTime={getAverageTimeForStation(station)}
+                />
+                <MeetFriendsTimeCard 
+                  results={getResultsByStation(station).map(r => ({
+                    name: r.name,
+                    time: r.time
+                  }))}
+                />
+              </Stack>
+            </Grid>
+          ))}
         </Grid>
-        {/* 오른쪽: 추천 리스트 */}
-        {/* <Grid size={{ xs: 12, md: 4 }}></Grid> */}
-      </Grid>
+      )}
     </Container>
   );
 };
 
-export default StationTestPage;
+export default StationMeetResultPage;
