@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import type { User } from '../models/model';
+import type { Group, User } from '../models/model';
 import { getCurrentUserGroup } from '../apis/api';
 
 const useGetCurrentUserGroup = (params: User) => {
-  return useQuery({
+  return useQuery<Group[], Error>({
     queryKey: ['getUser-groupList', params.id],
     queryFn: () => {
       return getCurrentUserGroup(params.id);

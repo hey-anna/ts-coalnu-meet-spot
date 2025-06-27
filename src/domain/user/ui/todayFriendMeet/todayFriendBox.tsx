@@ -18,10 +18,17 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import TodayFriendCard from './todayFriendCard';
 import TodayFriendSearch from './todayFriendSearch';
 import { useNavigate } from 'react-router';
+import type { Friend, GetUserFriendByGroupResponse } from '../../models/model';
+
+// Props 타입 정의
+interface TodayFriendBoxProps {
+  onFriendsChange?: (friends: Friend[]) => void; // 선택된 친구들을 부모로 전달하는 함수
+  selectedFriends?: Friend[];
+}
 
 // Styled Components
 const StyledContainer = styled(Container)(({ theme }) => ({
-  maxWidth: '800px', // 전체 컨테이너 크기 증가
+  maxWidth: '800px',
   padding: theme.spacing(2.5),
   backgroundColor: theme.palette.background.default,
   height: '100%',
@@ -34,10 +41,9 @@ const MainContentWrapper = styled(Box)(({ theme }) => ({
   gap: theme.spacing(2),
   flex: 1,
   
-  // 모바일에서는 세로 배치로 변경
   [theme.breakpoints.down('md')]: {
     flexDirection: 'column',
-    gap: theme.spacing(1.5), // 모바일에서 간격 조정
+    gap: theme.spacing(1.5),
   },
 }));
 
@@ -59,14 +65,12 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
   display: 'flex',
   flexDirection: 'column',
-  
-  // 3:1 비율로 크기 조정
   flex: 3,
-  height: '500px', // 고정 높이
+  height: '500px',
   
   [theme.breakpoints.down('md')]: {
-    height: '400px', // 모바일에서 높이 조정
-    flex: 'none', // 모바일에서는 flex 해제
+    height: '400px',
+    flex: 'none',
   },
   [theme.breakpoints.down('sm')]: {
     height: '350px',
@@ -146,64 +150,6 @@ const ScrollableContent = styled(Box)({
   },
 });
 
-// 선택된 친구들 박스 - 사이드바 스타일로 변경
-const SelectedFriendsBox = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(2.5),
-  borderRadius: '16px',
-  border: '1px solid rgba(0,0,0,0.04)',
-  boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
-  overflow: 'hidden',
-  display: 'flex',
-  flexDirection: 'column',
-  
-  // 1:3 비율로 크기 조정
-  flex: 1,
-  height: '500px', // 메인 박스와 같은 높이
-  
-  [theme.breakpoints.down('md')]: {
-    height: '180px', // 모바일에서는 아래 배치로 높이 감소
-    flex: 'none',
-    order: 2, // 모바일에서 아래로 배치
-  },
-  [theme.breakpoints.down('sm')]: {
-    height: '150px',
-    padding: theme.spacing(2), // 모바일에서 패딩 조정
-  },
-}));
-
-const SelectedChipsContainer = styled(Box)({
-  overflowY: 'auto',
-  overflowX: 'hidden',
-  flex: 1,
-  marginTop: '16px',
-  
-  '&::-webkit-scrollbar': {
-    width: '4px',
-  },
-  '&::-webkit-scrollbar-track': {
-    background: 'transparent',
-  },
-  '&::-webkit-scrollbar-thumb': {
-    background: 'rgba(0,0,0,0.2)',
-    borderRadius: '2px',
-  },
-});
-
-const SelectedChip = styled(Chip)(({ theme }) => ({
-  backgroundColor: theme.palette.custom.secondary,
-  color: 'white',
-  margin: theme.spacing(0.4),
-  borderRadius: '12px',
-  height: 32,
-  fontSize: '0.85rem',
-  '& .MuiChip-deleteIcon': {
-    color: 'rgba(255, 255, 255, 0.8)',
-    fontSize: '18px',
-    '&:hover': {
-      color: 'white'
-    }
-  }
-}));
 
 const ActionButton = styled(Button)(({ theme }) => ({
   color: theme.palette.custom.secondary,
@@ -216,28 +162,101 @@ const ActionButton = styled(Button)(({ theme }) => ({
   height: 48
 }));
 
-// 선택된 친구가 없을 때 보여줄 플레이스홀더
-const EmptyStateBox = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  height: '100%',
-  color: theme.palette.text.secondary,
-  textAlign: 'center',
-  padding: theme.spacing(2),
-}));
 
-const todayFriendBox: React.FC = () => {
+const todayFriendBox: React.FC<TodayFriendBoxProps> = ({ onFriendsChange, 
+  selectedFriends = []}) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const [tabValue, setTabValue] = useState(0);
-  const [selectedFriends, setSelectedFriends] = useState<string[]>([]);
+
+  // 임시 그룹 데이터 (GetUserFriendByGroupResponse 타입에 맞게)
+  const mockFriendGroups: GetUserFriendByGroupResponse[] = [
+    {
+      id: 1,
+      group_name: "대학친구들",
+      group_color: "#1976d2",
+      created_at: "2024-01-01T00:00:00Z",
+      friend_link_group: [
+        {
+          friend: {
+            id: 1,
+            name: "지민",
+            start_station: "강남"
+          }
+        },
+        {
+          friend: {
+            id: 2,
+            name: "수아",
+            start_station: "잠실"
+          }
+        },
+        {
+          friend: {
+            id: 3,
+            name: "도윤",
+            start_station: "종각"
+          }
+        }
+      ]
+    },
+    {
+      id: 2,
+      group_name: "회사동료들",
+      group_color: "#ff9800",
+      created_at: "2024-01-02T00:00:00Z",
+      friend_link_group: [
+        {
+          friend: {
+            id: 4,
+            name: "민지",
+            start_station: "홍대입구"
+          }
+        },
+        {
+          friend: {
+            id: 5,
+            name: "현우",
+            start_station: "신촌"
+          }
+        }
+      ]
+    },
+    {
+      id: 3,
+      group_name: "동네친구들",
+      group_color: "#4caf50",
+      created_at: "2024-01-03T00:00:00Z",
+      friend_link_group: [
+        {
+          friend: {
+            id: 6,
+            name: "서연",
+            start_station: "건대입구"
+          }
+        },
+        {
+          friend: {
+            id: 7,
+            name: "태민",
+            start_station: "신림"
+          }
+        },
+        {
+          friend: {
+            id: 8,
+            name: "하은",
+            start_station: "사당"
+          }
+        }
+      ]
+    }
+  ];
 
   const [isMobile, setIsMobile] = useState(false);
   React.useEffect(() => {
     const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < 900); // 반응형 기준점 조정
+      setIsMobile(window.innerWidth < 900);
     };
     
     checkIsMobile();
@@ -245,28 +264,30 @@ const todayFriendBox: React.FC = () => {
     
     return () => window.removeEventListener('resize', checkIsMobile);
   }, []);
+
+   const handleFriendSelect = (friend: Friend) => {
+    if (onFriendsChange && selectedFriends) { // selectedFriends 체크 추가
+      const isAlreadySelected = selectedFriends.some(f => f.id === friend.id);
+      if (isAlreadySelected) {
+        onFriendsChange(selectedFriends.filter(f => f.id !== friend.id));
+      } else {
+        onFriendsChange([...selectedFriends, friend]);
+      }
+    }
+  };
+
+  const handleGroupSelect = (newFriendsList: Friend[]) => {
+    // 그룹 선택 (전체 친구 배열 받음)
+    if (onFriendsChange) {
+      onFriendsChange(newFriendsList);
+    }
+  };
+
   
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
 
-  const handleFriendSelect = (friendName: string) => {
-    setSelectedFriends(prev => 
-      prev.includes(friendName)
-        ? prev.filter(name => name !== friendName)
-        : [...prev, friendName]
-    );
-  };
-
-  const handleRemoveFriend = (friendName: string) => {
-    setSelectedFriends(prev => prev.filter(name => name !== friendName));
-  };
-
-  const handleClearAll = () => {
-    setSelectedFriends([]);
-  };
-
-  // 그룹 설정 페이지로 이동하는 함수
   const handleGroupSettings = () => {
     navigate('/friend/group-management');
   };
@@ -280,11 +301,15 @@ const todayFriendBox: React.FC = () => {
         </HeaderIcon>
         <Typography variant="h5" fontWeight={700} sx={{ 
           fontSize: { xs: '1.2rem', sm: '1.4rem' }, flex: 1
-        }} >
+        }}>
           오늘 만날 친구
         </Typography>
-          <ActionButton variant="outlined" size="small" onClick={handleGroupSettings}
-          startIcon={<SettingsIcon />} sx={{
+        <ActionButton 
+          variant="outlined" 
+          size="small" 
+          onClick={handleGroupSettings}
+          startIcon={<SettingsIcon />} 
+          sx={{
             minWidth: 'auto',
             px: 2,
             py: 1,
@@ -305,16 +330,17 @@ const todayFriendBox: React.FC = () => {
                 fontSize: '16px',
               }
             }
-          }}>
-            그룹 설정
-          </ActionButton>
+          }}
+        >
+          그룹 설정
+        </ActionButton>
       </HeaderSection>
 
       {/* 메인 콘텐츠 - 가로 배치 */}
       <MainContentWrapper>
         {/* 왼쪽: 친구 선택 부분 (3/4) */}
         <StyledPaper sx={{ 
-          [theme.breakpoints.down('md')]: { order: 1 } // 모바일에서 위쪽 배치
+          [theme.breakpoints.down('md')]: { order: 1 }
         }}>
           {/* 탭 */}
           <StyledTabs 
@@ -330,14 +356,15 @@ const todayFriendBox: React.FC = () => {
           {/* 콘텐츠 영역 */}
           <ContentSection>
             <ScrollableContent>
-              {/* 인기 지역 탭 */}
+              {/* 내 그룹 탭 */}
               {tabValue === 0 && (
-                1 ? (
-                <TodayFriendCard
-                  friendGroups={["친구그룹1", "친구 그룹2"]}
-                  selectedFriends={selectedFriends}
-                  onFriendSelect={handleFriendSelect}
-                />
+                mockFriendGroups.length > 0 ? (
+                  <TodayFriendCard
+                    friendGroups={mockFriendGroups}  // 올바른 타입의 임시 데이터 전달
+                    selectedFriends={selectedFriends || []}
+                    onFriendSelect={handleFriendSelect}
+                    onGroupSelect={handleGroupSelect}
+                  />
                 ) : (
                   <Box sx={{ textAlign: 'center', py: 4 }}>
                     <Typography color="text.secondary">
@@ -365,57 +392,6 @@ const todayFriendBox: React.FC = () => {
             </ScrollableContent>
           </ContentSection>
         </StyledPaper>
-
-        {/* 오른쪽: 선택된 친구들 (1/4) */}
-        <SelectedFriendsBox>
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              justifyContent: 'space-between', 
-              alignItems: 'center',
-              flexShrink: 0
-            }}
-          >
-            <Typography variant="h6" fontWeight={600} sx={{ fontSize: '1.1rem' }}>
-              선택된 친구
-            </Typography>
-            {selectedFriends.length > 0 && (
-              <ActionButton 
-                variant="outlined" 
-                size="small"
-                onClick={handleClearAll}
-                sx={{ 
-                  minWidth: 'auto',
-                  px: 1.5,
-                  py: 0.5,
-                  fontSize: '0.75rem'
-                }}
-              >
-                전체 삭제
-              </ActionButton>
-            )}
-          </Box>
-          
-          {selectedFriends.length > 0 ? (
-            <SelectedChipsContainer>
-              {selectedFriends.map((friendName) => (
-                <SelectedChip
-                  key={friendName}
-                  label={`${friendName}`}
-                  onDelete={() => handleRemoveFriend(friendName)}
-                  deleteIcon={<CloseIcon />}
-                />
-              ))}
-            </SelectedChipsContainer>
-          ) : (
-            <EmptyStateBox>
-              <Diversity3Icon sx={{ fontSize: 48, mb: 1, opacity: 0.3 }} />
-              <Typography variant="body2" sx={{ fontSize: '0.85rem' }}>
-                친구를 선택해주세요
-              </Typography>
-            </EmptyStateBox>
-          )}
-        </SelectedFriendsBox>
       </MainContentWrapper>
     </StyledContainer>
   );

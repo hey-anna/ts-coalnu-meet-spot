@@ -1,9 +1,14 @@
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import type { FriendWithGroup, User } from '../models/model';
 import { getUserFriendList } from '../apis/api';
 
 const useGetUserFriendList = (params: User) => {
-  return useQuery<FriendWithGroup[], Error, FriendWithGroup[]>({
+  return useQuery<
+    FriendWithGroup[],
+    Error,
+    FriendWithGroup[],
+    [string, string]
+  >({
     queryKey: ['friend-list', params.id],
     queryFn: async () => {
       if (!params.id || params.id === '') {
@@ -15,7 +20,7 @@ const useGetUserFriendList = (params: User) => {
       // ✅ null 방지: 항상 배열 반환
       return result ?? [];
     },
-    suspense: true,
+    // suspense: true,
   });
 };
 
