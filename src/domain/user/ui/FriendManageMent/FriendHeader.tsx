@@ -4,7 +4,7 @@ import {
   Group as GroupIcon,
   PersonAdd as PersonAddIcon,
 } from '@mui/icons-material';
-import theme from '../../styles/mui/theme';
+import theme from '@/styles/mui/theme';
 
 export const FriendHeader = ({ setGroupDialogOpen, setFriendDialogOpen }) => {
   return (

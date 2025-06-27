@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import {
@@ -7,12 +7,11 @@ import {
 } from '../../shared/config/stationConfig';
 import type { StationData } from '../../shared/models/station';
 
-import { FriendDialog } from '../../domain/friend/Dialog/FriendDialog';
-import { GroupDialog } from '../../domain/friend/Dialog/GroupDialog';
+import { FriendDialog } from '../../domain/user/ui/FriendManageMent/Dialog/FriendDialog';
+import { GroupDialog } from '../../domain/user/ui/FriendManageMent/Dialog/GroupDialog';
 import theme from '@/styles/mui/theme';
-import { FriendHeader } from '../../domain/friend/FriendHeader';
-import { FriendList } from '../../domain/friend/Content/FriendList';
-import { GroupList } from '../../domain/friend/Content/GroupList';
+import { FriendList } from '../../domain/user/ui/FriendManageMent/Content/FriendList';
+import { GroupList } from '../../domain/user/ui/FriendManageMent/Content/GroupList';
 import { useUserStore } from '@/domain/user/store/userStore';
 import useGetUserFriendByGroup from '@/domain/user/hooks/useGetUserFriendByGroup';
 
@@ -28,6 +27,7 @@ import useDeleteFriendFromGroup from '@/domain/user/hooks/useDeleteFriendFromGro
 import useAddFriendListToGroup from '@/domain/user/hooks/useAddFriendListToGroup';
 import useAddNewGroup from '@/domain/user/hooks/useAddNewGroup';
 import useUpdateGroupInfo from '@/domain/user/hooks/useUpdateGroupInfo';
+import { FriendHeader } from '@/domain/user/ui/FriendManageMent/FriendHeader';
 
 // 타입 정의
 interface Friend {
