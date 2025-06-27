@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getStationSubwayCoords } from '../../domain/place/apis/stationSubwayApi';
 import { getStationSubwayPathByID } from '../../domain/place/apis/stationSubwayApi';
 import { Box, Container, Grid, Stack } from '@mui/material';

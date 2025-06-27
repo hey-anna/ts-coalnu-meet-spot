@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import {
@@ -28,6 +28,7 @@ import useAddFriendListToGroup from '@/domain/user/hooks/useAddFriendListToGroup
 import useAddNewGroup from '@/domain/user/hooks/useAddNewGroup';
 import useUpdateGroupInfo from '@/domain/user/hooks/useUpdateGroupInfo';
 import { FriendHeader } from '@/domain/user/ui/FriendManageMent/FriendHeader';
+import type { ErrorMsg } from '@/domain/user/models/model';
 
 // 타입 정의
 interface Friend {
@@ -51,13 +52,14 @@ const FriendGroupManagement: React.FC = () => {
 
   const friendGroups = friendGroupResponsePort(friendGroupResponse);
   const allFriends = allFriendResponsePort(friendResponse);
-  const { mutate: addNewFriend } = useAddNewFriend();
+  const { mutate: addNewFriend, error: addNewFriendError } = useAddNewFriend();
   const { mutate: deleteFriend } = useDeleteFriend();
   const { mutate: deleteGroup } = useDeleteGroup();
   const { mutate: deleteFriendFromGroup } = useDeleteFriendFromGroup();
   const { mutate: friendListAddToGroup } = useAddFriendListToGroup();
-  const { mutate: addNewGroup } = useAddNewGroup();
-  const { mutate: updateGroupInfoHook } = useUpdateGroupInfo();
+  const { mutate: addNewGroup, error: addNewGroupError } = useAddNewGroup();
+  const { mutate: updateGroupInfoHook, error: updateGroupInfoError } =
+    useUpdateGroupInfo();
 
   // 다이얼로그 상태
   const [groupDialogOpen, setGroupDialogOpen] = useState(false);
@@ -163,9 +165,27 @@ const FriendGroupManagement: React.FC = () => {
 
   // 선택된 친구들을 그룹에 추가
   const handleAddSelectedFriendsToGroup = (groupId: number) => {
+    console.log('selectedFriendsForGroup', selectedFriendsForGroup);
+    console.log('friendGroupResponse', friendGroups);
+
+    // 🔍 해당 그룹 찾기
+    const targetGroup = friendGroups.find((group) => group.id === groupId);
+    const existingMemberIds =
+      targetGroup?.members.map((member) => member.id) ?? [];
+
+    console.log(targetGroup, existingMemberIds, selectedFriendsForGroup);
+
+    if (existingMemberIds.length + selectedFriendsForGroup.length >= 4) {
+      alert('그룹에는 3명이상의 친구를 추가할 수 없습니다.');
+      return;
+    }
+
     selectedFriendsForGroup.forEach((friendId) => {
-      handleAddFriendToGroup(groupId, friendId);
+      if (!existingMemberIds.includes(friendId)) {
+        handleAddFriendToGroup(groupId, friendId);
+      }
     });
+
     setSelectedFriendsForGroup([]);
   };
 
@@ -208,6 +228,48 @@ const FriendGroupManagement: React.FC = () => {
     setInputValue('');
     setSearchResults([]);
   };
+
+  useEffect(() => {
+    const error = updateGroupInfoError as ErrorMsg;
+
+    if (!error) {
+      return;
+    }
+
+    if (error?.code == '23505') {
+      alert('이미 있는 그룹명입니다.');
+    } else {
+      alert(error?.message);
+    }
+  }, [updateGroupInfoError]);
+
+  useEffect(() => {
+    const error = addNewGroupError as ErrorMsg;
+
+    if (!error) {
+      return;
+    }
+
+    if (error?.code == '23505') {
+      alert('이미 있는 그룹명입니다.');
+    } else {
+      alert(error?.message);
+    }
+  }, [addNewGroupError]);
+
+  useEffect(() => {
+    const error = addNewFriendError as ErrorMsg;
+
+    if (!error) {
+      return;
+    }
+
+    if (error?.code == '23505') {
+      alert('이미 있는 친구 정보입니다.');
+    } else {
+      alert(error?.message);
+    }
+  }, [addNewFriendError]);
 
   return (
     <ThemeProvider theme={theme}>
