@@ -12,11 +12,12 @@ import {
 import { styled, useTheme } from '@mui/material/styles';
 import Diversity3Icon from '@mui/icons-material/Diversity3';
 import CloseIcon from '@mui/icons-material/Close';
-import { SUBWAY_STATIONS } from '../../../../shared/config/config';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 // 분리된 컴포넌트들 import
 import TodayFriendCard from './todayFriendCard';
 import TodayFriendSearch from './todayFriendSearch';
+import { useNavigate } from 'react-router';
 
 // Styled Components
 const StyledContainer = styled(Container)(({ theme }) => ({
@@ -206,6 +207,7 @@ const SelectedChip = styled(Chip)(({ theme }) => ({
 
 const ActionButton = styled(Button)(({ theme }) => ({
   color: theme.palette.custom.secondary,
+  borderColor: theme.palette.custom.secondary,
   borderRadius: '14px',
   padding: theme.spacing(1.5, 3),
   fontSize: '0.95rem',
@@ -228,6 +230,7 @@ const EmptyStateBox = styled(Box)(({ theme }) => ({
 
 const todayFriendBox: React.FC = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
   const [tabValue, setTabValue] = useState(0);
   const [selectedFriends, setSelectedFriends] = useState<string[]>([]);
 
@@ -263,6 +266,11 @@ const todayFriendBox: React.FC = () => {
     setSelectedFriends([]);
   };
 
+  // 그룹 설정 페이지로 이동하는 함수
+  const handleGroupSettings = () => {
+    navigate('/friend/group-management');
+  };
+
   return (
     <StyledContainer>
       {/* 헤더 */}
@@ -271,10 +279,35 @@ const todayFriendBox: React.FC = () => {
           <Diversity3Icon />
         </HeaderIcon>
         <Typography variant="h5" fontWeight={700} sx={{ 
-          fontSize: { xs: '1.2rem', sm: '1.4rem' }
-        }}>
+          fontSize: { xs: '1.2rem', sm: '1.4rem' }, flex: 1
+        }} >
           오늘 만날 친구
         </Typography>
+          <ActionButton variant="outlined" size="small" onClick={handleGroupSettings}
+          startIcon={<SettingsIcon />} sx={{
+            minWidth: 'auto',
+            px: 2,
+            py: 1,
+            fontSize: '0.875rem',
+            display: 'flex',
+            alignItems: 'center',
+            '& .MuiButton-startIcon': {
+              marginRight: '6px',
+              marginLeft: 0,
+              '& > *:nth-of-type(1)': {
+                fontSize: '18px',
+              }
+            },
+            [theme.breakpoints.down('sm')]: {
+              px: 1.5,
+              fontSize: '0.8rem',
+              '& .MuiButton-startIcon > *:nth-of-type(1)': {
+                fontSize: '16px',
+              }
+            }
+          }}>
+            그룹 설정
+          </ActionButton>
       </HeaderSection>
 
       {/* 메인 콘텐츠 - 가로 배치 */}

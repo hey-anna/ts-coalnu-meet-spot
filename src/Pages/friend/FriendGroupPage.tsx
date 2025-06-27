@@ -66,7 +66,7 @@ const pageContainerStyle = {
   margin: '0 auto',
   padding: 3,
   backgroundColor: theme.palette.background.default,
-  minHeight: '100vh',
+  minHeight: '80vh',
 };
 
 const headerStyle = {
