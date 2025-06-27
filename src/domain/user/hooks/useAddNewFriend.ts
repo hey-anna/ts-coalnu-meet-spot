@@ -17,11 +17,3 @@ const useAddNewFriend = () => {
 };
 
 export default useAddNewFriend;
-
-export interface AddNewFriendRequest {
-  // id: number;
-  user_id: string;
-  name: string;
-  start_station: string;
-  friend_group_id: number | null;
-}

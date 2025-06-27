@@ -16,6 +16,7 @@ const useAddNewGroup = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['getUser-groupList'] });
+      queryClient.invalidateQueries({ queryKey: ['friend-list-by-group'] });
     },
     onError: (error) => {
       console.log(error.message);

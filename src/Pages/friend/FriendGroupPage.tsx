@@ -16,26 +16,29 @@ import { GroupList } from '../../domain/friend/Content/GroupList';
 import { useUserStore } from '@/domain/user/store/userStore';
 import useGetUserFriendByGroup from '@/domain/user/hooks/useGetUserFriendByGroup';
 
-import { ErrorBoundary } from 'react-error-boundary';
-import { Suspense } from 'react';
-import { redirect, useNavigate } from 'react-router';
-import type { GetUserFriendByGroupResponse } from '@/domain/user/models/model';
 import {
   allFriendResponsePort,
   friendGroupResponsePort,
 } from '@/domain/user/port/friendDataPort';
 import useGetUserFriendList from '@/domain/user/hooks/useGetUserFriendList';
+import useAddNewFriend from '@/domain/user/hooks/useAddNewFriend';
+import useDeleteFriend from '@/domain/user/hooks/useDeleteFriend';
+import useDeleteGroup from '@/domain/user/hooks/useDeleteGroup';
+import useDeleteFriendFromGroup from '@/domain/user/hooks/useDeleteFriendFromGroup';
+import useAddFriendListToGroup from '@/domain/user/hooks/useAddFriendListToGroup';
+import useAddNewGroup from '@/domain/user/hooks/useAddNewGroup';
+import useUpdateGroupInfo from '@/domain/user/hooks/useUpdateGroupInfo';
 
 // 타입 정의
 interface Friend {
-  id: string;
+  id: number;
   name: string;
   station: string;
   avatar?: string;
 }
 
 interface FriendGroup {
-  id: string;
+  id: number;
   name: string;
   members: Friend[];
   color: string;
@@ -49,6 +52,12 @@ const FriendGroupManagement: React.FC = () => {
   const friendGroups = friendGroupResponsePort(friendGroupResponse);
   const allFriends = allFriendResponsePort(friendResponse);
   const { mutate: addNewFriend } = useAddNewFriend();
+  const { mutate: deleteFriend } = useDeleteFriend();
+  const { mutate: deleteGroup } = useDeleteGroup();
+  const { mutate: deleteFriendFromGroup } = useDeleteFriendFromGroup();
+  const { mutate: friendListAddToGroup } = useAddFriendListToGroup();
+  const { mutate: addNewGroup } = useAddNewGroup();
+  const { mutate: updateGroupInfoHook } = useUpdateGroupInfo();
 
   // 다이얼로그 상태
   const [groupDialogOpen, setGroupDialogOpen] = useState(false);
@@ -58,7 +67,7 @@ const FriendGroupManagement: React.FC = () => {
   // 그룹 편집 상태
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
   const [selectedFriendsForGroup, setSelectedFriendsForGroup] = useState<
-    string[]
+    number[]
   >([]);
 
   // 폼 상태
@@ -99,18 +108,17 @@ const FriendGroupManagement: React.FC = () => {
     if (!groupForm.name.trim()) return;
 
     if (editingGroup) {
-      setFriendGroups((prev) =>
-        prev.map((group) =>
-          group.id === editingGroup.id ? { ...group, ...groupForm } : group,
-        ),
-      );
+      updateGroupInfoHook({
+        group_id: editingGroup.id,
+        group_name: groupForm.name,
+        group_color: groupForm.color,
+      });
     } else {
-      const newGroup: FriendGroup = {
-        id: Date.now().toString(),
-        ...groupForm,
-        members: [],
-      };
-      setFriendGroups((prev) => [...prev, newGroup]);
+      addNewGroup({
+        user_id: user?.id,
+        group_name: groupForm.name,
+        group_color: groupForm.color,
+      });
     }
 
     setGroupDialogOpen(false);
@@ -119,26 +127,21 @@ const FriendGroupManagement: React.FC = () => {
   };
 
   // 그룹 삭제
-  const handleDeleteGroup = (groupId: string) => {
-    setFriendGroups((prev) => prev.filter((group) => group.id !== groupId));
+  const handleDeleteGroup = (groupId: number) => {
+    deleteGroup(groupId);
   };
 
   // 친구 추가
   const handleAddFriend = () => {
     if (!friendForm.name.trim() || !selectedStation) return;
 
-    const newFriend: Friend = {
-      id: Date.now().toString(),
-      name: friendForm.name,
-      station: selectedStation.station_nm,
-    };
-
     // console.log(newFriend);
     // {id: '1751015411462', name: '우석', station: '당산'}
     addNewFriend({
       user_id: user.id,
-      name: newFriend.name,
-      start_station: newFriend.station,
+      name: friendForm.name,
+      start_station: selectedStation.station_nm,
+      friend_group_id: null,
     });
     setFriendDialogOpen(false);
     setFriendForm({ name: '', station: '' });
@@ -148,26 +151,18 @@ const FriendGroupManagement: React.FC = () => {
   };
 
   // 그룹에 친구 추가
-  const handleAddFriendToGroup = (groupId: string, friendId: string) => {
+  const handleAddFriendToGroup = (groupId: number, friendId: number) => {
     const friend = allFriends.find((f) => f.id === friendId);
     if (!friend) return;
 
-    setFriendGroups((prev) =>
-      prev.map((group) =>
-        group.id === groupId
-          ? {
-              ...group,
-              members: group.members.find((m) => m.id === friendId)
-                ? group.members
-                : [...group.members, friend],
-            }
-          : group,
-      ),
-    );
+    friendListAddToGroup({
+      group_id: groupId,
+      friend_id_list: [friendId],
+    });
   };
 
   // 선택된 친구들을 그룹에 추가
-  const handleAddSelectedFriendsToGroup = (groupId: string) => {
+  const handleAddSelectedFriendsToGroup = (groupId: number) => {
     selectedFriendsForGroup.forEach((friendId) => {
       handleAddFriendToGroup(groupId, friendId);
     });
@@ -175,7 +170,7 @@ const FriendGroupManagement: React.FC = () => {
   };
 
   // 친구 선택/해제
-  const handleToggleFriendSelection = (friendId: string) => {
+  const handleToggleFriendSelection = (friendId: number) => {
     setSelectedFriendsForGroup((prev) =>
       prev.includes(friendId)
         ? prev.filter((id) => id !== friendId)
@@ -195,28 +190,14 @@ const FriendGroupManagement: React.FC = () => {
   };
 
   // 그룹에서 친구 제거
-  const handleRemoveFriendFromGroup = (groupId: string, friendId: string) => {
-    setFriendGroups((prev) =>
-      prev.map((group) =>
-        group.id === groupId
-          ? {
-              ...group,
-              members: group.members.filter((m) => m.id !== friendId),
-            }
-          : group,
-      ),
-    );
+  const handleRemoveFriendFromGroup = (groupId: number, friendId: number) => {
+    deleteFriendFromGroup({ group_id: groupId, friend_id: friendId });
   };
 
   // 친구 삭제
-  const handleDeleteFriend = (friendId: string) => {
-    setAllFriends((prev) => prev.filter((f) => f.id !== friendId));
-    setFriendGroups((prev) =>
-      prev.map((group) => ({
-        ...group,
-        members: group.members.filter((m) => m.id !== friendId),
-      })),
-    );
+  const handleDeleteFriend = (friendId: number) => {
+    deleteFriend(friendId);
+    // 친구 삭제 -> 그룹에 속한 친구도 트리거로 자동삭제
   };
 
   // 다이얼로그 닫을 때 검색 상태 초기화

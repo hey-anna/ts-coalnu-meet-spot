@@ -4,6 +4,7 @@ import { Navigate, useLocation } from 'react-router';
 const AuthGuard = ({ children }: { children: React.ReactNode }) => {
   const { user } = useUserStore();
   const location = useLocation();
+  const accessToken = 
 
   if (!user?.id) {
     return <Navigate to="/login" state={{ from: location }} replace />;

@@ -12,6 +12,7 @@ const useAddFriendListToGroup = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['friend-list'] });
+      queryClient.invalidateQueries({ queryKey: ['friend-list-by-group'] });
     },
   });
 };
