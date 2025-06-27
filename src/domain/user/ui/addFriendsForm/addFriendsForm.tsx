@@ -16,35 +16,35 @@ import { AddFriendsGroupList } from './addFriendsGroupList/AddFriendsGroupList';
 import StationSearch from '../../../recommendation/ui/recommendStation/recommendStationSearch';
 
 const groups: Group[] = [
-  { 
-    id: 1, 
-    user_id: 'user1', 
+  {
+    id: 1,
+    user_id: 'user1',
     group_name: '그룹1',
-    group_color: '#1976d2' // 추가
+    group_color: '#1976d2', // 추가
   },
-  { 
-    id: 2, 
-    user_id: 'user2', 
+  {
+    id: 2,
+    user_id: 'user2',
     group_name: '그룹2',
-    group_color: '#ff9800' // 추가
+    group_color: '#ff9800', // 추가
   },
-  { 
-    id: 3, 
-    user_id: 'user3', 
+  {
+    id: 3,
+    user_id: 'user3',
     group_name: '그룹3',
-    group_color: '#4caf50' // 추가
+    group_color: '#4caf50', // 추가
   },
-  { 
-    id: 4, 
-    user_id: 'user4', 
+  {
+    id: 4,
+    user_id: 'user4',
     group_name: '그룹4',
-    group_color: '#9c27b0' // 추가
+    group_color: '#9c27b0', // 추가
   },
-  { 
-    id: 5, 
-    user_id: 'user5', 
+  {
+    id: 5,
+    user_id: 'user5',
     group_name: '그룹5',
-    group_color: '#f44336' // 추가
+    group_color: '#f44336', // 추가
   },
 ];
 

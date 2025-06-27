@@ -1,4 +1,4 @@
-import type { PostgrestError, User } from '@supabase/supabase-js';
+import type { PostgrestError } from '@supabase/supabase-js';
 import { supabase } from '../../../shared/config/supabaseClient';
 import type {
   AddFriendListToGroupRequest,
@@ -12,22 +12,53 @@ import type {
   Group,
   UpdateFriendRequest,
   UpdateGroupRequest,
+  User,
+  UserInfoReQuest,
+  UserSubInfo,
 } from '../models/model';
 
 // 현재 로그인한 user의 정보
-export const getCurrentUserInfo = async (): Promise<{ user: User } | null> => {
+export const getCurrentUserInfo = async (): Promise<User | null> => {
   try {
     const { data, error } = await supabase.auth.getUser();
+
+    let userData: User;
 
     if (error) {
       console.error('GetCurrentUserInfo 실패 원인:', error.message); // 여기서 원인 확인 가능
       throw new Error(error.message);
+    } else {
+      userData = { ...userData, id: data.user.id, email: data.user.email };
+      const userInfo = await getCurrentUserSubInfo(data.user.id);
+      userData = {
+        ...userData,
+        user_name: userInfo.user_name,
+        user_start_station: userInfo.user_start_station,
+      };
     }
 
-    console.log('GetCurrentUserInfo 사용자 정보 : ', data);
-    return data;
+    console.log('GetCurrentUserInfo 사용자 정보 : ', userData);
+    return userData;
   } catch (error) {
     throw new Error('fail to getCurrent user info');
+  }
+};
+
+// 현재 로그인 한 유저의 추가 정보 가져오기
+
+export const getCurrentUserSubInfo = async (
+  id: string,
+): Promise<UserSubInfo> => {
+  try {
+    const { data } = await supabase
+      .from('user_info')
+      .select()
+      .eq('user_id', id)
+      .single();
+
+    return data;
+  } catch (error) {
+    throw new Error('fail to fetch current user sub info');
   }
 };
 
@@ -290,5 +321,22 @@ export const updateFriendInfo = async (params: UpdateFriendRequest) => {
     } else {
       throw error;
     }
+  }
+};
+
+// 사용자 정보 추가
+export const createUserInfo = async (params: UserInfoReQuest) => {
+  try {
+    console.log('api 보내기 전 데이터 : ', params);
+
+    const { data } = await supabase
+      .from('user_info')
+      .insert(params)
+      .select()
+      .single();
+
+    console.log('받아온 데이터 확인 : ', data);
+  } catch (error) {
+    throw new Error('fail to create user info');
   }
 };
