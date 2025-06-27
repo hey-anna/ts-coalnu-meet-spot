@@ -7,8 +7,10 @@ import TestPage from './Pages/test/TestPage';
 import MainPage from './Pages/main/MainPage';
 import YejinGetFriendListpage from './Pages/yejinTest/YejinGetFriendListpage';
 import YejinDeleteTest from './Pages/yejinTest/YejinDeleteTest';
+import AuthGuard from './shared/guard/authGuard';
 
 const JoinPage = React.lazy(() => import('./Pages/auth/JoinPage'));
+
 const LoginPage = React.lazy(() => import('./Pages/auth/LoginPage'));
 const FriendGroupPage = React.lazy(
   () => import('./Pages/friend/FriendGroupPage'),
@@ -30,7 +32,11 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route
             path="/friend/group-management"
-            element={<FriendGroupPage />}
+            element={
+              <AuthGuard>
+                <FriendGroupPage />
+              </AuthGuard>
+            }
           />
           <Route path="/meetup/result" element={<StationMeetResultPage />} />
           <Route path="/yejintest">
