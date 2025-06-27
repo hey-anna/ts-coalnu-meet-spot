@@ -7,6 +7,7 @@ import MeetHeader from '../../domain/place/ui/MeetHeader';
 import MeetPointCard from '../../domain/place/ui/layout/MeetPointCard';
 import MeetFriendsTimeCard from '../../domain/place/ui/layout/MeetFriendsTimeCard';
 import MeetSearchForm from '../../domain/place/ui/layout/MeetSearchForm';
+import { getSatisfactionEmoji } from '@/domain/place/lib/utils/getSatisfactionEmoji';
 
 type StationCoords = {
   name: string;
@@ -20,7 +21,7 @@ const StationTestPage = () => {
   const [keyword, setKeyword] = useState<string>(''); // 초기 검색어 없음
   const [selectedStationName, setSelectedStationName] = useState(''); // 초기 선택 없음
   const [results, setResults] = useState<
-    { name: string; time: number | null }[]
+    { name: string; time: number | null; transfers: number }[]
   >([]);
   // const [error, setError] = useState<string | null>(null);
 
@@ -51,9 +52,19 @@ const StationTestPage = () => {
               startID: from.stationID,
               endID: to.stationID,
             });
+
+            // 환승 결과
+            console.log(`${friend.name} 경로 결과:`, result);
+            console.log(`driveInfoSet (${friend.name}):`, result.driveInfoSet);
+
+            const transferCount = result.driveInfoSet?.driveInfo
+              ? result.driveInfoSet.driveInfo.length - 1
+              : -1;
+
             return {
               name: friend.name,
               time: result.globalTravelTime,
+              transfers: transferCount, // 환슨 카운트
             };
           }),
         );
@@ -75,6 +86,28 @@ const StationTestPage = () => {
     }
     console.log('불러온 역 리스트:', stationList);
   }, [stationList, selectedStationName]);
+
+  const averageTime =
+    results.length > 0
+      ? Math.round(
+          results.reduce((sum, cur) => sum + (cur.time ?? 0), 0) /
+            results.length,
+        )
+      : null;
+
+  const averageTransferCount =
+    results.length > 0
+      ? Math.round(
+          results.reduce((sum, cur) => sum + (cur.transfers ?? 0), 0) /
+            results.length,
+        )
+      : null;
+
+  const satisfactionRate = getSatisfactionEmoji(
+    averageTime,
+    averageTransferCount,
+  );
+
   return (
     <Container sx={{ py: 4 }}>
       <MeetHeader />
@@ -96,14 +129,9 @@ const StationTestPage = () => {
           <Stack spacing={3}>
             <MeetPointCard
               selectedStationName={selectedStationName}
-              averageTime={
-                results.length
-                  ? Math.round(
-                      results.reduce((sum, cur) => sum + (cur.time ?? 0), 0) /
-                        results.length,
-                    )
-                  : null
-              }
+              averageTime={averageTime}
+              averageTransferCount={averageTransferCount}
+              satisfactionRate={satisfactionRate}
             />
             <MeetFriendsTimeCard results={results} />
           </Stack>

@@ -1,17 +1,19 @@
-import { Box, CardContent, Grid, Typography } from '@mui/material';
+import { Box, CardContent, Grid, Stack, Typography } from '@mui/material';
 import BasicStyledCard from '../common/styles/BasicStyledCard';
+import { DirectionsTransit } from '@mui/icons-material';
 
 interface MeetFriendsTimeCardProps {
   results: {
     name: string;
     time: number | null;
+    transfers: number;
   }[];
 }
 
 const MeetFriendsTimeCard = ({ results }: MeetFriendsTimeCardProps) => {
   return (
     <BasicStyledCard>
-      <CardContent>
+      <CardContent sx={{ p: 3 }}>
         <Typography
           variant="subtitle1"
           align="center"
@@ -47,17 +49,31 @@ const MeetFriendsTimeCard = ({ results }: MeetFriendsTimeCardProps) => {
                   <Typography
                     sx={{
                       fontWeight: 700,
-                      fontSize: '1.3rem',
+                      // fontSize: '1.3rem',
+                      fontSize: (theme) => theme.typography.h5.fontSize,
                       color: 'primary.main',
                     }}
                   >
                     {res.time !== null ? `${res.time}분` : '정보 없음'}
                   </Typography>
+                  <Stack
+                    direction="row"
+                    spacing={0.5}
+                    alignItems="center"
+                    justifyContent="center"
+                    sx={{ mt: 0.5, color: 'text.secondary' }}
+                  >
+                    <DirectionsTransit sx={{ fontSize: 16 }} />
+                    <Typography variant="caption">
+                      {res.transfers === 0 ? '0' : `${res.transfers}`}
+                    </Typography>
+                  </Stack>
+
                   <Typography
                     sx={{
                       mt: 0.5,
                       color: 'text.secondary',
-                      fontSize: '0.9rem',
+                      fontSize: '1rem',
                     }}
                   >
                     {res.name}

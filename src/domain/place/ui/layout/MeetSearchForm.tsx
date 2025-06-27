@@ -20,7 +20,10 @@ const MeetSearchForm = ({
   return (
     <BasicStyledCard sx={{ mt: 3 }}>
       <Box p={3}>
-        <Typography variant="subtitle1" fontWeight={600} mb={2}>
+        <Typography
+          variant="subtitle1"
+          sx={{ fontWeight: 600, fontSize: '1.2rem', mb: 2 }}
+        >
           도착할 지하철역을 선택해주세요
         </Typography>
         <Stack spacing={2}>
