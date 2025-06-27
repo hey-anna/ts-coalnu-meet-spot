@@ -20,12 +20,33 @@ import StationSearch from './recommendStationSearch';
 
 // Styled Components
 const StyledContainer = styled(Container)(({ theme }) => ({
-  maxWidth: '600px',
+  maxWidth: '800px', // todayFriendBox와 동일하게 변경
   padding: theme.spacing(2.5),
   backgroundColor: theme.palette.background.default,
-  height: '100%', // 전체 높이 사용
+  height: '100%',
   display: 'flex',
   flexDirection: 'column',
+  
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1.5),
+    maxWidth: '100%',
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    padding: theme.spacing(1),
+  },
+}));
+
+const MainContentWrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  gap: theme.spacing(2),
+  flex: 1,
+  
+  [theme.breakpoints.down('md')]: {
+    flexDirection: 'column',
+    gap: theme.spacing(1.5),
+  },
 }));
 
 const HeaderIcon = styled(Box)(({ theme }) => ({
@@ -36,7 +57,18 @@ const HeaderIcon = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  color: 'white'
+  color: 'white',
+  
+  [theme.breakpoints.down('sm')]: {
+    width: 36,
+    height: 36,
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    width: 32,
+    height: 32,
+  },
 }));
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
@@ -46,32 +78,50 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
   display: 'flex',
   flexDirection: 'column',
+  flex: 3, // todayFriendBox와 동일
+  height: '500px', // todayFriendBox와 동일
   
-  // 반응형 높이 설정
-  height: '600px', // 데스크톱
   [theme.breakpoints.down('md')]: {
-    height: '470px', // 태블릿
+    height: '400px',
+    flex: 'none',
   },
   [theme.breakpoints.down('sm')]: {
-    height: '430px', // 모바일
+    height: '70vh',
+    minHeight: '400px',
+    borderRadius: '16px',
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    height: '75vh',
+    minHeight: '350px',
+    borderRadius: '12px',
   },
 }));
 
 const StyledTabs = styled(Tabs)(({ theme }) => ({
   borderBottom: '1px solid rgba(0,0,0,0.06)',
   padding: theme.spacing(2.5),
-  flexShrink: 0, // 크기 고정
+  flexShrink: 0,
   '& .MuiTab-root': {
     fontSize: '0.95rem',
     fontWeight: 600,
     padding: theme.spacing(2, 3),
     minHeight: 56,
     
-    // 모바일에서 탭 크기 조정
     [theme.breakpoints.down('sm')]: {
-      fontSize: '0.875rem',
+      fontSize: '0.75rem',
       padding: theme.spacing(1.5, 2),
-      minHeight: 48,
+      minHeight: 40,
+      minWidth: '80px',
+    },
+    
+    // 아이폰 SE 대응
+    '@media (max-width: 375px)': {
+      fontSize: '0.7rem',
+      padding: theme.spacing(1, 1.5),
+      minHeight: 36,
+      minWidth: '70px',
     },
   },
   '& .MuiTabs-indicator': {
@@ -79,9 +129,13 @@ const StyledTabs = styled(Tabs)(({ theme }) => ({
     borderRadius: '2px 2px 0 0'
   },
   
-  // 모바일에서 패딩 조정
   [theme.breakpoints.down('sm')]: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(1.5),
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    padding: theme.spacing(1),
   },
 }));
 
@@ -91,35 +145,44 @@ const HeaderSection = styled(Box)(({ theme }) => ({
   gap: theme.spacing(2),
   padding: theme.spacing(2.5),
   paddingBottom: theme.spacing(2),
-  flexShrink: 0, // 크기 고정
+  flexShrink: 0,
   
-  // 모바일에서 패딩 조정
   [theme.breakpoints.down('sm')]: {
     padding: theme.spacing(2),
     paddingBottom: theme.spacing(1.5),
     gap: theme.spacing(1.5),
   },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    padding: theme.spacing(1.5),
+    paddingBottom: theme.spacing(1),
+    gap: theme.spacing(1),
+  },
 }));
 
 const ContentSection = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2.5),
-  flex: 1, // 남은 공간 모두 차지
-  overflow: 'hidden', // 넘치는 내용 숨김
+  flex: 1,
+  overflow: 'hidden',
   display: 'flex',
   flexDirection: 'column',
   
-  // 모바일에서 패딩 조정
   [theme.breakpoints.down('sm')]: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(1.5),
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    padding: theme.spacing(1),
   },
 }));
 
 const ScrollableContent = styled(Box)({
   flex: 1,
-  overflowY: 'auto', // 세로 스크롤만 허용
+  overflowY: 'auto',
   overflowX: 'hidden',
   
-  // 커스텀 스크롤바
   '&::-webkit-scrollbar': {
     width: '6px',
   },
@@ -140,7 +203,10 @@ interface RecommendStationBoxProps {
   selectedStations?: string[]; 
 }
 
-const RecommendStationBox: React.FC<RecommendStationBoxProps> = ({ onStationsChange, selectedStations = [] }) => {
+const RecommendStationBox: React.FC<RecommendStationBoxProps> = ({ 
+  onStationsChange, 
+  selectedStations = [] 
+}) => {
   const theme = useTheme();
   const [tabValue, setTabValue] = useState(0);
 
@@ -156,7 +222,7 @@ const RecommendStationBox: React.FC<RecommendStationBoxProps> = ({ onStationsCha
   
   React.useEffect(() => {
     const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < 600); // 600px 미만을 모바일로 판단
+      setIsMobile(window.innerWidth < 900); // todayFriendBox와 동일한 기준
     };
     
     checkIsMobile();
@@ -172,7 +238,7 @@ const RecommendStationBox: React.FC<RecommendStationBoxProps> = ({ onStationsCha
   };
 
   const handleStationSelect = (stationName: string) => {
-    if (onStationsChange && selectedStations) { // selectedStations 체크 추가
+    if (onStationsChange && selectedStations) {
       const isAlreadySelected = selectedStations.includes(stationName);
       if (isAlreadySelected) {
         onStationsChange(selectedStations.filter(name => name !== stationName));
@@ -184,70 +250,78 @@ const RecommendStationBox: React.FC<RecommendStationBoxProps> = ({ onStationsCha
 
   return (
     <StyledContainer>
-      {/* 메인 카드 - 고정 높이 */}
-      <StyledPaper>
-        {/* 헤더 부분 - 고정 */}
-        <HeaderSection>
-          <HeaderIcon>
-            <TrainIcon />
-          </HeaderIcon>
-          <Typography variant="h5" fontWeight={700} sx={{ 
-            fontSize: { xs: '1.2rem', sm: '1.4rem' } // 모바일에서 폰트 크기 조정
-          }}>
-            만남 장소 후보 선택
-          </Typography>
-        </HeaderSection>
+      {/* 헤더 - todayFriendBox와 동일한 구조 */}
+      <HeaderSection>
+        <HeaderIcon>
+          <TrainIcon />
+        </HeaderIcon>
+        <Typography variant="h5" fontWeight={700} sx={{ 
+          fontSize: { xs: '1.1rem', sm: '1.4rem' }, 
+          flex: 1,
+          // 아이폰 SE 대응
+          '@media (max-width: 375px)': {
+            fontSize: '1rem',
+          },
+        }}>
+          만남 장소 후보 선택
+        </Typography>
+      </HeaderSection>
 
-        {/* 탭 - 고정 */}
-        <StyledTabs 
-          value={tabValue} 
-          onChange={handleTabChange}
-          indicatorColor="primary"
-          textColor="primary"
-        >
-          <Tab label="인기 지역" />
-          <Tab label="검색" />
-        </StyledTabs>
+      {/* 메인 콘텐츠 - todayFriendBox와 동일한 구조 */}
+      <MainContentWrapper>
+        <StyledPaper sx={{ 
+          [theme.breakpoints.down('md')]: { order: 1 }
+        }}>
+          {/* 탭 */}
+          <StyledTabs 
+            value={tabValue} 
+            onChange={handleTabChange}
+            indicatorColor="primary"
+            textColor="primary"
+          >
+            <Tab label="인기 지역" />
+            <Tab label="검색" />
+          </StyledTabs>
 
-        {/* 콘텐츠 영역 - 스크롤 가능 */}
-        <ContentSection>
-          <ScrollableContent>
-            {/* 인기 지역 탭 */}
-            {tabValue === 0 && (
-              popularStations.length > 0 ? (
-                <StationCardGrid
-                  stations={popularStations}
-                  selectedStations={selectedStations || []}
-                  onStationSelect={handleStationSelect}
-                />
-              ) : (
-                <Box sx={{ textAlign: 'center', py: 4 }}>
-                  <Typography color="text.secondary">
-                    지하철역 데이터를 불러오는 중입니다...
-                  </Typography>
-                </Box>
-              )
-            )}
+          {/* 콘텐츠 영역 */}
+          <ContentSection>
+            <ScrollableContent>
+              {/* 인기 지역 탭 */}
+              {tabValue === 0 && (
+                popularStations.length > 0 ? (
+                  <StationCardGrid
+                    stations={popularStations}
+                    selectedStations={selectedStations || []}
+                    onStationSelect={handleStationSelect}
+                  />
+                ) : (
+                  <Box sx={{ textAlign: 'center', py: 4 }}>
+                    <Typography color="text.secondary">
+                      지하철역 데이터를 불러오는 중입니다...
+                    </Typography>
+                  </Box>
+                )
+              )}
 
-            {/* 검색 탭 */}
-            {tabValue === 1 && (
-              allStations.length > 0 ? (
-                <StationSearch
-                  onStationSelect={handleStationSelect}
-                  placeholder="지하철역 이름을 검색해보세요"
-                />
-              ) : (
-                <Box sx={{ textAlign: 'center', py: 4 }}>
-                  <Typography color="text.secondary">
-                    지하철역 데이터를 불러오는 중입니다...
-                  </Typography>
-                </Box>
-              )
-            )}
-          </ScrollableContent>
-        </ContentSection>
-      </StyledPaper>
-
+              {/* 검색 탭 */}
+              {tabValue === 1 && (
+                allStations.length > 0 ? (
+                  <StationSearch
+                    onStationSelect={handleStationSelect}
+                    placeholder="지하철역 이름을 검색해보세요"
+                  />
+                ) : (
+                  <Box sx={{ textAlign: 'center', py: 4 }}>
+                    <Typography color="text.secondary">
+                      지하철역 데이터를 불러오는 중입니다...
+                    </Typography>
+                  </Box>
+                )
+              )}
+            </ScrollableContent>
+          </ContentSection>
+        </StyledPaper>
+      </MainContentWrapper>
     </StyledContainer>
   );
 };
