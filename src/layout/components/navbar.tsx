@@ -1,10 +1,16 @@
-import { Button, styled, AppBar, Toolbar, Box, Typography } from '@mui/material';
+import {
+  Button,
+  styled,
+  AppBar,
+  Toolbar,
+  Box,
+  Typography,
+} from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useUserStore } from '../../domain/user/store/userStore';
 import useGetUserApi from '../../domain/user/hooks/useGetUserApi';
 import useLogout from '../../domain/auth/hooks/useLogout';
 import { useNavigate } from 'react-router';
-
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -86,7 +92,7 @@ const LogoText = styled(Typography)(({ theme }) => ({
   },
 }));
 
-const navbar = () => {       
+const navbar = () => {
   const { user: loginUser, setUser } = useUserStore();
   const { data: fetchedUser, isLoading, isError } = useGetUserApi();
   const { mutate: logout } = useLogout();
@@ -122,23 +128,16 @@ const navbar = () => {
       <StyledToolbar>
         {/* 로고 영역 */}
         <LogoContainer onClick={handleLogoClick}>
-          <LogoImage 
-            src="/meetspot_logo_font.png" 
-            alt="MeetSpot Logo"
-          />
+          <LogoImage src="/meetspot_logo_font.png" alt="MeetSpot Logo" />
           <LogoText>어디서 만날까?</LogoText>
         </LogoContainer>
 
         {/* 로그인/로그아웃 버튼 영역 */}
         <Box>
           {isLogin ? (
-            <LogoutButton onClick={handleLogin}>
-              로그아웃
-            </LogoutButton>
+            <LogoutButton onClick={handleLogin}>로그아웃</LogoutButton>
           ) : (
-            <LoginButton onClick={handleLogin}>
-              로그인
-            </LoginButton>
+            <LoginButton onClick={handleLogin}>로그인</LoginButton>
           )}
         </Box>
       </StyledToolbar>

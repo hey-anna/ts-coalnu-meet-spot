@@ -1,6 +1,27 @@
 
 import type { StationData, StationResponse } from '../models/station';
 
+  // 호선별 색상
+export const getLineColor = (lineNum: string) => {
+    const colors: { [key: string]: string } = {
+      '01호선': '#0052A4',
+      '02호선': '#00A84D',
+      '03호선': '#EF7C1C',
+      '04호선': '#00A5DE',
+      '05호선': '#996CAC',
+      '06호선': '#CD7C2F',
+      '07호선': '#747F00',
+      '08호선': '#E6186C',
+      '09호선': '#BB8336',
+      '경의선': '#77C4A3',
+      '수인분당선': '#FFCD12',
+      '신분당선': '#D4003B',
+      '공항철도': '#0090D2',
+      'GTX-A': '#9E4FC7'
+    };
+    return colors[lineNum] || '#666666';
+};
+
 export const STATION_CONFIG: StationResponse = {
 "DESCRIPTION" : {"STATION_NM":"전철역명","STATION_CD":"전철역코드","LINE_NUM":"호선","FR_CODE":"외부코드"},
 "DATA" : [

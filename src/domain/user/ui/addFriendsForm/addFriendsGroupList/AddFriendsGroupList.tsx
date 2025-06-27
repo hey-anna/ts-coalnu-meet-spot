@@ -1,13 +1,16 @@
-import { Box, Button, Tooltip, Typography } from '@mui/material';
+import type { Group } from '@/domain/user/models/model';
+import { Box, Button, Typography } from '@mui/material';
 
-export const AddFriendsGroupList = ({
+export interface AddFriendsGroupListProps {
+  groups: Group[];
+  setSelectedGroup: (group: Group) => void;
+  selectedGroup?: Group;
+}
+
+export const AddFriendsGroupList: React.FC<AddFriendsGroupListProps> = ({
   groups,
   setSelectedGroup,
   selectedGroup,
-}: {
-  groups: string[];
-  setSelectedGroup: (groupName: string | null) => void;
-  selectedGroup: string | null;
 }) => {
   return (
     <Box
@@ -15,61 +18,54 @@ export const AddFriendsGroupList = ({
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-        flex: 4,
         gap: 1,
       }}
     >
-      <Box sx={{ display: 'flex', flex: 1, alignItems: 'flex-end' }}>
-        <Typography
-          variant="subtitle2"
-          color="text.primary"
-          sx={{ fontWeight: 600 }}
-        >
-          친구 그룹
-        </Typography>
-      </Box>
+      <Typography
+        variant="subtitle2"
+        color="text.primary"
+        sx={{ fontWeight: 600 }}
+      >
+        친구 그룹 목록
+      </Typography>
+
       <Box
-        display="flex"
-        flexWrap="wrap"
-        gap={1}
         sx={{
-          maxHeight: 100,
-          overflow: 'auto',
-          flex: 4,
+          display: 'grid',
+          gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' },
+          gap: 1.5,
         }}
       >
-        {groups.map((groupName, index) => {
-          const displayName =
-            groupName.length > 5 ? groupName.slice(0, 5) : groupName;
-
+        {groups.map((group) => {
+          const isSelected = selectedGroup?.id === group.id;
           return (
-            <Tooltip key={`${index}-${groupName}`} title={displayName} arrow>
-              <Button
-                key={index}
-                variant="outlined"
-                sx={{
-                  borderRadius: 20,
-                  height: 40,
-                  width: '30%',
-                  backgroundColor:
-                    selectedGroup === groupName ? 'user.main' : undefined,
-                  color: selectedGroup === groupName ? 'white ' : '#999',
-                }}
-                onClick={() => {
-                  setSelectedGroup(groupName);
-                }}
-              >
-                {displayName}
-              </Button>
-            </Tooltip>
+            <Button
+              key={group.id}
+              variant={isSelected ? 'contained' : 'outlined'}
+              onClick={() => setSelectedGroup(group)}
+              sx={{
+                borderRadius: 20,
+                height: 40,
+                // selected 시 색상
+                backgroundColor: isSelected ? 'primary.main' : 'transparent',
+                color: isSelected ? '#fff' : 'text.primary',
+                borderColor: 'primary.main',
+                '&:hover': {
+                  backgroundColor: isSelected
+                    ? 'primary.dark'
+                    : 'rgba(102, 126, 234, 0.1)',
+                  borderColor: 'primary.main',
+                  transform: 'translateY(-2px)',
+                  boxShadow: isSelected
+                    ? '0 6px 20px rgba(108, 92, 231, 0.35)'
+                    : undefined,
+                },
+              }}
+            >
+              {group.group_name}
+            </Button>
           );
         })}
-      </Box>
-
-      <Box sx={{ display: 'flex', flex: 1, alignItems: 'flex-end' }}>
-        <Typography variant="body2" color="text.primary" sx={{ flex: 1 }}>
-          그룹을 선택하면 친구들을 쉽게 관리할 수 있어요
-        </Typography>
       </Box>
     </Box>
   );

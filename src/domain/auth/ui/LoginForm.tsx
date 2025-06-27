@@ -11,7 +11,7 @@ import {
   AuthTitle,
   AuthButton,
   AuthLink,
-  AuthMessage
+  AuthMessage,
 } from './authStyle';
 
 const LoginForm = () => {
@@ -29,6 +29,14 @@ const LoginForm = () => {
   const { mutate: logout, isSuccess: logoutSuccess } = useLogout();
 
   const { user } = useUserStore();
+
+  const [validationErrorMsg, setValidationErrorMsg] = useState<{
+    label: string;
+    message: string;
+  }>({
+    label: '',
+    message: '',
+  });
 
   useEffect(() => {
     if (user) {
@@ -48,16 +56,26 @@ const LoginForm = () => {
     }
   };
 
+  // 이메일 형식 검사
+  const pattern = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-za-z0-9\-]+/;
+
+  function emailValidChk(value) {
+    if (pattern.test(value) === false) {
+      setValidationErrorMsg({
+        label: 'email',
+        message: '이메일 형식이 맞지 않습니다.',
+      });
+      return false;
+    } else {
+      setValidationErrorMsg({ label: '', message: '' });
+      return true;
+    }
+  }
+
   return (
     <AuthPageContainer>
-      <AuthFormContainer
-        noValidate
-        autoComplete="off"
-        onSubmit={handleSubmit}
-      >
-        <AuthTitle variant="h4">
-          로그인
-        </AuthTitle>
+      <AuthFormContainer noValidate autoComplete="off" onSubmit={handleSubmit}>
+        <AuthTitle variant="h4">로그인</AuthTitle>
 
         {!user ? (
           <>
@@ -66,10 +84,19 @@ const LoginForm = () => {
               label="이메일"
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                emailValidChk(e.target.value);
+              }}
               placeholder="example@email.com"
               required
               fullWidth
+              error={validationErrorMsg.label == 'email'}
+              helperText={
+                validationErrorMsg.label == 'email'
+                  ? validationErrorMsg.message
+                  : null
+              }
             />
 
             <TextField
@@ -89,8 +116,8 @@ const LoginForm = () => {
               <ArrowRightAltIcon sx={{ ml: 0.5, fontSize: 16 }} />
             </AuthLink>
 
-            <AuthButton 
-              type="submit" 
+            <AuthButton
+              type="submit"
               className={isPending ? 'loading' : ''}
               disabled={isPending || !email || !password}
             >
@@ -102,7 +129,10 @@ const LoginForm = () => {
             <AuthTitle variant="h6" sx={{ fontSize: '20px !important', mb: 1 }}>
               환영합니다! 👋
             </AuthTitle>
-            <AuthTitle variant="body1" sx={{ fontSize: '16px !important', fontWeight: '500 !important' }}>
+            <AuthTitle
+              variant="body1"
+              sx={{ fontSize: '16px !important', fontWeight: '500 !important' }}
+            >
               {user.email}
             </AuthTitle>
             <AuthButton onClick={() => logout()} sx={{ mt: 2 }}>
@@ -114,7 +144,10 @@ const LoginForm = () => {
         {/* 에러 메시지 */}
         {isError && (
           <AuthMessage className="error">
-            <AuthTitle variant="body2" sx={{ fontSize: '14px !important', fontWeight: '500 !important' }}>
+            <AuthTitle
+              variant="body2"
+              sx={{ fontSize: '14px !important', fontWeight: '500 !important' }}
+            >
               {error?.message || '로그인에 실패했습니다.'}
             </AuthTitle>
           </AuthMessage>
@@ -123,7 +156,10 @@ const LoginForm = () => {
         {/* 로그아웃 성공 메시지 */}
         {!user && logoutSuccess && (
           <AuthMessage className="success">
-            <AuthTitle variant="body2" sx={{ fontSize: '14px !important', fontWeight: '500 !important' }}>
+            <AuthTitle
+              variant="body2"
+              sx={{ fontSize: '14px !important', fontWeight: '500 !important' }}
+            >
               로그아웃되었습니다.
             </AuthTitle>
           </AuthMessage>

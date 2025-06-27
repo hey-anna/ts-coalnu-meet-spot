@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getStationSubwayCoords } from '../../domain/place/apis/stationSubwayApi';
 import { getStationSubwayPathByID } from '../../domain/place/apis/stationSubwayApi';
 import { Box, Container, Grid, Stack } from '@mui/material';
@@ -11,6 +11,7 @@ import { getSatisfactionEmoji } from '@/domain/place/lib/utils/getSatisfactionEm
 import KakaoMap from '@/domain/place/ui/layout/KakaoMap';
 import { useFriendColorMap } from '@/domain/place/lib/utils/useFriendColorMap';
 import FriendMarkerLegend from '@/domain/place/ui/layout/FriendMarkerLegend';
+
 
 type StationCoords = {
   name: string;
@@ -41,15 +42,21 @@ const StationMeetResultPage = () => {
 
   const { data: stationList = [] } = useStationSubwaySearchQuery(keyword);
   console.log('stationList', stationList);
+
   useEffect(() => {
-    if (!selectedStationName) return;
+    if (!selectedFriends || !selectedStations || selectedFriends.length === 0 || selectedStations.length === 0) {
+      return;
+    }
 
-    const fetchTimes = async () => {
+    const calculateAllTimes = async () => {
+      setIsLoading(true);
       try {
-        // setError(null);
+        const allResults: { name: string; time: number | null; station: string }[] = [];
 
-        const to: StationCoords =
-          await getStationSubwayCoords(selectedStationName);
+        // 각 역에 대해 계산
+        for (const station of selectedStations) {
+          try {
+            const to: StationCoords = await getStationSubwayCoords(station);
 
         const resultList = await Promise.all(
           friends.map(async (friend) => {
@@ -96,14 +103,38 @@ const StationMeetResultPage = () => {
             y,
           })),
         );
+
       } catch (err) {
-        console.error('에러 발생:', err);
-        // setError('데이터를 가져오는 중 오류가 발생했습니다.');
+        console.error('전체 계산 중 에러 발생:', err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchTimes();
-  }, [selectedStationName]);
+    calculateAllTimes();
+  }, [selectedFriends, selectedStations]);
+
+  // 역별로 결과 그룹화
+  const getResultsByStation = (station: string) => {
+    return results.filter(result => result.station === station);
+  };
+
+  // 역별 평균 시간 계산
+  const getAverageTimeForStation = (station: string) => {
+    const stationResults = getResultsByStation(station);
+    const validTimes = stationResults.filter(r => r.time !== null);
+    
+    if (validTimes.length === 0) return null;
+    
+    return Math.round(
+      validTimes.reduce((sum, cur) => sum + (cur.time ?? 0), 0) / validTimes.length
+    );
+  };
+
+  // 데이터가 없으면 로딩 또는 에러 표시
+  if (!selectedFriends || !selectedStations) {
+    return <div>데이터를 불러오는 중...</div>;
+  }
 
   useEffect(() => {
     // 검색결과에서 현재 선택한 값이 없으면 선택값 초기화
@@ -223,9 +254,11 @@ const StationMeetResultPage = () => {
         >
           📍 목적지를 먼저 선택해주세요
         </Box>
+
       )}
     </Container>
   );
 };
 
 export default StationMeetResultPage;
+

@@ -3,6 +3,8 @@ import { useUserStore } from '../../domain/user/store/userStore';
 import {
   Box,
   Button,
+  MenuItem,
+  Select,
   styled,
   Table,
   TableBody,
@@ -16,6 +18,8 @@ import useGetCurrentUserGroup from '../../domain/user/hooks/useGetCurrentUserGro
 import useGetUserFriendList from '../../domain/user/hooks/useGetUserFriendList';
 import useAddNewGroup from '../../domain/user/hooks/useAddNewGroup';
 import FriendInset from './FriendInset';
+import { colorPalette } from '@/shared/config/config';
+import type { ErrorMsg } from '@/domain/user/models/model';
 
 const SubmitButton = styled(Button)(({ theme }) => ({
   border: 'solid 1px',
@@ -27,7 +31,8 @@ const YejinTestPage = () => {
   const { user } = useUserStore();
   const [newGroupName, setNewGroupName] = useState<string>('');
   const [newGroupError, setNewGroupError] = useState<string>('');
-  const { mutate: addNewGroup } = useAddNewGroup();
+  const [selectColor, setSelectColor] = useState<string>('');
+  const { mutate: addNewGroup, error: addNewGroupError } = useAddNewGroup();
 
   const { data: groupData } = useGetCurrentUserGroup({
     id: user?.id || '',
@@ -44,22 +49,39 @@ const YejinTestPage = () => {
     console.log('현재 유저가 가지고 있는 friend list : ', friendData);
   }, [groupData, friendData]);
 
+  useEffect(() => {
+    const error = addNewGroupError as ErrorMsg;
+
+    console.log('화면단 : ', error);
+
+    if (error?.code == '23505') {
+      setNewGroupError('같은 이름의 그룹이 이미 있습니다.');
+    } else {
+      setNewGroupError('');
+    }
+  }, [addNewGroupError]);
+
   const handleSaveGroup = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('세로운 그룹 이름 : ', newGroupName);
+    console.log('새로운 그룹 이름 : ', newGroupName);
 
     if (!user?.id) {
       return setNewGroupError('로그인 먼저 해주세요');
     }
 
-    const isExisted = checkNewGroupName(newGroupName);
+    // const isExisted = checkNewGroupName(newGroupName);
 
-    console.log('isExisted : ', isExisted);
+    // console.log('isExisted : ', isExisted);
 
-    if (!isExisted) {
-      setNewGroupError('');
-      addNewGroup({ user_id: user?.id, group_name: newGroupName });
-    }
+    setNewGroupError('');
+
+    addNewGroup({
+      user_id: user?.id,
+      group_name: newGroupName,
+      ...(selectColor && { group_color: selectColor || null }),
+    });
+    // if (!isExisted) {
+    // }
   };
 
   function checkNewGroupName(name: string): boolean {
@@ -91,6 +113,21 @@ const YejinTestPage = () => {
             error={Boolean(newGroupError)}
             helperText={newGroupError ? newGroupError : null}
           />
+
+          <Select
+            id="group_color"
+            value={selectColor}
+            label="group_color"
+            onChange={(e) => setSelectColor(e.target.value)}
+          >
+            {colorPalette &&
+              colorPalette.map((color, colorIndex) => (
+                <MenuItem value={color} key={colorIndex}>
+                  {color}
+                </MenuItem>
+              ))}
+          </Select>
+
           <SubmitButton type="submit">저장</SubmitButton>
         </form>
       </Box>
@@ -136,7 +173,6 @@ const YejinTestPage = () => {
               <TableCell>start_station</TableCell>
               <TableCell>group id</TableCell>
               <TableCell>group name</TableCell>
-              <TableCell>subway_line</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -145,9 +181,20 @@ const YejinTestPage = () => {
                 <TableCell>{friend.id}</TableCell>
                 <TableCell>{friend.name}</TableCell>
                 <TableCell>{friend.start_station}</TableCell>
-                <TableCell>{friend.friend_group_id}</TableCell>
-                <TableCell>{friend.friend_group?.group_name}</TableCell>
-                <TableCell>{friend.subway_line}</TableCell>
+                <TableCell>
+                  {friend.friend_link_group.length > 0
+                    ? friend.friend_link_group
+                        .map((group) => group.group_id)
+                        .join(', ')
+                    : null}
+                </TableCell>
+                <TableCell>
+                  {friend.friend_link_group.length > 0
+                    ? friend.friend_link_group
+                        .map((group) => group.group.group_name)
+                        .join(', ')
+                    : null}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

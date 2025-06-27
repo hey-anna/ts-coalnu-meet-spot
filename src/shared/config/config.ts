@@ -1,3 +1,4 @@
+import theme from "@/styles/mui/theme";
 import type { RECOMMEND_SUBWAY_STATIONS } from "../../domain/recommendation/models/model";
 
 export const SUBWAY_STATIONS: RECOMMEND_SUBWAY_STATIONS = 
@@ -68,3 +69,19 @@ export type PlaceData = {
   x: string;
   y: string;
 };
+
+// 색상 팔레트
+export const colorPalette = [
+  theme.palette.primary.main,
+  theme.palette.user.main,
+  theme.palette.custom.secondary,
+  theme.palette.error.main,
+  theme.palette.warning.main,
+  theme.palette.info.main,
+  '#00b894',
+  '#fd79a8',
+  '#fdcb6e',
+  '#d63384',
+  '#a29bfe',
+  '#74b9ff',
+];

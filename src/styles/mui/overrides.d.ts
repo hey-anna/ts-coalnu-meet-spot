@@ -3,6 +3,7 @@ import type { Palette, PaletteOptions } from '@mui/material/styles';
 declare module '@mui/material/styles' {
   interface Palette {
     custom?: {
+      secondary:string;
       bgTertiary: string;
       bgHover: string;
       borderLight: string;
@@ -19,6 +20,7 @@ declare module '@mui/material/styles' {
 
   interface PaletteOptions {
     custom?: {
+      secondary:string;
       bgTertiary: string;
       bgHover: string;
       borderLight: string;

@@ -23,7 +23,9 @@ const StyledContainer = styled(Container)(({ theme }) => ({
   maxWidth: '600px',
   padding: theme.spacing(2.5),
   backgroundColor: theme.palette.background.default,
-  minHeight: '70vh'
+  height: '100%', // 전체 높이 사용
+  display: 'flex',
+  flexDirection: 'column',
 }));
 
 const HeaderIcon = styled(Box)(({ theme }) => ({
@@ -38,69 +40,120 @@ const HeaderIcon = styled(Box)(({ theme }) => ({
 }));
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
-  marginBottom: theme.spacing(3),
   borderRadius: '18px',
   overflow: 'hidden',
   border: '1px solid rgba(0,0,0,0.04)',
-  boxShadow: '0 4px 20px rgba(0,0,0,0.06)'
+  boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
+  display: 'flex',
+  flexDirection: 'column',
+  
+  // 반응형 높이 설정
+  height: '600px', // 데스크톱
+  [theme.breakpoints.down('md')]: {
+    height: '470px', // 태블릿
+  },
+  [theme.breakpoints.down('sm')]: {
+    height: '430px', // 모바일
+  },
 }));
 
 const StyledTabs = styled(Tabs)(({ theme }) => ({
   borderBottom: '1px solid rgba(0,0,0,0.06)',
-  padding:theme.spacing(2.5),
+  padding: theme.spacing(2.5),
+  flexShrink: 0, // 크기 고정
   '& .MuiTab-root': {
     fontSize: '0.95rem',
     fontWeight: 600,
     padding: theme.spacing(2, 3),
-    minHeight: 56
+    minHeight: 56,
+    
+    // 모바일에서 탭 크기 조정
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.875rem',
+      padding: theme.spacing(1.5, 2),
+      minHeight: 48,
+    },
   },
   '& .MuiTabs-indicator': {
     height: 3,
     borderRadius: '2px 2px 0 0'
-  }
+  },
+  
+  // 모바일에서 패딩 조정
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(2),
+  },
 }));
 
-const SelectedStationsBox = styled(Paper)(({ theme }) => ({
-  marginTop: theme.spacing(3),
+const HeaderSection = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing(2),
   padding: theme.spacing(2.5),
-  borderRadius: '16px',
-  border: '1px solid rgba(0,0,0,0.04)',
-  boxShadow: '0 2px 12px rgba(0,0,0,0.04)'
+  paddingBottom: theme.spacing(2),
+  flexShrink: 0, // 크기 고정
+  
+  // 모바일에서 패딩 조정
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(2),
+    paddingBottom: theme.spacing(1.5),
+    gap: theme.spacing(1.5),
+  },
 }));
 
-const SelectedChip = styled(Chip)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.main,
-  color: 'white',
-  margin: theme.spacing(0.4),
-  borderRadius: '12px',
-  height: 32,
-  fontSize: '0.85rem',
-  '& .MuiChip-deleteIcon': {
-    color: 'rgba(255, 255, 255, 0.8)',
-    fontSize: '18px',
+const ContentSection = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(2.5),
+  flex: 1, // 남은 공간 모두 차지
+  overflow: 'hidden', // 넘치는 내용 숨김
+  display: 'flex',
+  flexDirection: 'column',
+  
+  // 모바일에서 패딩 조정
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(2),
+  },
+}));
+
+const ScrollableContent = styled(Box)({
+  flex: 1,
+  overflowY: 'auto', // 세로 스크롤만 허용
+  overflowX: 'hidden',
+  
+  // 커스텀 스크롤바
+  '&::-webkit-scrollbar': {
+    width: '6px',
+  },
+  '&::-webkit-scrollbar-track': {
+    background: 'transparent',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    background: 'rgba(0,0,0,0.2)',
+    borderRadius: '3px',
     '&:hover': {
-      color: 'white'
-    }
-  }
-}));
+      background: 'rgba(0,0,0,0.3)',
+    },
+  },
+});
 
-const ActionButton = styled(Button)(({ theme }) => ({
-  borderRadius: '14px',
-  padding: theme.spacing(1.5, 3),
-  fontSize: '0.95rem',
-  fontWeight: 600,
-  minWidth: 110,
-  height: 48
-}));
+interface RecommendStationBoxProps {
+  onStationsChange?: (stations: string[]) => void;
+  selectedStations?: string[]; 
+}
 
-const RecommendStationBox: React.FC = () => {
+const RecommendStationBox: React.FC<RecommendStationBoxProps> = ({ onStationsChange, selectedStations = [] }) => {
   const theme = useTheme();
   const [tabValue, setTabValue] = useState(0);
-  const [selectedStations, setSelectedStations] = useState<string[]>([]);
+
+  React.useEffect(() => {
+    if (onStationsChange) {
+      onStationsChange(selectedStations);
+    }
+  }, [selectedStations, onStationsChange]);
 
   // SUBWAY_STATIONS이 존재하는지 확인하고 안전하게 처리
   const allStations = SUBWAY_STATIONS || [];
   const [isMobile, setIsMobile] = useState(false);
+  
   React.useEffect(() => {
     const checkIsMobile = () => {
       setIsMobile(window.innerWidth < 600); // 600px 미만을 모바일로 판단
@@ -111,50 +164,41 @@ const RecommendStationBox: React.FC = () => {
     
     return () => window.removeEventListener('resize', checkIsMobile);
   }, []);
+  
   const popularStations = allStations.slice(0, isMobile ? 4 : 8);
-
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
 
   const handleStationSelect = (stationName: string) => {
-    setSelectedStations(prev => 
-      prev.includes(stationName)
-        ? prev.filter(name => name !== stationName)
-        : [...prev, stationName]
-    );
-  };
-
-  const handleRemoveStation = (stationName: string) => {
-    setSelectedStations(prev => prev.filter(name => name !== stationName));
-  };
-
-  const handleClearAll = () => {
-    setSelectedStations([]);
+    if (onStationsChange && selectedStations) { // selectedStations 체크 추가
+      const isAlreadySelected = selectedStations.includes(stationName);
+      if (isAlreadySelected) {
+        onStationsChange(selectedStations.filter(name => name !== stationName));
+      } else {
+        onStationsChange([...selectedStations, stationName]);
+      }
+    }
   };
 
   return (
     <StyledContainer>
-      {/* 헤더 + 탭 + 카드가 모두 합쳐진 하나의 카드 */}
+      {/* 메인 카드 - 고정 높이 */}
       <StyledPaper>
-        {/* 헤더 부분 */}
-        <Box sx={{ 
-          display: 'flex',
-          alignItems: 'center',
-          gap: 2,
-          padding: 2.5,
-          paddingBottom: 2
-        }}>
+        {/* 헤더 부분 - 고정 */}
+        <HeaderSection>
           <HeaderIcon>
             <TrainIcon />
           </HeaderIcon>
-          <Typography variant="h5" fontWeight={700} sx={{ fontSize: '1.4rem' }}>
-            지하철역 선택
+          <Typography variant="h5" fontWeight={700} sx={{ 
+            fontSize: { xs: '1.2rem', sm: '1.4rem' } // 모바일에서 폰트 크기 조정
+          }}>
+            만남 장소 후보 선택
           </Typography>
-        </Box>
+        </HeaderSection>
 
-        {/* 탭 */}
+        {/* 탭 - 고정 */}
         <StyledTabs 
           value={tabValue} 
           onChange={handleTabChange}
@@ -165,83 +209,45 @@ const RecommendStationBox: React.FC = () => {
           <Tab label="검색" />
         </StyledTabs>
 
-        {/* 탭 내용 */}
-        <Box sx={{ p: 2.5 }}>
-          {/* 인기 지역 탭 */}
-          {tabValue === 0 && (
-            popularStations.length > 0 ? (
-              <StationCardGrid
-                stations={popularStations}
-                selectedStations={selectedStations}
-                onStationSelect={handleStationSelect}
-              />
-            ) : (
-              <Box sx={{ textAlign: 'center', py: 4 }}>
-                <Typography color="text.secondary">
-                  지하철역 데이터를 불러오는 중입니다...
-                </Typography>
-              </Box>
-            )
-          )}
+        {/* 콘텐츠 영역 - 스크롤 가능 */}
+        <ContentSection>
+          <ScrollableContent>
+            {/* 인기 지역 탭 */}
+            {tabValue === 0 && (
+              popularStations.length > 0 ? (
+                <StationCardGrid
+                  stations={popularStations}
+                  selectedStations={selectedStations || []}
+                  onStationSelect={handleStationSelect}
+                />
+              ) : (
+                <Box sx={{ textAlign: 'center', py: 4 }}>
+                  <Typography color="text.secondary">
+                    지하철역 데이터를 불러오는 중입니다...
+                  </Typography>
+                </Box>
+              )
+            )}
 
-          {/* 검색 탭 */}
-          {tabValue === 1 && (
-            allStations.length > 0 ? (
-              <StationSearch
-                onStationSelect={handleStationSelect}
-                placeholder="지하철역 이름을 검색해보세요"
-              />
-            ) : (
-              <Box sx={{ textAlign: 'center', py: 4 }}>
-                <Typography color="text.secondary">
-                  지하철역 데이터를 불러오는 중입니다...
-                </Typography>
-              </Box>
-            )
-          )}
-        </Box>
+            {/* 검색 탭 */}
+            {tabValue === 1 && (
+              allStations.length > 0 ? (
+                <StationSearch
+                  onStationSelect={handleStationSelect}
+                  placeholder="지하철역 이름을 검색해보세요"
+                />
+              ) : (
+                <Box sx={{ textAlign: 'center', py: 4 }}>
+                  <Typography color="text.secondary">
+                    지하철역 데이터를 불러오는 중입니다...
+                  </Typography>
+                </Box>
+              )
+            )}
+          </ScrollableContent>
+        </ContentSection>
       </StyledPaper>
 
-      {/* 선택된 지하철역 */}
-      {selectedStations.length > 0 && (
-        <SelectedStationsBox>
-          <Box 
-            sx={{ 
-              display: 'flex', 
-              justifyContent: 'space-between', 
-              alignItems: 'center',
-              mb: 2 
-            }}
-          >
-            <Typography variant="h6" fontWeight={600} sx={{ fontSize: '1.1rem' }}>
-              선택된 지하철역
-            </Typography>
-            <ActionButton 
-              variant="outlined" 
-              size="small"
-              onClick={handleClearAll}
-              sx={{ 
-                minWidth: 'auto',
-                px: 2,
-                py: 0.5,
-                fontSize: '0.875rem'
-              }}
-            >
-              전체 삭제
-            </ActionButton>
-          </Box>
-          <Box>
-            {selectedStations.map((stationName) => (
-              <SelectedChip
-                key={stationName}
-                label={`🚇 ${stationName}`}
-                onDelete={() => handleRemoveStation(stationName)}
-                deleteIcon={<CloseIcon />}
-              />
-            ))}
-          </Box>
-        </SelectedStationsBox>
-      )}
     </StyledContainer>
   );
 };
