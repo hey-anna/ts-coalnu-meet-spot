@@ -1,6 +1,42 @@
 import React, { useEffect, useState } from 'react';
-import { Box } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
+import {
+  Box,
+  Typography,
+  Button,
+  Card,
+  CardContent,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Chip,
+  Avatar,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  ListItemSecondaryAction,
+  Fab,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Divider,
+  Autocomplete,
+  Grid,
+} from '@mui/material';
+import {
+  Add as AddIcon,
+  Delete as DeleteIcon,
+  Edit as EditIcon,
+  Person as PersonIcon,
+  Group as GroupIcon,
+  ExpandMore as ExpandMoreIcon,
+  PersonAdd as PersonAddIcon,
+  Train as TrainIcon,
+} from '@mui/icons-material';
+import { styled, ThemeProvider } from '@mui/material/styles';
 import {
   getLineColor,
   STATION_CONFIG,
@@ -19,12 +55,6 @@ import useGetUserFriendByGroup from '@/domain/user/hooks/useGetUserFriendByGroup
 import { ErrorBoundary } from 'react-error-boundary';
 import { Suspense } from 'react';
 import { redirect, useNavigate } from 'react-router';
-import type { GetUserFriendByGroupResponse } from '@/domain/user/models/model';
-import {
-  allFriendResponsePort,
-  friendGroupResponsePort,
-} from '@/domain/user/port/friendDataPort';
-import useGetUserFriendList from '@/domain/user/hooks/useGetUserFriendList';
 
 // 타입 정의
 interface Friend {
@@ -41,14 +71,131 @@ interface FriendGroup {
   color: string;
 }
 
+// 스타일 변수들
+const pageContainerStyle = {
+  maxWidth: 1200,
+  margin: '0 auto',
+  padding: 3,
+  backgroundColor: theme.palette.background.default,
+  minHeight: '80vh',
+};
+
+const gridContainerStyle = {
+  display: 'grid',
+  gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+  gap: 3,
+};
+
+const fabStyle = {
+  position: 'fixed',
+  bottom: 24,
+  right: 24,
+  backgroundColor: theme.palette.primary.main,
+  '&:hover': {
+    backgroundColor: theme.palette.user.main,
+  },
+};
+
+const friendItemStyle = {
+  borderRadius: 1,
+  marginBottom: 1,
+  backgroundColor: theme.palette.custom.bgTertiary,
+  border: `1px solid ${theme.palette.custom.borderLight}`,
+  '&:hover': {
+    backgroundColor: theme.palette.custom.bgHover,
+  },
+};
+
+// 색상 선택 컴포넌트
+
+// 메인 컴포넌트
+
+interface Friend {
+  id: string;
+  name: string;
+  station: string;
+  avatar?: string;
+}
+
+interface FriendGroup {
+  id: string;
+  name: string;
+  members: Friend[];
+  color: string;
+}
+
+// const FreindGroupPage = () => {
+//   return (
+//     <ErrorBoundary fallbackRender={({ error }) => <div>{error.message}</div>}>
+//       <Suspense fallback={<div>loading...</div>}>
+//         <FriendGroupManagement />
+//       </Suspense>
+//     </ErrorBoundary>
+//   );
+// };
+
+// const FriendGroupManagement = () => {
+//   const { user } = useUserStore();
+//   console.info(user?.id);
+//   const navigate = useNavigate();
+
+//   if (!user?.id) navigate('/login');
+
+//   useEffect(() => {
+//     if (!user?.id) navigate('/login');
+//   }, []);
+
+//   console.log(user.id);
+
+//   return <FriendGroupManageMent user={user} />;
+// };
+
+// const FriendGroupManageMent = (user) => {
+//   const { data: friendGroups } = useGetUserFriendByGroup(user?.id);
+//   console.info('데이터 찍히냐', friendGroups);
+
+//   return <div>아아</div>;
+// };
+
 const FriendGroupManagement: React.FC = () => {
   const { user } = useUserStore();
-  const { data: friendGroupResponse } = useGetUserFriendByGroup(user?.id);
-  const { data: friendResponse } = useGetUserFriendList(user);
+  console.log(user);
+  const {
+    data: friendGroups,
+    // error: friendGroupsError,
+    // isLoading: friendGroupsLoader,
+  } = useGetUserFriendByGroup(user?.id);
 
-  const friendGroups = friendGroupResponsePort(friendGroupResponse);
-  const allFriends = allFriendResponsePort(friendResponse);
-  const { mutate: addNewFriend } = useAddNewFriend();
+  console.log(friendGroups);
+
+  return <div>dkdk</div>;
+
+  const [friendGroups, setFriendGroups] = useState<FriendGroup[]>();
+
+  [
+    {
+      id: '1',
+      name: '대학 친구들',
+      members: [
+        { id: '1', name: '김철수', station: '홍대입구역' },
+        { id: '2', name: '이영희', station: '강남역' },
+      ],
+      color: theme.palette.primary.main,
+    },
+    {
+      id: '2',
+      name: '직장 동료',
+      members: [{ id: '3', name: '박민수', station: '신촌역' }],
+      color: theme.palette.user.main,
+    },
+  ];
+
+  const [allFriends, setAllFriends] = useState<Friend[]>([
+    { id: '1', name: '김철수', station: '홍대입구역' },
+    { id: '2', name: '이영희', station: '강남역' },
+    { id: '3', name: '박민수', station: '신촌역' },
+    { id: '4', name: '최지원', station: '명동역' },
+  ]);
 
   // 다이얼로그 상태
   const [groupDialogOpen, setGroupDialogOpen] = useState(false);
@@ -133,13 +280,7 @@ const FriendGroupManagement: React.FC = () => {
       station: selectedStation.station_nm,
     };
 
-    // console.log(newFriend);
-    // {id: '1751015411462', name: '우석', station: '당산'}
-    addNewFriend({
-      user_id: user.id,
-      name: newFriend.name,
-      start_station: newFriend.station,
-    });
+    setAllFriends((prev) => [...prev, newFriend]);
     setFriendDialogOpen(false);
     setFriendForm({ name: '', station: '' });
     setSelectedStation(null);
@@ -237,7 +378,9 @@ const FriendGroupManagement: React.FC = () => {
           setFriendDialogOpen={setFriendDialogOpen}
         />
 
+        {/* 메인 콘텐츠 */}
         <Box sx={gridContainerStyle}>
+          {/* 친구 그룹 섹션 */}
           <GroupList
             friendGroups={friendGroups}
             expandedGroup={expandedGroup}
@@ -253,6 +396,7 @@ const FriendGroupManagement: React.FC = () => {
             setSelectedFriendsForGroup={setSelectedFriendsForGroup}
           />
 
+          {/* 전체 친구 목록 섹션 */}
           <FriendList
             allFriends={allFriends}
             expandedGroup={expandedGroup}
@@ -265,9 +409,10 @@ const FriendGroupManagement: React.FC = () => {
 
         {/* 플로팅 액션 버튼 */}
         {/* <Fab sx={fabStyle} onClick={() => setFriendDialogOpen(true)}>
-                  <PersonAddIcon />
-                </Fab> */}
+          <PersonAddIcon />
+        </Fab> */}
 
+        {/* 그룹 생성/수정 다이얼로그 */}
         <GroupDialog
           groupDialogOpen={groupDialogOpen}
           setGroupDialogOpen={setGroupDialogOpen}
@@ -277,6 +422,7 @@ const FriendGroupManagement: React.FC = () => {
           handleSaveGroup={handleSaveGroup}
         />
 
+        {/* 친구 추가 다이얼로그 */}
         <FriendDialog
           friendDialogOpen={friendDialogOpen}
           handleCloseFriendDialog={handleCloseFriendDialog}
@@ -297,18 +443,3 @@ const FriendGroupManagement: React.FC = () => {
 };
 
 export default FriendGroupManagement;
-
-// 스타일 변수들
-const pageContainerStyle = {
-  maxWidth: 1200,
-  margin: '0 auto',
-  padding: 3,
-  backgroundColor: theme.palette.background.default,
-  minHeight: '80vh',
-};
-
-const gridContainerStyle = {
-  display: 'grid',
-  gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-  gap: 3,
-};

@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import type { FriendWithGroup, User } from '../models/model';
 import { getUserFriendList } from '../apis/api';
 
