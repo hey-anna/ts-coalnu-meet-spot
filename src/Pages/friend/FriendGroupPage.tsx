@@ -43,12 +43,13 @@ import {
 } from '../../shared/config/stationConfig';
 import type { StationData } from '../../shared/models/station';
 
-import { FriendDialog } from './Dialog/FriendDialog';
-import { GroupDialog } from './Dialog/GroupDialog';
+import { FriendDialog } from '../../domain/friend/Dialog/FriendDialog';
+import { GroupDialog } from '../../domain/friend/Dialog/GroupDialog';
 import theme from '@/styles/mui/theme';
-import { FriendHeader } from './FriendHeader';
-import { FriendList } from './Content/FriendList';
-import { GroupList } from './Content/GroupList';
+import { FriendHeader } from '../../domain/friend/FriendHeader';
+import { FriendList } from '../../domain/friend/Content/FriendList';
+import { GroupList } from '../../domain/friend/Content/GroupList';
+import { useUserStore } from '@/domain/user/store/userStore';
 
 // 타입 정의
 interface Friend {
@@ -104,6 +105,9 @@ const friendItemStyle = {
 
 // 메인 컴포넌트
 const FriendGroupManagement: React.FC = () => {
+  const { user } = useUserStore();
+  console.log(user);
+
   const [friendGroups, setFriendGroups] = useState<FriendGroup[]>([
     {
       id: '1',
