@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
+import type { Friend } from '../../models/model';
 
 // Styled Components
 const SearchTextField = styled(TextField)(({ theme }) => ({
@@ -73,18 +74,17 @@ const EmptyStateBox = styled(Box)(({ theme }) => ({
 
 // Props 인터페이스
 interface FriendSearchProps {
-  onFriendSelect: (stationName: string) => void;
+  onFriendSelect: (friend: Friend) => void;
+  selectedFriends?: Friend[];
   placeholder?: string;
   maxResults?: number;
 }
 
-interface Friend {
-    name:string
-}
-
-const friends = [
-    "우석","예영","시영","예진"
-]
+const friends: Friend[] = [
+  { id: 1, user_id: "user1", name: "지민", start_station: "강남" },
+  { id: 2, user_id: "user2", name: "수아", start_station: "잠실" },
+  { id: 48, user_id: "user3", name: "시영", start_station: "홍대입구" },
+];
 
 const todayFriendSearch: React.FC<FriendSearchProps> = ({
   onFriendSelect,
@@ -104,10 +104,9 @@ const todayFriendSearch: React.FC<FriendSearchProps> = ({
     }
 
     // stationConfig의 DATA에서 검색
-    const filtered = friends.filter((friend: string) => 
-        friend.toLowerCase().includes(query.toLowerCase())
+    const filtered = friends.filter((friend: Friend) => 
+        friend.name.toLowerCase().includes(query.toLowerCase())
     )
-    .map(friend => ({ name: friend })) // Friend 인터페이스에 맞게 변환
     .slice(0, maxResults);
     
     setSearchResults(filtered);
@@ -131,26 +130,31 @@ const todayFriendSearch: React.FC<FriendSearchProps> = ({
       {searchResults.length > 0 && (
         <Box>
             {searchResults.map((friend, index) => (
-            <SearchResultCard 
-                key={`${friend.name}-${index}`} // Friend는 name만 있으므로 index 추가
-                onClick={() => onFriendSelect(friend.name)}
-            >
-                <SearchCardContent>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
-                    <Typography variant="h6" fontWeight={600} sx={{ fontSize: '1.1rem' }}>
-                    {friend.name}
-                    </Typography>
-                </Box>
-                <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
-                    친구
-                </Typography>
-                </SearchCardContent>
-            </SearchResultCard>
+              <SearchResultCard 
+                  key={friend.id}
+                  onClick={() => onFriendSelect(friend)}
+              >
+                  <SearchCardContent>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <Box>
+                              <Typography variant="h6" fontWeight={600} sx={{ fontSize: '1.1rem' }}>
+                                  {friend.name}
+                              </Typography>
+                              <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
+                                  {friend.start_station}
+                              </Typography>
+                          </Box>
+                          <Typography variant="caption" color="text.secondary">
+                              친구
+                          </Typography>
+                      </Box>
+                  </SearchCardContent>
+              </SearchResultCard>
             ))}
             
             {/* 더 많은 결과가 있을 때 안내 */}
-            {friends.filter((friend: string) =>
-            friend.toLowerCase().includes(searchQuery.toLowerCase())
+            {friends.filter((friend: Friend) =>
+              friend.name.toLowerCase().includes(searchQuery.toLowerCase())
             ).length > maxResults && (
             <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', mt: 2 }}>
                 더 많은 결과가 있습니다. 검색어를 더 구체적으로 입력해보세요.
