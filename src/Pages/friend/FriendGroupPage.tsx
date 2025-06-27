@@ -37,9 +37,12 @@ import {
   Train as TrainIcon,
 } from '@mui/icons-material';
 import { styled, ThemeProvider } from '@mui/material/styles';
-import { getLineColor, STATION_CONFIG } from '../../shared/config/stationConfig';
+import {
+  getLineColor,
+  STATION_CONFIG,
+} from '../../shared/config/stationConfig';
 import type { StationData } from '../../shared/models/station';
-import theme from "../../styles/mui/theme";
+import theme from '../../styles/mui/theme';
 import { colorPalette } from '@/shared/config/config';
 
 // 타입 정의
@@ -158,19 +161,22 @@ const ColorPicker = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(1),
 }));
 
-const ColorOption = styled(Box)<{ selected: boolean }>(({ theme, selected }) => ({
-  width: 40,
-  height: 40,
-  borderRadius: '50%',
-  cursor: 'pointer',
-  border: selected ? `3px solid ${theme.palette.text.primary}` : `2px solid ${theme.palette.custom.borderLight}`,
-  transition: 'all 0.3s ease',
-  '&:hover': {
-    transform: 'scale(1.1)',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-  },
-}));
-
+const ColorOption = styled(Box)<{ selected: boolean }>(
+  ({ theme, selected }) => ({
+    width: 40,
+    height: 40,
+    borderRadius: '50%',
+    cursor: 'pointer',
+    border: selected
+      ? `3px solid ${theme.palette.text.primary}`
+      : `2px solid ${theme.palette.custom.borderLight}`,
+    transition: 'all 0.3s ease',
+    '&:hover': {
+      transform: 'scale(1.1)',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+    },
+  }),
+);
 
 // 메인 컴포넌트
 const FriendGroupManagement: React.FC = () => {
@@ -187,9 +193,7 @@ const FriendGroupManagement: React.FC = () => {
     {
       id: '2',
       name: '직장 동료',
-      members: [
-        { id: '3', name: '박민수', station: '신촌역' },
-      ],
+      members: [{ id: '3', name: '박민수', station: '신촌역' }],
       color: theme.palette.user.main,
     },
   ]);
@@ -205,22 +209,27 @@ const FriendGroupManagement: React.FC = () => {
   const [groupDialogOpen, setGroupDialogOpen] = useState(false);
   const [friendDialogOpen, setFriendDialogOpen] = useState(false);
   const [editingGroup, setEditingGroup] = useState<FriendGroup | null>(null);
-  
+
   // 그룹 편집 상태
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
-  const [selectedFriendsForGroup, setSelectedFriendsForGroup] = useState<string[]>([]);
+  const [selectedFriendsForGroup, setSelectedFriendsForGroup] = useState<
+    string[]
+  >([]);
 
   // 폼 상태
-  const [groupForm, setGroupForm] = useState({ name: '', color: theme.palette.primary.main });
+  const [groupForm, setGroupForm] = useState({
+    name: '',
+    color: theme.palette.primary.main,
+  });
   const [friendForm, setFriendForm] = useState({ name: '', station: '' });
-  const [selectedStation, setSelectedStation] = useState<StationData | null>(null);
+  const [selectedStation, setSelectedStation] = useState<StationData | null>(
+    null,
+  );
 
   // 지하철역 검색 상태
   const [inputValue, setInputValue] = useState(''); // 입력 값을 별도로 관리
   const [searchResults, setSearchResults] = useState<StationData[]>([]);
   const maxResults = 50; // 결과 개수 제한
-
-
 
   // 검색 기능
   const handleStationSearch = (query: string) => {
@@ -230,12 +239,13 @@ const FriendGroupManagement: React.FC = () => {
     }
 
     // stationConfig의 DATA에서 검색
-    const filtered = STATION_CONFIG.DATA.filter((station: StationData) =>
-      station.station_nm.includes(query) ||
-      station.line_num.includes(query) ||
-      station.fr_code.includes(query)
+    const filtered = STATION_CONFIG.DATA.filter(
+      (station: StationData) =>
+        station.station_nm.includes(query) ||
+        station.line_num.includes(query) ||
+        station.fr_code.includes(query),
     ).slice(0, maxResults); // 결과 개수 제한
-    
+
     setSearchResults(filtered);
   };
 
@@ -244,18 +254,18 @@ const FriendGroupManagement: React.FC = () => {
     if (!groupForm.name.trim()) return;
 
     if (editingGroup) {
-      setFriendGroups(prev => prev.map(group =>
-        group.id === editingGroup.id
-          ? { ...group, ...groupForm }
-          : group
-      ));
+      setFriendGroups((prev) =>
+        prev.map((group) =>
+          group.id === editingGroup.id ? { ...group, ...groupForm } : group,
+        ),
+      );
     } else {
       const newGroup: FriendGroup = {
         id: Date.now().toString(),
         ...groupForm,
         members: [],
       };
-      setFriendGroups(prev => [...prev, newGroup]);
+      setFriendGroups((prev) => [...prev, newGroup]);
     }
 
     setGroupDialogOpen(false);
@@ -265,7 +275,7 @@ const FriendGroupManagement: React.FC = () => {
 
   // 그룹 삭제
   const handleDeleteGroup = (groupId: string) => {
-    setFriendGroups(prev => prev.filter(group => group.id !== groupId));
+    setFriendGroups((prev) => prev.filter((group) => group.id !== groupId));
   };
 
   // 친구 추가
@@ -278,7 +288,7 @@ const FriendGroupManagement: React.FC = () => {
       station: selectedStation.station_nm,
     };
 
-    setAllFriends(prev => [...prev, newFriend]);
+    setAllFriends((prev) => [...prev, newFriend]);
     setFriendDialogOpen(false);
     setFriendForm({ name: '', station: '' });
     setSelectedStation(null);
@@ -288,24 +298,26 @@ const FriendGroupManagement: React.FC = () => {
 
   // 그룹에 친구 추가
   const handleAddFriendToGroup = (groupId: string, friendId: string) => {
-    const friend = allFriends.find(f => f.id === friendId);
+    const friend = allFriends.find((f) => f.id === friendId);
     if (!friend) return;
 
-    setFriendGroups(prev => prev.map(group =>
-      group.id === groupId
-        ? {
-            ...group,
-            members: group.members.find(m => m.id === friendId)
-              ? group.members
-              : [...group.members, friend]
-          }
-        : group
-    ));
+    setFriendGroups((prev) =>
+      prev.map((group) =>
+        group.id === groupId
+          ? {
+              ...group,
+              members: group.members.find((m) => m.id === friendId)
+                ? group.members
+                : [...group.members, friend],
+            }
+          : group,
+      ),
+    );
   };
 
   // 선택된 친구들을 그룹에 추가
   const handleAddSelectedFriendsToGroup = (groupId: string) => {
-    selectedFriendsForGroup.forEach(friendId => {
+    selectedFriendsForGroup.forEach((friendId) => {
       handleAddFriendToGroup(groupId, friendId);
     });
     setSelectedFriendsForGroup([]);
@@ -313,10 +325,10 @@ const FriendGroupManagement: React.FC = () => {
 
   // 친구 선택/해제
   const handleToggleFriendSelection = (friendId: string) => {
-    setSelectedFriendsForGroup(prev => 
-      prev.includes(friendId) 
-        ? prev.filter(id => id !== friendId)
-        : [...prev, friendId]
+    setSelectedFriendsForGroup((prev) =>
+      prev.includes(friendId)
+        ? prev.filter((id) => id !== friendId)
+        : [...prev, friendId],
     );
   };
 
@@ -333,20 +345,27 @@ const FriendGroupManagement: React.FC = () => {
 
   // 그룹에서 친구 제거
   const handleRemoveFriendFromGroup = (groupId: string, friendId: string) => {
-    setFriendGroups(prev => prev.map(group =>
-      group.id === groupId
-        ? { ...group, members: group.members.filter(m => m.id !== friendId) }
-        : group
-    ));
+    setFriendGroups((prev) =>
+      prev.map((group) =>
+        group.id === groupId
+          ? {
+              ...group,
+              members: group.members.filter((m) => m.id !== friendId),
+            }
+          : group,
+      ),
+    );
   };
 
   // 친구 삭제
   const handleDeleteFriend = (friendId: string) => {
-    setAllFriends(prev => prev.filter(f => f.id !== friendId));
-    setFriendGroups(prev => prev.map(group => ({
-      ...group,
-      members: group.members.filter(m => m.id !== friendId)
-    })));
+    setAllFriends((prev) => prev.filter((f) => f.id !== friendId));
+    setFriendGroups((prev) =>
+      prev.map((group) => ({
+        ...group,
+        members: group.members.filter((m) => m.id !== friendId),
+      })),
+    );
   };
 
   // 다이얼로그 닫을 때 검색 상태 초기화
@@ -396,13 +415,18 @@ const FriendGroupManagement: React.FC = () => {
             </Box>
             <Box sx={{ padding: 2 }}>
               {friendGroups.map((group) => (
-                <Accordion 
-                  key={group.id} 
+                <Accordion
+                  key={group.id}
                   sx={groupCardStyle}
-                  onChange={(event, isExpanded) => handleGroupExpand(group.id, isExpanded)}
+                  expanded={expandedGroup === group.id}
+                  onChange={(event, isExpanded) =>
+                    handleGroupExpand(group.id, isExpanded)
+                  }
                 >
                   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+                    <Box
+                      sx={{ display: 'flex', alignItems: 'center', flex: 1 }}
+                    >
                       <Avatar sx={{ backgroundColor: group.color, mr: 2 }}>
                         <GroupIcon />
                       </Avatar>
@@ -447,35 +471,53 @@ const FriendGroupManagement: React.FC = () => {
                       <Typography variant="subtitle2" gutterBottom>
                         그룹 멤버:
                       </Typography>
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          flexWrap: 'wrap',
+                          gap: 1,
+                          mb: 2,
+                        }}
+                      >
                         {group.members.map((member) => (
                           <Chip
                             key={member.id}
                             icon={<TrainIcon />}
                             label={`${member.name} (${member.station})`}
-                            onDelete={() => handleRemoveFriendFromGroup(group.id, member.id)}
+                            onDelete={() =>
+                              handleRemoveFriendFromGroup(group.id, member.id)
+                            }
                             sx={{
                               ...memberChipStyle,
                               borderColor: getLineColor(
-                                allFriends.find(f => f.id === member.id)?.station.includes('호선') || 
-                                allFriends.find(f => f.id === member.id)?.station.includes('선') 
-                                  ? STATION_CONFIG.DATA.find(s => s.station_nm === member.station)?.line_num || ''
-                                  : ''
+                                allFriends
+                                  .find((f) => f.id === member.id)
+                                  ?.station.includes('호선') ||
+                                  allFriends
+                                    .find((f) => f.id === member.id)
+                                    ?.station.includes('선')
+                                  ? STATION_CONFIG.DATA.find(
+                                      (s) => s.station_nm === member.station,
+                                    )?.line_num || ''
+                                  : '',
                               ),
                             }}
                           />
                         ))}
                       </Box>
-                      
+
                       {selectedFriendsForGroup.length > 0 && (
                         <Box sx={{ mb: 2 }}>
                           <Button
                             variant="contained"
                             size="small"
-                            onClick={() => handleAddSelectedFriendsToGroup(group.id)}
+                            onClick={() =>
+                              handleAddSelectedFriendsToGroup(group.id)
+                            }
                             sx={{ mr: 1 }}
                           >
-                            선택한 친구 추가 ({selectedFriendsForGroup.length}명)
+                            선택한 친구 추가 ({selectedFriendsForGroup.length}
+                            명)
                           </Button>
                           <Button
                             variant="outlined"
@@ -486,8 +528,12 @@ const FriendGroupManagement: React.FC = () => {
                           </Button>
                         </Box>
                       )}
-                      
-                      <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ fontStyle: 'italic' }}
+                      >
                         오른쪽 친구 목록에서 친구를 선택하여 그룹에 추가하세요
                       </Typography>
                     </Box>
@@ -506,23 +552,32 @@ const FriendGroupManagement: React.FC = () => {
             </Box>
             <List sx={{ padding: 2 }}>
               {allFriends.map((friend) => {
-                const isInExpandedGroup = expandedGroup && 
-                  friendGroups.find(g => g.id === expandedGroup)?.members.some(m => m.id === friend.id);
+                const isInExpandedGroup =
+                  expandedGroup &&
+                  friendGroups
+                    .find((g) => g.id === expandedGroup)
+                    ?.members.some((m) => m.id === friend.id);
                 const isSelected = selectedFriendsForGroup.includes(friend.id);
                 const isDisabled = !expandedGroup || isInExpandedGroup;
-                
+
                 return (
-                  <ListItem 
-                    key={friend.id} 
+                  <ListItem
+                    key={friend.id}
                     sx={{
                       ...friendItemStyle,
                       opacity: isDisabled ? 0.5 : 1,
                       cursor: isDisabled ? 'default' : 'pointer',
-                      backgroundColor: isSelected ? theme.palette.primary.light : 
-                        isDisabled ? theme.palette.custom.bgTertiary : theme.palette.custom.bgTertiary,
+                      backgroundColor: isSelected
+                        ? theme.palette.primary.light
+                        : isDisabled
+                          ? theme.palette.custom.bgTertiary
+                          : theme.palette.custom.bgTertiary,
                       '&:hover': {
-                        backgroundColor: isDisabled ? theme.palette.custom.bgTertiary : 
-                          isSelected ? theme.palette.primary.light : theme.palette.custom.bgHover,
+                        backgroundColor: isDisabled
+                          ? theme.palette.custom.bgTertiary
+                          : isSelected
+                            ? theme.palette.primary.light
+                            : theme.palette.custom.bgHover,
                       },
                     }}
                     onClick={() => {
@@ -532,31 +587,35 @@ const FriendGroupManagement: React.FC = () => {
                     }}
                   >
                     <ListItemAvatar>
-                      <Avatar sx={{ 
-                        backgroundColor: isSelected ? theme.palette.primary.main : theme.palette.primary.main,
-                        opacity: isDisabled ? 0.5 : 1 
-                      }}>
+                      <Avatar
+                        sx={{
+                          backgroundColor: isSelected
+                            ? theme.palette.primary.main
+                            : theme.palette.primary.main,
+                          opacity: isDisabled ? 0.5 : 1,
+                        }}
+                      >
                         <PersonIcon />
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText
                       primary={
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <Typography variant="body1">
-                            {friend.name}
-                          </Typography>
+                        <Box
+                          sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                        >
+                          <Typography variant="body1">{friend.name}</Typography>
                           {isInExpandedGroup && (
-                            <Chip 
-                              label="그룹 멤버" 
-                              size="small" 
+                            <Chip
+                              label="그룹 멤버"
+                              size="small"
                               variant="outlined"
                               sx={{ fontSize: '0.7rem', height: '20px' }}
                             />
                           )}
                           {isSelected && (
-                            <Chip 
-                              label="선택됨" 
-                              size="small" 
+                            <Chip
+                              label="선택됨"
+                              size="small"
                               color="primary"
                               sx={{ fontSize: '0.7rem', height: '20px' }}
                             />
@@ -564,27 +623,41 @@ const FriendGroupManagement: React.FC = () => {
                         </Box>
                       }
                       secondary={
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                          <TrainIcon 
-                            fontSize="small" 
-                            sx={{ 
-                              color: getLineColor(
-                                STATION_CONFIG.DATA.find(s => s.station_nm === friend.station)?.line_num || ''
-                              )
-                            }}
-                          />
-                          <Typography 
-                            variant="body2" 
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 0.5,
+                          }}
+                        >
+                          <TrainIcon
+                            fontSize="small"
                             sx={{
                               color: getLineColor(
-                                STATION_CONFIG.DATA.find(s => s.station_nm === friend.station)?.line_num || ''
-                              )
+                                STATION_CONFIG.DATA.find(
+                                  (s) => s.station_nm === friend.station,
+                                )?.line_num || '',
+                              ),
+                            }}
+                          />
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              color: getLineColor(
+                                STATION_CONFIG.DATA.find(
+                                  (s) => s.station_nm === friend.station,
+                                )?.line_num || '',
+                              ),
                             }}
                           >
                             {friend.station}
                           </Typography>
                           <Typography variant="caption" color="text.secondary">
-                            ({STATION_CONFIG.DATA.find(s => s.station_nm === friend.station)?.line_num || '정보없음'})
+                            (
+                            {STATION_CONFIG.DATA.find(
+                              (s) => s.station_nm === friend.station,
+                            )?.line_num || '정보없음'}
+                            )
                           </Typography>
                         </Box>
                       }
@@ -614,7 +687,12 @@ const FriendGroupManagement: React.FC = () => {
         </Fab>
 
         {/* 그룹 생성/수정 다이얼로그 */}
-        <Dialog open={groupDialogOpen} onClose={() => setGroupDialogOpen(false)} maxWidth="sm" fullWidth>
+        <Dialog
+          open={groupDialogOpen}
+          onClose={() => setGroupDialogOpen(false)}
+          maxWidth="sm"
+          fullWidth
+        >
           <DialogTitle>
             {editingGroup ? '그룹 수정' : '새 그룹 생성'}
           </DialogTitle>
@@ -626,10 +704,12 @@ const FriendGroupManagement: React.FC = () => {
               fullWidth
               variant="outlined"
               value={groupForm.name}
-              onChange={(e) => setGroupForm(prev => ({ ...prev, name: e.target.value }))}
+              onChange={(e) =>
+                setGroupForm((prev) => ({ ...prev, name: e.target.value }))
+              }
               sx={{ mb: 3 }}
             />
-            
+
             <Typography variant="subtitle2" gutterBottom>
               그룹 색상 선택:
             </Typography>
@@ -639,7 +719,7 @@ const FriendGroupManagement: React.FC = () => {
                   key={color}
                   selected={groupForm.color === color}
                   sx={{ backgroundColor: color }}
-                  onClick={() => setGroupForm(prev => ({ ...prev, color }))}
+                  onClick={() => setGroupForm((prev) => ({ ...prev, color }))}
                 />
               ))}
             </ColorPicker>
@@ -653,7 +733,12 @@ const FriendGroupManagement: React.FC = () => {
         </Dialog>
 
         {/* 친구 추가 다이얼로그 */}
-        <Dialog open={friendDialogOpen} onClose={handleCloseFriendDialog} maxWidth="sm" fullWidth>
+        <Dialog
+          open={friendDialogOpen}
+          onClose={handleCloseFriendDialog}
+          maxWidth="sm"
+          fullWidth
+        >
           <DialogTitle>새 친구 추가</DialogTitle>
           <DialogContent>
             <TextField
@@ -663,7 +748,9 @@ const FriendGroupManagement: React.FC = () => {
               fullWidth
               variant="outlined"
               value={friendForm.name}
-              onChange={(e) => setFriendForm(prev => ({ ...prev, name: e.target.value }))}
+              onChange={(e) =>
+                setFriendForm((prev) => ({ ...prev, name: e.target.value }))
+              }
               sx={{ mb: 2 }}
             />
             <Autocomplete
@@ -678,7 +765,9 @@ const FriendGroupManagement: React.FC = () => {
               onChange={(event, newValue) => {
                 setSelectedStation(newValue);
               }}
-              isOptionEqualToValue={(option, value) => option.fr_code === value.fr_code}
+              isOptionEqualToValue={(option, value) =>
+                option.fr_code === value.fr_code
+              }
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -689,33 +778,34 @@ const FriendGroupManagement: React.FC = () => {
               )}
               renderOption={(props, option) => (
                 <Box component="li" {...props} key={option.fr_code}>
-                  <TrainIcon 
-                    sx={{ 
-                      mr: 1, 
-                      color: getLineColor(option.line_num)
-                    }} 
+                  <TrainIcon
+                    sx={{
+                      mr: 1,
+                      color: getLineColor(option.line_num),
+                    }}
                   />
                   <Box>
                     <Typography variant="body2">{option.station_nm}</Typography>
-                    <Typography 
-                      variant="caption" 
-                      sx={{ 
+                    <Typography
+                      variant="caption"
+                      sx={{
                         color: getLineColor(option.line_num),
-                        fontWeight: 600
+                        fontWeight: 600,
                       }}
                     >
                       {option.line_num}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      {' | '}{option.fr_code}
+                      {' | '}
+                      {option.fr_code}
                     </Typography>
                   </Box>
                 </Box>
               )}
               noOptionsText={
-                inputValue.trim() === '' 
-                  ? "지하철역 이름을 입력해주세요" 
-                  : "검색 결과가 없습니다"
+                inputValue.trim() === ''
+                  ? '지하철역 이름을 입력해주세요'
+                  : '검색 결과가 없습니다'
               }
               loadingText="검색 중..."
               freeSolo={false}
@@ -726,7 +816,9 @@ const FriendGroupManagement: React.FC = () => {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseFriendDialog}>취소</Button>
-            <Button onClick={handleAddFriend} variant="contained">추가</Button>
+            <Button onClick={handleAddFriend} variant="contained">
+              추가
+            </Button>
           </DialogActions>
         </Dialog>
       </Box>
