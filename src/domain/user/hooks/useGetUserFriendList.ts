@@ -1,15 +1,21 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import type { User } from '../models/model';
+import type { FriendWithGroup, User } from '../models/model';
 import { getUserFriendList } from '../apis/api';
 
 const useGetUserFriendList = (params: User) => {
-  return useQuery({
+  return useQuery<
+    FriendWithGroup[],
+    Error,
+    FriendWithGroup[],
+    [string, string]
+  >({
     queryKey: ['friend-list', params.id],
     queryFn: () => {
       if (!params.id || params.id == '')
         throw new Error('fail to fetch category because no user id');
       return getUserFriendList(params.id);
     },
+    // suspense: true,
   });
 };
 

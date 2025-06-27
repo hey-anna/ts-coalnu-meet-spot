@@ -62,6 +62,18 @@ export interface AddFriendListToGroupRequest {
   friend_id_list: number[];
 }
 
+export interface DeleteFriendFromGroupRequest {
+  group_id: number;
+  friend_id: number;
+}
+
+// 그룹 정보 수정 요청
+export interface UpdateGroupRequest {
+  group_id: number;
+  group_name?: string;
+  group_color?: string | null;
+}
+
 //// 필요한 api 목록
 
 export type FriendInfo = {

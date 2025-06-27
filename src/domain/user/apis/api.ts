@@ -4,11 +4,13 @@ import type {
   AddFriendListToGroupRequest,
   AddNewFriendRequest,
   AddNewGroupRequest,
+  DeleteFriendFromGroupRequest,
   Friend,
   FriendLinkGroupRequest,
   FriendWithGroup,
   GetUserFriendByGroupResponse,
   Group,
+  UpdateGroupRequest,
 } from '../models/model';
 
 // 현재 로그인한 user의 정보
@@ -29,9 +31,7 @@ export const getCurrentUserInfo = async (): Promise<{ user: User } | null> => {
 };
 
 // 현재 로그인한 user가 가지고 있는 group list
-export const getCurrentUserGroup = async (
-  id: string,
-): Promise<Group[] | null> => {
+export const getCurrentUserGroup = async (id: string): Promise<Group[]> => {
   try {
     console.log('현재 user의 id값 : ', id);
     const { data } = await supabase
@@ -48,7 +48,7 @@ export const getCurrentUserGroup = async (
 // 현재 로그인한 user의 전체 친구 리스트 (그룹 정보 포함)
 export const getUserFriendList = async (
   id: string,
-): Promise<FriendWithGroup[] | null> => {
+): Promise<FriendWithGroup[]> => {
   try {
     const { data } = await supabase
       .from('friend')
@@ -204,50 +204,34 @@ export const addFriendListToGroup = async (
   }
 };
 
-// : Promise<FriendWithGroup>
-// export const addNewFriend = async (
-//   params: AddNewFriendRequest,
-// ): Promise<Friend> => {
-//   try {
-//     console.log('api 전달 전의 값 : ', params);
+export const deleteFriendFromGroup = async (
+  params: DeleteFriendFromGroupRequest,
+) => {
+  try {
+    const { data } = await supabase
+      .from('friend_link_group')
+      .delete()
+      .eq('friend_id', params.friend_id)
+      .eq('group_id', params.group_id);
+  } catch (error) {
+    throw new Error('fail to delete friend from group');
+  }
+};
 
-//     let newGroupId: number | null;
+export const deleteGroup = async (group_id: number): Promise<void> => {
+  try {
+    await supabase.from('friend_group').delete().eq('id', group_id);
+  } catch (error) {
+    throw new Error('fail to delete group');
+  }
+};
 
-//     if (params.group_name && params.group_name.trim() != '') {
-//       const addedGroupData: Group = await addNewGroup({
-//         user_id: params.user_id,
-//         group_name: params.group_name,
-//       });
-//       console.log('1단계 그룹 추가 완료 : ', addedGroupData);
-//       newGroupId = addedGroupData.id;
-//     }
-
-//     const { group_name, ...friendInfo } = params;
-
-//     const { data: addedFriendData, error: friendError } = await supabase
-//       .from('friend')
-//       .insert(friendInfo)
-//       .select()
-//       .single<Friend>();
-
-//     console.log('2단계 저장한 친구 데이터 : ', addedFriendData);
-
-//     if (!addedFriendData) throw new Error('friend insert 실패');
-
-//     if (newGroupId) {
-//       const { data: linkData, error: linkError } = await supabase
-//         .from('friend_link_group')
-//         .insert({ friend_id: addedFriendData.id, group_id: newGroupId })
-//         .select()
-//         .single<FriendWithGroup>();
-
-//       console.log('3단계 추가된 연결 데이터 확인 : ', linkData);
-
-//       if (linkError) console.log('연결 테이블 데이터 저장 실패');
-//     }
-
-//     return addedFriendData;
-//   } catch (error) {
-//     throw new Error('fail to add new friend');
-//   }
-// };
+// 그룹 정보 수정
+export const updateGroupInfo = async (params: UpdateGroupRequest) => {
+  const { group_id, ...groupInfo } = params;
+  try {
+    await supabase.from('friend_group').update(groupInfo).eq('id', group_id);
+  } catch (error) {
+    throw new Error('fail to update group info');
+  }
+};
