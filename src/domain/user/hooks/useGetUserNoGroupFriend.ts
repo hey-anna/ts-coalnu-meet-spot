@@ -4,7 +4,7 @@ import type { FriendWithGroup } from '../models/model';
 
 const useGetUserNoGroupFriend = (id: string) => {
   return useQuery<FriendWithGroup[]>({
-    queryKey: ['get-filtered-friendList'],
+    queryKey: ['get-no-group-friendList'],
     queryFn: () => {
       return getUserNoGroupFriend(id);
     },
