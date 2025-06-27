@@ -5,6 +5,7 @@ import type { StationSubwaySearchResult } from '../models/stationSubwayPath.resp
 const API_KEY = import.meta.env.VITE_PUBLIC_TRANSPORT_API_KEY;
 
 // 소요 시간 조회
+// 지하철 경로 조회 (좌표 기반)
 export const getStationSubwayPath = async ({
   startX,
   startY,
@@ -32,7 +33,37 @@ export const getStationSubwayPath = async ({
   return data.result;
 };
 
+// stationID 기반 경로 조회용 함수
+// 지하철 경로 조회 (역 ID 기반)
+export const getStationSubwayPathByID = async ({
+  startID,
+  endID,
+}: {
+  startID: number;
+  endID: number;
+}) => {
+  const url = 'https://api.odsay.com/v1/api/subwayPath';
+
+  const { data } = await axios.get(url, {
+    params: {
+      apiKey: API_KEY,
+      CID: 1000, // 수도권
+      SID: startID,
+      EID: endID,
+      output: 'json',
+    },
+  });
+
+  if (!data.result) {
+    console.warn('Odsay API 응답에 result 없음:', data);
+    throw new Error('경로 정보를 가져오지 못했습니다.');
+  }
+
+  return data.result;
+};
+
 // 역 이름 - 좌표 변환
+// 지하철역 이름 → 좌표 및 ID 변환
 export const getStationSubwayCoords = async (stationName: string) => {
   const cleanName = stationName.replace(/역$/, '');
 
@@ -66,34 +97,7 @@ export const getStationSubwayCoords = async (stationName: string) => {
   };
 };
 
-// stationID 기반 경로 조회용 함수
-export const getStationSubwayPathByID = async ({
-  startID,
-  endID,
-}: {
-  startID: number;
-  endID: number;
-}) => {
-  const url = 'https://api.odsay.com/v1/api/subwayPath';
-
-  const { data } = await axios.get(url, {
-    params: {
-      apiKey: API_KEY,
-      CID: 1000, // 수도권
-      SID: startID,
-      EID: endID,
-      output: 'json',
-    },
-  });
-
-  if (!data.result) {
-    console.warn('Odsay API 응답에 result 없음:', data);
-    throw new Error('경로 정보를 가져오지 못했습니다.');
-  }
-
-  return data.result;
-};
-
+// 지하철역 키워드 검색
 export const searchSubwayStationByKeyword = async (
   keyword: string,
 ): Promise<StationSubwaySearchResult[]> => {

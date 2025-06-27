@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { getStationSubwayCoords } from '../../domain/place/apis/stationSubwayApi';
 import { getStationSubwayPathByID } from '../../domain/place/apis/stationSubwayApi';
-import { Container, Grid, Stack, Alert, Typography, Box } from '@mui/material';
+import { Box, Container, Grid, Stack } from '@mui/material';
+import { useStationSubwaySearchQuery } from '@/domain/place/hooks/useStationSubwaySearchQuery';
 import MeetHeader from '../../domain/place/ui/MeetHeader';
 import MeetPointCard from '../../domain/place/ui/layout/MeetPointCard';
 import MeetFriendsTimeCard from '../../domain/place/ui/layout/MeetFriendsTimeCard';
-import { useLocation, useNavigate } from 'react-router';
-import type { Friend } from '../../domain/user/models/model';
+import MeetSearchForm from '../../domain/place/ui/layout/MeetSearchForm';
+import { getSatisfactionEmoji } from '@/domain/place/lib/utils/getSatisfactionEmoji';
+import KakaoMap from '@/domain/place/ui/layout/KakaoMap';
+import { useFriendColorMap } from '@/domain/place/lib/utils/useFriendColorMap';
+import FriendMarkerLegend from '@/domain/place/ui/layout/FriendMarkerLegend';
+
 
 type StationCoords = {
   name: string;
@@ -17,26 +22,27 @@ type StationCoords = {
 };
 
 const StationMeetResultPage = () => {
-  const [results, setResults] = useState([] as { name: string; time: number | null; station: string }[])
-  const [isLoading, setIsLoading] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
-  
-  // 메인에서 받은 데이터
-  const { selectedFriends, selectedStations } = location.state || {};
-  
-  console.log('받은 친구 데이터:', selectedFriends);
-  console.log('받은 역 데이터:', selectedStations);
-  
-  // 데이터가 없을 때 메인으로 돌려보내기
-  useEffect(() => {
-    if (!selectedFriends || !selectedStations || selectedFriends.length === 0 || selectedStations.length === 0) {
-      alert('친구와 지하철역을 선택해주세요!');
-      navigate('/'); // 메인 페이지로 돌아가기
-    }
-  }, [selectedFriends, selectedStations, navigate]);
+  const friends = [
+    { name: '지민', from: '강남' },
+    { name: '수아', from: '잠실' },
+    { name: '도윤', from: '종각' },
+  ];
 
-  // 모든 역에 대해 각 친구의 이동 시간 계산
+  const [keyword, setKeyword] = useState<string>(''); // 초기 검색어 없음
+  const [selectedStationName, setSelectedStationName] = useState(''); // 초기 선택 없음
+  const [results, setResults] = useState<
+    { name: string; time: number | null; transfers: number }[]
+  >([]);
+  const [coords, setCoords] = useState<{ x: number; y: number } | null>(null); // 역위치 좌표
+  const [friendCoords, setFriendCoords] = useState<
+    { name: string; x: number; y: number }[]
+  >([]); // 친구들 위치 좌표
+
+  // const [error, setError] = useState<string | null>(null);
+
+  const { data: stationList = [] } = useStationSubwaySearchQuery(keyword);
+  console.log('stationList', stationList);
+
   useEffect(() => {
     if (!selectedFriends || !selectedStations || selectedFriends.length === 0 || selectedStations.length === 0) {
       return;
@@ -52,50 +58,52 @@ const StationMeetResultPage = () => {
           try {
             const to: StationCoords = await getStationSubwayCoords(station);
 
-            // 각 친구의 이동 시간 계산
-            const stationResults = await Promise.all(
-              selectedFriends.map(async (friend: Friend) => {
-                try {
-                  const from = await getStationSubwayCoords(friend.start_station);
-                  console.log('from:', friend.name, from.stationID);
-                  console.log('to:', station, to.stationID);
-                  
-                  const result = await getStationSubwayPathByID({
-                    startID: from.stationID,
-                    endID: to.stationID,
-                  });
-                  
-                  return {
-                    name: friend.name,
-                    time: result.globalTravelTime,
-                    station: station
-                  };
-                } catch (friendError) {
-                  console.error(`${friend.name}의 ${station}역까지 경로 계산 오류:`, friendError);
-                  return {
-                    name: friend.name,
-                    time: null,
-                    station: station
-                  };
-                }
-              })
-            );
-
-            allResults.push(...stationResults);
-          } catch (stationError) {
-            console.error(`${station}역 좌표 조회 오류:`, stationError);
-            // 해당 역에 대해 모든 친구의 시간을 null로 설정
-            selectedFriends.forEach((friend: Friend) => {
-              allResults.push({
-                name: friend.name,
-                time: null,
-                station: station
-              });
+        const resultList = await Promise.all(
+          friends.map(async (friend) => {
+            const from = await getStationSubwayCoords(friend.from);
+            console.log('from:', friend.name, from.stationID);
+            console.log('to:', to.stationID);
+            const result = await getStationSubwayPathByID({
+              startID: from.stationID,
+              endID: to.stationID,
             });
-          }
-        }
 
-        setResults(allResults);
+            // 환승 결과
+            console.log(`${friend.name} 경로 결과:`, result);
+            console.log(`driveInfoSet (${friend.name}):`, result.driveInfoSet);
+
+            const transferCount = result.driveInfoSet?.driveInfo
+              ? result.driveInfoSet.driveInfo.length - 1
+              : -1;
+
+            return {
+              name: friend.name,
+              time: result.globalTravelTime,
+              transfers: transferCount, // 환승 카운트
+              x: from.x,
+              y: from.y,
+            };
+          }),
+        );
+
+        // setResults(resultList);
+        setResults(
+          resultList.map(({ name, time, transfers }) => ({
+            name,
+            time,
+            transfers,
+          })),
+        );
+
+        // 친구들 좌표 저장
+        setFriendCoords(
+          resultList.map(({ name, x, y }) => ({
+            name,
+            x,
+            y,
+          })),
+        );
+
       } catch (err) {
         console.error('전체 계산 중 에러 발생:', err);
       } finally {
@@ -128,51 +136,129 @@ const StationMeetResultPage = () => {
     return <div>데이터를 불러오는 중...</div>;
   }
 
+  useEffect(() => {
+    // 검색결과에서 현재 선택한 값이 없으면 선택값 초기화
+    if (!stationList.find((s) => s.stationName === selectedStationName)) {
+      setSelectedStationName('');
+    }
+    console.log('불러온 역 리스트:', stationList);
+  }, [stationList, selectedStationName]);
+
+  // 지도용 좌표 요청
+  useEffect(() => {
+    if (!selectedStationName) {
+      setCoords(null);
+      return;
+    }
+
+    const fetchCoords = async () => {
+      try {
+        const result = await getStationSubwayCoords(selectedStationName);
+        setCoords({ x: result.x, y: result.y });
+      } catch (err) {
+        console.error('지도 좌표 가져오기 실패:', err);
+        setCoords(null);
+      }
+    };
+
+    fetchCoords();
+  }, [selectedStationName]);
+
+  const averageTime =
+    results.length > 0
+      ? Math.round(
+          results.reduce((sum, cur) => sum + (cur.time ?? 0), 0) /
+            results.length,
+        )
+      : null;
+
+  const averageTransferCount =
+    results.length > 0
+      ? Math.round(
+          results.reduce((sum, cur) => sum + (cur.transfers ?? 0), 0) /
+            results.length,
+        )
+      : null;
+
+  const satisfactionRate = getSatisfactionEmoji(
+    averageTime,
+    averageTransferCount,
+  );
+
+  const friendsColorMap = useFriendColorMap(friendCoords);
+
   return (
     <Container sx={{ py: 4 }}>
       <MeetHeader />
-      
-      {/* 선택된 정보 요약 */}
-      <Box sx={{ mb: 4 }}>
-        <Alert severity="info" sx={{ mb: 2 }}>
-          <Typography variant="body1" sx={{ fontWeight: 600, mb: 1 }}>
-            선택된 정보
-          </Typography>
-          <Typography variant="body2">
-            <strong>친구들:</strong> {selectedFriends.map((f: Friend) => `${f.name}(${f.start_station})`).join(', ')}
-          </Typography>
-          <Typography variant="body2">
-            <strong>후보 장소:</strong> {selectedStations.join(', ')}
-          </Typography>
-        </Alert>
-      </Box>
-
-      {isLoading ? (
-        <Box sx={{ textAlign: 'center', py: 4 }}>
-          <Typography>이동 시간을 계산하는 중입니다...</Typography>
-        </Box>
-      ) : (
-        <Grid container spacing={4}>
-          {selectedStations.map((station: string) => (
-            <Grid key={station} size={{ xs: 12, md: 6 }}>
-              <Stack spacing={3}>
-                <MeetPointCard
-                  selectedStationName={station}
-                  averageTime={getAverageTimeForStation(station)}
-                />
-                <MeetFriendsTimeCard 
-                  results={getResultsByStation(station).map(r => ({
-                    name: r.name,
-                    time: r.time
-                  }))}
-                />
-              </Stack>
-            </Grid>
-          ))}
+      <MeetSearchForm
+        keyword={keyword}
+        onKeywordChange={(e) => setKeyword(e.target.value)}
+        selectedStationName={selectedStationName}
+        onStationSelect={(e) => setSelectedStationName(e.target.value)}
+        stationList={stationList}
+      />
+      <Grid container spacing={4} mt={3} mb={3}>
+        {/* 왼쪽: 장소 정보 + 친구 이동 시간 */}
+        <Grid
+          size={{
+            xs: 12,
+            //  md: 8
+          }}
+        >
+          <Stack spacing={3}>
+            <MeetPointCard
+              selectedStationName={selectedStationName}
+              averageTime={averageTime}
+              averageTransferCount={averageTransferCount}
+              satisfactionRate={satisfactionRate}
+            />
+            <MeetFriendsTimeCard results={results} />
+          </Stack>
         </Grid>
+        {/* 오른쪽: 추천 리스트 */}
+        {/* <Grid size={{ xs: 12, md: 4 }}></Grid> */}
+      </Grid>
+      {coords ? (
+        <KakaoMap
+          latitude={coords.y}
+          longitude={coords.x}
+          markers={friendCoords.map((f) => ({
+            lat: f.y,
+            lng: f.x,
+            label: f.name,
+            color: friendsColorMap[f.name],
+          }))}
+        >
+          <FriendMarkerLegend
+            friends={friendCoords.map((f) => ({
+              name: f.name,
+              from:
+                friends.find((fr) => fr.name === f.name)?.from ?? '알 수 없음',
+              color: friendsColorMap[f.name],
+            }))}
+          />
+        </KakaoMap>
+      ) : (
+        <Box
+          sx={{
+            height: 400,
+            borderRadius: 2,
+            backgroundColor: '#e9edf2',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#999',
+            fontSize: 16,
+            fontWeight: 500,
+          }}
+        >
+          📍 목적지를 먼저 선택해주세요
+        </Box>
+
       )}
     </Container>
   );
 };
 
 export default StationMeetResultPage;
+
