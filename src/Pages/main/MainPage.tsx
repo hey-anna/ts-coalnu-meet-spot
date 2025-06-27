@@ -7,6 +7,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import RecommendStationBox from '../../domain/recommendation/ui/recommendStation/recommendStationBox';
 import TodayFriendBox from '../../domain/user/ui/todayFriendMeet/todayFriendBox';
 import type { Friend } from '../../domain/user/models/model'; // 실제 경로에 맞게 수정
+import { useUserStore } from '@/domain/user/store/userStore';
 
 const LinkBtn = styled(Box)({
   padding: '8px',
@@ -120,8 +121,11 @@ const EmptyState = styled(Typography)(({ theme }) => ({
 
 const MainPage: React.FC = () => {
   const navigate = useNavigate();
+  const { user: loginUser, setUser } = useUserStore();
   const [selectedFriends, setSelectedFriends] = useState<Friend[]>([]);
   const [selectedStations, setSelectedStations] = useState<string[]>([]);
+
+  const isLogin = !!loginUser?.email && !!loginUser?.id;
 
   // TodayFriendBox에서 선택된 친구들을 받는 함수
   const handleFriendsChange = (friends: Friend[]) => {
@@ -234,6 +238,7 @@ const MainPage: React.FC = () => {
   return (
     <div>
       <TodayFriendBox 
+        isLoggedIn={isLogin}
         onFriendsChange={handleFriendsChange}
         selectedFriends={selectedFriends} // 선택된 친구 정보 전달
       />
