@@ -10,6 +10,7 @@ import type {
   FriendWithGroup,
   GetUserFriendByGroupResponse,
   Group,
+  UpdateFriendRequest,
   UpdateGroupRequest,
 } from '../models/model';
 
@@ -233,5 +234,25 @@ export const updateGroupInfo = async (params: UpdateGroupRequest) => {
     await supabase.from('friend_group').update(groupInfo).eq('id', group_id);
   } catch (error) {
     throw new Error('fail to update group info');
+  }
+};
+
+// 친구 완전 삭제
+export const deleteFriend = async (id: number) => {
+  try {
+    await supabase.from('friend').delete().eq('id', id);
+  } catch (error) {
+    throw new Error('fail to delete friend');
+  }
+};
+
+// 친구 정보 수정
+export const updateFriendInfo = async (params: UpdateFriendRequest) => {
+  try {
+    const { friend_id, ...updateFriendInfo } = params;
+
+    await supabase.from('friend').update(updateFriendInfo).eq('id', friend_id);
+  } catch (error) {
+    throw new Error('fail to update friend');
   }
 };

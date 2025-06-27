@@ -19,6 +19,9 @@ import useGetCurrentUserGroup from '@/domain/user/hooks/useGetCurrentUserGroup';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import { colorPalette } from '@/shared/config/config';
 import useUpdateGroupInfo from '@/domain/user/hooks/useUpdateGroupInfo';
+import useGetUserFriendList from '@/domain/user/hooks/useGetUserFriendList';
+import useDeleteFriend from '@/domain/user/hooks/useDeleteFriend';
+import useUpdateFriendInfo from '@/domain/user/hooks/useUpdateFriendInfo';
 
 const FriendButton = styled(Button)(({ theme }) => ({
   color: 'white',
@@ -40,7 +43,13 @@ const YejinDeleteTest = () => {
     id: user?.id,
     email: user?.email,
   });
+  const { data: friendData } = useGetUserFriendList({
+    id: user?.id,
+    email: user?.email,
+  });
   const { mutate: updateGroupInfoHook } = useUpdateGroupInfo();
+  const { mutate: deleteFriend } = useDeleteFriend();
+  const { mutate: updateFriendInfoHook } = useUpdateFriendInfo();
 
   const [updateGroupInfo, setUpdateGroupInfo] = useState<{
     group_name: string;
@@ -50,8 +59,22 @@ const YejinDeleteTest = () => {
     group_color: '',
   });
 
-  const [showInputBox, setShowInputBox] = useState<number | null>(null);
+  const [updateFriendInfo, setUpdateFriendInfo] = useState<{
+    name: string;
+    start_station: string;
+  }>({
+    name: '',
+    start_station: '',
+  });
+
+  const [showGroupInputBox, setShowGroupInputBox] = useState<number | null>(
+    null,
+  );
   const [newGroupError, setNewGroupError] = useState<string>('');
+  const [showFriendInputBox, setShowFriendInputBox] = useState<number | null>(
+    null,
+  );
+  const [newFriendError, setNewFriendError] = useState<string>('');
 
   const handleDeleteFriendFromGroup = (group_id: number, friend_id: number) => {
     console.log('group_id : ', group_id, ' friend_id : ', friend_id);
@@ -86,7 +109,7 @@ const YejinDeleteTest = () => {
   };
 
   const handleInputShow = (group_id) => {
-    setShowInputBox(group_id);
+    setShowGroupInputBox(group_id);
   };
 
   function checkNewGroupName(name: string): boolean {
@@ -99,8 +122,95 @@ const YejinDeleteTest = () => {
     }
   }
 
+  function handleDeleteFriend(friend_id: number) {
+    deleteFriend(friend_id);
+  }
+
+  function handleUpdateFriend(friend_id) {
+    console.log('friend_id : ', friend_id);
+    console.log('updateFriendInfo : ', updateFriendInfo);
+
+    updateFriendInfoHook({
+      friend_id,
+      ...(updateFriendInfo.name && {
+        name: updateFriendInfo.name || null,
+      }),
+      ...(updateFriendInfo.start_station && {
+        start_station: updateFriendInfo.start_station || null,
+      }),
+    });
+  }
+
   return (
     <Box>
+      <Typography variant="h5" sx={{ margin: '20px 0' }}>
+        친구 목록
+      </Typography>
+
+      <Grid container spacing={2}>
+        {friendData?.map((friend) => (
+          <Grid
+            display="flex"
+            gap="5px"
+            justifyContent="space-between"
+            size={{ xs: 12, sm: 6 }}
+            sx={{
+              border: 'solid 1px black',
+              padding: '10px',
+            }}
+          >
+            <Typography variant="h6">{friend.name}</Typography>
+            <Typography variant="h6">{friend.start_station}</Typography>
+            <IconButton onClick={(e) => setShowFriendInputBox(friend.id)}>
+              <ModeEditIcon />
+            </IconButton>
+            <Box
+              gap="5px"
+              alignItems="center"
+              sx={{
+                display: showFriendInputBox === friend.id ? 'flex' : 'none',
+              }}
+            >
+              <TextField
+                type="text"
+                value={updateFriendInfo.name}
+                onChange={(e) =>
+                  setUpdateFriendInfo({
+                    ...updateFriendInfo,
+                    name: e.target.value,
+                  })
+                }
+                error={Boolean(newFriendError)}
+                helperText={newFriendError ? newFriendError : null}
+              />
+
+              <TextField
+                type="text"
+                value={updateFriendInfo.start_station}
+                onChange={(e) =>
+                  setUpdateFriendInfo({
+                    ...updateFriendInfo,
+                    start_station: e.target.value,
+                  })
+                }
+                error={Boolean(newFriendError)}
+                helperText={newFriendError ? newFriendError : null}
+              />
+
+              <Button
+                sx={{ color: 'black', border: 'solid 1px black' }}
+                onClick={() => handleUpdateFriend(friend.id)}
+              >
+                저장
+              </Button>
+            </Box>
+            <IconButton onClick={() => handleDeleteFriend(friend.id)}>
+              <CloseIcon />
+            </IconButton>
+          </Grid>
+        ))}
+      </Grid>
+
       <Typography variant="h5" sx={{ margin: '20px 0' }}>
         그룹 목록
       </Typography>
@@ -124,7 +234,7 @@ const YejinDeleteTest = () => {
               gap="5px"
               alignItems="center"
               sx={{
-                display: showInputBox === group.id ? 'flex' : 'none',
+                display: showGroupInputBox === group.id ? 'flex' : 'none',
               }}
             >
               <TextField
