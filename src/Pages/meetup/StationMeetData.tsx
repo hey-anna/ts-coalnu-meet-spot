@@ -17,20 +17,27 @@ type StationCoords = {
 };
 
 const StationMeetResultPage = () => {
-  const [results, setResults] = useState([] as { name: string; time: number | null; station: string }[])
+  const [results, setResults] = useState(
+    [] as { name: string; time: number | null; station: string }[],
+  );
   const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  
+
   // 메인에서 받은 데이터
   const { selectedFriends, selectedStations } = location.state || {};
-  
+
   console.log('받은 친구 데이터:', selectedFriends);
   console.log('받은 역 데이터:', selectedStations);
-  
+
   // 데이터가 없을 때 메인으로 돌려보내기
   useEffect(() => {
-    if (!selectedFriends || !selectedStations || selectedFriends.length === 0 || selectedStations.length === 0) {
+    if (
+      !selectedFriends ||
+      !selectedStations ||
+      selectedFriends.length === 0 ||
+      selectedStations.length === 0
+    ) {
       alert('친구와 지하철역을 선택해주세요!');
       navigate('/'); // 메인 페이지로 돌아가기
     }
@@ -38,14 +45,23 @@ const StationMeetResultPage = () => {
 
   // 모든 역에 대해 각 친구의 이동 시간 계산
   useEffect(() => {
-    if (!selectedFriends || !selectedStations || selectedFriends.length === 0 || selectedStations.length === 0) {
+    if (
+      !selectedFriends ||
+      !selectedStations ||
+      selectedFriends.length === 0 ||
+      selectedStations.length === 0
+    ) {
       return;
     }
 
     const calculateAllTimes = async () => {
       setIsLoading(true);
       try {
-        const allResults: { name: string; time: number | null; station: string }[] = [];
+        const allResults: {
+          name: string;
+          time: number | null;
+          station: string;
+        }[] = [];
 
         // 각 역에 대해 계산
         for (const station of selectedStations) {
@@ -56,29 +72,34 @@ const StationMeetResultPage = () => {
             const stationResults = await Promise.all(
               selectedFriends.map(async (friend: Friend) => {
                 try {
-                  const from = await getStationSubwayCoords(friend.start_station);
+                  const from = await getStationSubwayCoords(
+                    friend.start_station,
+                  );
                   console.log('from:', friend.name, from.stationID);
                   console.log('to:', station, to.stationID);
-                  
+
                   const result = await getStationSubwayPathByID({
                     startID: from.stationID,
                     endID: to.stationID,
                   });
-                  
+
                   return {
                     name: friend.name,
                     time: result.globalTravelTime,
-                    station: station
+                    station: station,
                   };
                 } catch (friendError) {
-                  console.error(`${friend.name}의 ${station}역까지 경로 계산 오류:`, friendError);
+                  console.error(
+                    `${friend.name}의 ${station}역까지 경로 계산 오류:`,
+                    friendError,
+                  );
                   return {
                     name: friend.name,
                     time: null,
-                    station: station
+                    station: station,
                   };
                 }
-              })
+              }),
             );
 
             allResults.push(...stationResults);
@@ -89,7 +110,7 @@ const StationMeetResultPage = () => {
               allResults.push({
                 name: friend.name,
                 time: null,
-                station: station
+                station: station,
               });
             });
           }
@@ -108,18 +129,19 @@ const StationMeetResultPage = () => {
 
   // 역별로 결과 그룹화
   const getResultsByStation = (station: string) => {
-    return results.filter(result => result.station === station);
+    return results.filter((result) => result.station === station);
   };
 
   // 역별 평균 시간 계산
   const getAverageTimeForStation = (station: string) => {
     const stationResults = getResultsByStation(station);
-    const validTimes = stationResults.filter(r => r.time !== null);
-    
+    const validTimes = stationResults.filter((r) => r.time !== null);
+
     if (validTimes.length === 0) return null;
-    
+
     return Math.round(
-      validTimes.reduce((sum, cur) => sum + (cur.time ?? 0), 0) / validTimes.length
+      validTimes.reduce((sum, cur) => sum + (cur.time ?? 0), 0) /
+        validTimes.length,
     );
   };
 
@@ -131,7 +153,7 @@ const StationMeetResultPage = () => {
   return (
     <Container sx={{ py: 4 }}>
       <MeetHeader />
-      
+
       {/* 선택된 정보 요약 */}
       <Box sx={{ mb: 4 }}>
         <Alert severity="info" sx={{ mb: 2 }}>
@@ -139,7 +161,10 @@ const StationMeetResultPage = () => {
             선택된 정보
           </Typography>
           <Typography variant="body2">
-            <strong>친구들:</strong> {selectedFriends.map((f: Friend) => `${f.name}(${f.start_station})`).join(', ')}
+            <strong>친구들:</strong>{' '}
+            {selectedFriends
+              .map((f: Friend) => `${f.name}(${f.start_station})`)
+              .join(', ')}
           </Typography>
           <Typography variant="body2">
             <strong>후보 장소:</strong> {selectedStations.join(', ')}
@@ -160,12 +185,12 @@ const StationMeetResultPage = () => {
                   selectedStationName={station}
                   averageTime={getAverageTimeForStation(station)}
                 />
-                <MeetFriendsTimeCard 
+                {/* <MeetFriendsTimeCard 
                   results={getResultsByStation(station).map(r => ({
                     name: r.name,
                     time: r.time
                   }))}
-                />
+                /> */}
               </Stack>
             </Grid>
           ))}
