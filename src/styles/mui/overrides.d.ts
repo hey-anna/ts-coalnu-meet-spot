@@ -12,6 +12,15 @@ declare module '@mui/material/styles' {
       warningBg: string;
       errorBg: string;
       ratingBg: string;
+      restaurant: string;
+      cafe: string;
+      restaurantLight: string;
+      cafeLight: string;
+      success: string;
+      successBg: string;
+      neutral: string;
+      shadowLight: string;
+      shadowMedium: string;
     };
     user?: {
       main: string;
@@ -29,6 +38,15 @@ declare module '@mui/material/styles' {
       warningBg: string;
       errorBg: string;
       ratingBg: string;
+      restaurant: string;
+      cafe: string;
+      restaurantLight: string;
+      cafeLight: string;
+      success: string;
+      successBg: string;
+      neutral: string;
+      shadowLight: string;
+      shadowMedium: string;
     };
     user?: {
       main: string;
