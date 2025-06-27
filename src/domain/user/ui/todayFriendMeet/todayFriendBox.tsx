@@ -7,12 +7,23 @@ import {
   Tabs,
   Chip,
   Button,
-  Paper
+  Paper,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Card,
+  CardContent,
+  IconButton
 } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import Diversity3Icon from '@mui/icons-material/Diversity3';
 import CloseIcon from '@mui/icons-material/Close';
 import SettingsIcon from '@mui/icons-material/Settings';
+import AddIcon from '@mui/icons-material/Add';
+import PersonIcon from '@mui/icons-material/Person';
+import TrainIcon from '@mui/icons-material/Train';
 
 // 분리된 컴포넌트들 import
 import TodayFriendCard from './todayFriendCard';
@@ -22,9 +33,19 @@ import type { Friend, GetUserFriendByGroupResponse } from '../../models/model';
 
 // Props 타입 정의
 interface TodayFriendBoxProps {
-  onFriendsChange?: (friends: Friend[]) => void; // 선택된 친구들을 부모로 전달하는 함수
+  onFriendsChange?: (friends: Friend[]) => void;
   selectedFriends?: Friend[];
+  isLoggedIn?: boolean; // 로그인 상태를 받는 prop 추가
 }
+
+// 지하철역 목록 (예시)
+const SUBWAY_STATIONS = [
+  '강남', '강남구청', '강동', '강변', '건대입구', '경복궁', '고속터미널',
+  '교대', '구로', '금정', '노원', '동대문', '동작', '뚝섬', '명동',
+  '봉천', '사당', '서울역', '성신여대입구', '수유', '신도림', '신림',
+  '신촌', '양재', '역삼', '연신내', '오목교', '용산', '을지로입구',
+  '이태원', '잠실', '종각', '중구청', '충무로', '홍대입구'
+];
 
 // Styled Components
 const StyledContainer = styled(Container)(({ theme }) => ({
@@ -150,7 +171,6 @@ const ScrollableContent = styled(Box)({
   },
 });
 
-
 const ActionButton = styled(Button)(({ theme }) => ({
   color: theme.palette.custom.secondary,
   borderColor: theme.palette.custom.secondary,
@@ -162,14 +182,81 @@ const ActionButton = styled(Button)(({ theme }) => ({
   height: 48
 }));
 
+// 친구 추가 폼 스타일
+const AddFriendForm = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: theme.spacing(2),
+  marginBottom: theme.spacing(3),
+  
+  [theme.breakpoints.down('sm')]: {
+    gap: theme.spacing(1.5),
+    marginBottom: theme.spacing(2),
+  },
+}));
 
-const todayFriendBox: React.FC<TodayFriendBoxProps> = ({ onFriendsChange, 
-  selectedFriends = []}) => {
+const FormRow = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  gap: theme.spacing(2),
+  alignItems: 'flex-end',
+  
+  [theme.breakpoints.down('sm')]: {
+    flexDirection: 'column',
+    gap: theme.spacing(1.5),
+    alignItems: 'stretch',
+  },
+}));
+
+const FriendCard = styled(Card)(({ theme }) => ({
+  marginBottom: theme.spacing(1.5),
+  borderRadius: '12px',
+  border: '1px solid rgba(0,0,0,0.06)',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+  transition: 'all 0.2s ease',
+  
+  '&:hover': {
+    boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+    transform: 'translateY(-1px)',
+  },
+  
+  [theme.breakpoints.down('sm')]: {
+    marginBottom: theme.spacing(1),
+  },
+}));
+
+const FriendCardContent = styled(CardContent)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  padding: theme.spacing(2),
+  
+  '&:last-child': {
+    paddingBottom: theme.spacing(2),
+  },
+  
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1.5),
+    '&:last-child': {
+      paddingBottom: theme.spacing(1.5),
+    },
+  },
+}));
+
+const todayFriendBox: React.FC<TodayFriendBoxProps> = ({ 
+  onFriendsChange, 
+  selectedFriends = [],
+  isLoggedIn = false // 기본값은 비로그인
+}) => {
   const theme = useTheme();
   const navigate = useNavigate();
   const [tabValue, setTabValue] = useState(0);
+  
+  // 비회원 친구 추가 관련 상태
+  const [friendName, setFriendName] = useState('');
+  const [selectedStation, setSelectedStation] = useState('');
+  const [guestFriends, setGuestFriends] = useState<Friend[]>([]);
 
-  // 임시 그룹 데이터 (GetUserFriendByGroupResponse 타입에 맞게)
+  // 임시 그룹 데이터
   const mockFriendGroups: GetUserFriendByGroupResponse[] = [
     {
       id: 1,
@@ -221,35 +308,6 @@ const todayFriendBox: React.FC<TodayFriendBoxProps> = ({ onFriendsChange,
           }
         }
       ]
-    },
-    {
-      id: 3,
-      group_name: "동네친구들",
-      group_color: "#4caf50",
-      created_at: "2024-01-03T00:00:00Z",
-      friend_link_group: [
-        {
-          friend: {
-            id: 6,
-            name: "서연",
-            start_station: "건대입구"
-          }
-        },
-        {
-          friend: {
-            id: 7,
-            name: "태민",
-            start_station: "신림"
-          }
-        },
-        {
-          friend: {
-            id: 8,
-            name: "하은",
-            start_station: "사당"
-          }
-        }
-      ]
     }
   ];
 
@@ -265,8 +323,8 @@ const todayFriendBox: React.FC<TodayFriendBoxProps> = ({ onFriendsChange,
     return () => window.removeEventListener('resize', checkIsMobile);
   }, []);
 
-   const handleFriendSelect = (friend: Friend) => {
-    if (onFriendsChange && selectedFriends) { // selectedFriends 체크 추가
+  const handleFriendSelect = (friend: Friend) => {
+    if (onFriendsChange && selectedFriends) {
       const isAlreadySelected = selectedFriends.some(f => f.id === friend.id);
       if (isAlreadySelected) {
         onFriendsChange(selectedFriends.filter(f => f.id !== friend.id));
@@ -277,13 +335,48 @@ const todayFriendBox: React.FC<TodayFriendBoxProps> = ({ onFriendsChange,
   };
 
   const handleGroupSelect = (newFriendsList: Friend[]) => {
-    // 그룹 선택 (전체 친구 배열 받음)
     if (onFriendsChange) {
       onFriendsChange(newFriendsList);
     }
   };
 
-  
+  // 비회원 친구 추가 기능
+  const handleAddGuestFriend = () => {
+    if (friendName.trim() && selectedStation) {
+      const newFriend: Friend = {
+        id: Date.now(), // 임시 ID
+        user_id: "", // 비회원용 임시 user_id
+        name: friendName.trim(),
+        start_station: selectedStation
+      };
+      
+      const updatedGuestFriends = [...guestFriends, newFriend];
+      setGuestFriends(updatedGuestFriends);
+      
+      // 선택된 친구 목록에도 추가
+      const updatedSelectedFriends = [...selectedFriends, newFriend];
+      if (onFriendsChange) {
+        onFriendsChange(updatedSelectedFriends);
+      }
+      
+      // 폼 초기화
+      setFriendName('');
+      setSelectedStation('');
+    }
+  };
+
+  // 비회원 친구 삭제 기능
+  const handleRemoveGuestFriend = (friendId: number) => {
+    const updatedGuestFriends = guestFriends.filter(f => f.id !== friendId);
+    setGuestFriends(updatedGuestFriends);
+    
+    // 선택된 친구 목록에서도 제거
+    const updatedSelectedFriends = selectedFriends.filter(f => f.id !== friendId);
+    if (onFriendsChange) {
+      onFriendsChange(updatedSelectedFriends);
+    }
+  };
+
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
@@ -291,6 +384,23 @@ const todayFriendBox: React.FC<TodayFriendBoxProps> = ({ onFriendsChange,
   const handleGroupSettings = () => {
     navigate('/friend/group-management');
   };
+
+  // 탭 구성 결정
+  const getTabs = () => {
+    if (isLoggedIn) {
+      return [
+        { label: "친구 추가", value: 0 },
+        { label: "내 그룹", value: 1 },
+        { label: "등록 친구 검색", value: 2 }
+      ];
+    } else {
+      return [
+        { label: "친구 추가", value: 0 }
+      ];
+    }
+  };
+
+  const tabs = getTabs();
 
   return (
     <StyledContainer>
@@ -304,41 +414,42 @@ const todayFriendBox: React.FC<TodayFriendBoxProps> = ({ onFriendsChange,
         }}>
           오늘 만날 친구
         </Typography>
-        <ActionButton 
-          variant="outlined" 
-          size="small" 
-          onClick={handleGroupSettings}
-          startIcon={<SettingsIcon />} 
-          sx={{
-            minWidth: 'auto',
-            px: 2,
-            py: 1,
-            fontSize: '0.875rem',
-            display: 'flex',
-            alignItems: 'center',
-            '& .MuiButton-startIcon': {
-              marginRight: '6px',
-              marginLeft: 0,
-              '& > *:nth-of-type(1)': {
-                fontSize: '18px',
+        {isLoggedIn && (
+          <ActionButton 
+            variant="outlined" 
+            size="small" 
+            onClick={handleGroupSettings}
+            startIcon={<SettingsIcon />} 
+            sx={{
+              minWidth: 'auto',
+              px: 2,
+              py: 1,
+              fontSize: '0.875rem',
+              display: 'flex',
+              alignItems: 'center',
+              '& .MuiButton-startIcon': {
+                marginRight: '6px',
+                marginLeft: 0,
+                '& > *:nth-of-type(1)': {
+                  fontSize: '18px',
+                }
+              },
+              [theme.breakpoints.down('sm')]: {
+                px: 1.5,
+                fontSize: '0.8rem',
+                '& .MuiButton-startIcon > *:nth-of-type(1)': {
+                  fontSize: '16px',
+                }
               }
-            },
-            [theme.breakpoints.down('sm')]: {
-              px: 1.5,
-              fontSize: '0.8rem',
-              '& .MuiButton-startIcon > *:nth-of-type(1)': {
-                fontSize: '16px',
-              }
-            }
-          }}
-        >
-          그룹 설정
-        </ActionButton>
+            }}
+          >
+            그룹 설정
+          </ActionButton>
+        )}
       </HeaderSection>
 
-      {/* 메인 콘텐츠 - 가로 배치 */}
+      {/* 메인 콘텐츠 */}
       <MainContentWrapper>
-        {/* 왼쪽: 친구 선택 부분 (3/4) */}
         <StyledPaper sx={{ 
           [theme.breakpoints.down('md')]: { order: 1 }
         }}>
@@ -349,18 +460,148 @@ const todayFriendBox: React.FC<TodayFriendBoxProps> = ({ onFriendsChange,
             indicatorColor="secondary"
             textColor="secondary"
           >
-            <Tab label="내 그룹" />
-            <Tab label="등록 친구 검색" />
+            {tabs.map((tab) => (
+              <Tab key={tab.value} label={tab.label} />
+            ))}
           </StyledTabs>
 
           {/* 콘텐츠 영역 */}
           <ContentSection>
             <ScrollableContent>
-              {/* 내 그룹 탭 */}
+              {/* 친구 추가 탭 (기본 탭) */}
               {tabValue === 0 && (
+                <Box>
+                  <AddFriendForm>
+                    <FormRow>
+                      <TextField
+                        label="친구 이름"
+                        value={friendName}
+                        onChange={(e) => setFriendName(e.target.value)}
+                        variant="outlined"
+                        size="small"
+                        sx={{ 
+                          flex: 1,
+                          minWidth: { xs: '100%', sm: '200px' }
+                        }}
+                        InputProps={{
+                          startAdornment: (
+                            <PersonIcon sx={{ 
+                              color: 'text.secondary', 
+                              mr: 1,
+                              fontSize: '20px'
+                            }} />
+                          ),
+                        }}
+                      />
+                      <FormControl 
+                        variant="outlined" 
+                        size="small" 
+                        sx={{ 
+                          flex: 1,
+                          minWidth: { xs: '100%', sm: '200px' }
+                        }}
+                      >
+                        <InputLabel>출발역</InputLabel>
+                        <Select
+                          value={selectedStation}
+                          onChange={(e) => setSelectedStation(e.target.value)}
+                          label="출발역"
+                          startAdornment={
+                            <TrainIcon sx={{ 
+                              color: 'text.secondary', 
+                              mr: 1,
+                              fontSize: '20px'
+                            }} />
+                          }
+                        >
+                          {SUBWAY_STATIONS.map((station) => (
+                            <MenuItem key={station} value={station}>
+                              {station}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      <Button
+                        variant="contained"
+                        onClick={handleAddGuestFriend}
+                        disabled={!friendName.trim() || !selectedStation}
+                        startIcon={<AddIcon />}
+                        sx={{
+                          backgroundColor: theme.palette.custom.secondary,
+                          borderRadius: '8px',
+                          px: 3,
+                          py: 1.5,
+                          fontWeight: 600,
+                          minWidth: { xs: '100%', sm: 'auto' },
+                          '&:hover': {
+                            backgroundColor: theme.palette.custom.secondary,
+                            filter: 'brightness(0.9)',
+                          }
+                        }}
+                      >
+                        추가
+                      </Button>
+                    </FormRow>
+                  </AddFriendForm>
+
+                  {/* 추가된 친구들 목록 */}
+                  {guestFriends.length > 0 && (
+                    <Box>
+                      <Typography 
+                        variant="subtitle2" 
+                        sx={{ 
+                          mb: 2, 
+                          fontWeight: 600,
+                          color: 'text.secondary'
+                        }}
+                      >
+                        추가된 친구들 ({guestFriends.length}명)
+                      </Typography>
+                      {guestFriends.map((friend) => (
+                        <FriendCard key={friend.id}>
+                          <FriendCardContent>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                              <PersonIcon sx={{ color: 'text.secondary', fontSize: '20px' }} />
+                              <Box>
+                                <Typography variant="body1" fontWeight={600}>
+                                  {friend.name}
+                                </Typography>
+                                <Typography 
+                                  variant="body2" 
+                                  color="text.secondary"
+                                  sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
+                                >
+                                  <TrainIcon sx={{ fontSize: '16px' }} />
+                                  {friend.start_station}
+                                </Typography>
+                              </Box>
+                            </Box>
+                            <IconButton
+                              size="small"
+                              onClick={() => handleRemoveGuestFriend(friend.id)}
+                              sx={{ 
+                                color: 'text.secondary',
+                                '&:hover': {
+                                  color: 'error.main',
+                                  backgroundColor: 'error.light',
+                                }
+                              }}
+                            >
+                              <CloseIcon fontSize="small" />
+                            </IconButton>
+                          </FriendCardContent>
+                        </FriendCard>
+                      ))}
+                    </Box>
+                  )}
+                </Box>
+              )}
+
+              {/* 내 그룹 탭 (로그인 시에만) */}
+              {isLoggedIn && tabValue === 1 && (
                 mockFriendGroups.length > 0 ? (
                   <TodayFriendCard
-                    friendGroups={mockFriendGroups}  // 올바른 타입의 임시 데이터 전달
+                    friendGroups={mockFriendGroups}
                     selectedFriends={selectedFriends || []}
                     onFriendSelect={handleFriendSelect}
                     onGroupSelect={handleGroupSelect}
@@ -374,20 +615,12 @@ const todayFriendBox: React.FC<TodayFriendBoxProps> = ({ onFriendsChange,
                 )
               )}
 
-              {/* 검색 탭 */}
-              {tabValue === 1 && (
-                1 ? (
-                  <TodayFriendSearch
-                    onFriendSelect={handleFriendSelect}
-                    placeholder="친구 이름을 검색해보세요"
-                  />
-                ) : (
-                  <Box sx={{ textAlign: 'center', py: 4 }}>
-                    <Typography color="text.secondary">
-                      내 친구 데이터를 불러오는 중입니다...
-                    </Typography>
-                  </Box>
-                )
+              {/* 검색 탭 (로그인 시에만) */}
+              {isLoggedIn && tabValue === 2 && (
+                <TodayFriendSearch
+                  onFriendSelect={handleFriendSelect}
+                  placeholder="친구 이름을 검색해보세요"
+                />
               )}
             </ScrollableContent>
           </ContentSection>
