@@ -8,7 +8,7 @@ import {
   AuthTitle,
   AuthButton,
   AuthLink,
-  AuthMessage
+  AuthMessage,
 } from './authStyle';
 
 const SignUpForm = () => {
@@ -16,12 +16,26 @@ const SignUpForm = () => {
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [showMessage, setShowMessage] = useState<boolean>(false);
-  const { mutate: signupWithEmail, isSuccess, isPending, isError, error } = useSignUp();
+  const {
+    mutate: signupWithEmail,
+    isSuccess,
+    isPending,
+    isError,
+    error,
+  } = useSignUp();
   const navigate = useNavigate();
+
+  const [validationErrorMsg, setValidationErrorMsg] = useState<{
+    label: string;
+    message: string;
+  }>({
+    label: '',
+    message: '',
+  });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     // 비밀번호 확인 검증
     if (password !== confirmPassword) {
       return; // 에러는 helperText로 표시됨
@@ -38,29 +52,39 @@ const SignUpForm = () => {
     setShowMessage(true);
   };
 
+  // 이메일 형식 검사
+  const pattern = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-za-z0-9\-]+/;
+
+  function emailValidChk(value) {
+    if (pattern.test(value) === false) {
+      setValidationErrorMsg({
+        label: 'email',
+        message: '이메일 형식이 맞지 않습니다.',
+      });
+      return false;
+    } else {
+      setValidationErrorMsg({ label: '', message: '' });
+      return true;
+    }
+  }
+
   return (
     <AuthPageContainer>
-      <AuthFormContainer
-        noValidate
-        autoComplete="off"
-        onSubmit={handleSubmit}
-      >
-        <AuthTitle variant="h4">
-          회원가입
-        </AuthTitle>
-        
+      <AuthFormContainer noValidate autoComplete="off" onSubmit={handleSubmit}>
+        <AuthTitle variant="h4">회원가입</AuthTitle>
+
         {showMessage ? (
           <AuthMessage className="success">
             <AuthTitle variant="h6" sx={{ fontSize: '20px !important', mb: 1 }}>
               이메일을 확인해주세요 📧
             </AuthTitle>
-            <AuthTitle 
-              variant="body2" 
-              sx={{ 
-                fontSize: '14px !important', 
+            <AuthTitle
+              variant="body2"
+              sx={{
+                fontSize: '14px !important',
                 fontWeight: '400 !important',
                 lineHeight: 1.5,
-                opacity: 0.8
+                opacity: 0.8,
               }}
             >
               회원가입 완료를 위해 이메일 인증이 필요합니다.
@@ -79,10 +103,19 @@ const SignUpForm = () => {
               label="이메일"
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                emailValidChk(e.target.value);
+              }}
               placeholder="example@email.com"
               required
               fullWidth
+              error={validationErrorMsg.label == 'email'}
+              helperText={
+                validationErrorMsg.label == 'email'
+                  ? validationErrorMsg.message
+                  : null
+              }
             />
 
             <TextField
@@ -91,10 +124,26 @@ const SignUpForm = () => {
               type="password"
               autoComplete="new-password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                if (e.target.value.length < 8) {
+                  setValidationErrorMsg({
+                    label: 'password',
+                    message: '비밀번호는 8자 이상입니다.',
+                  });
+                } else {
+                  setValidationErrorMsg({ label: '', message: '' });
+                }
+              }}
               placeholder="8자 이상의 비밀번호"
               required
               fullWidth
+              error={validationErrorMsg.label == 'password'}
+              helperText={
+                validationErrorMsg.label == 'password'
+                  ? validationErrorMsg.message
+                  : null
+              }
             />
 
             <TextField
@@ -109,8 +158,8 @@ const SignUpForm = () => {
               fullWidth
               error={password !== confirmPassword && confirmPassword !== ''}
               helperText={
-                password !== confirmPassword && confirmPassword !== '' 
-                  ? '비밀번호가 일치하지 않습니다.' 
+                password !== confirmPassword && confirmPassword !== ''
+                  ? '비밀번호가 일치하지 않습니다.'
                   : ''
               }
             />
@@ -119,14 +168,15 @@ const SignUpForm = () => {
               이미 계정이 있으신가요? 로그인하기
             </AuthLink>
 
-            <AuthButton 
-              type="submit" 
+            <AuthButton
+              type="submit"
               className={isPending ? 'loading' : ''}
               disabled={
-                isPending || 
-                !email || 
-                !password || 
-                !confirmPassword || 
+                isPending ||
+                !email ||
+                password.length < 8 ||
+                !password ||
+                !confirmPassword ||
                 password !== confirmPassword
               }
             >
@@ -138,7 +188,10 @@ const SignUpForm = () => {
         {/* 에러 메시지 */}
         {isError && !showMessage && (
           <AuthMessage className="error">
-            <AuthTitle variant="body2" sx={{ fontSize: '14px !important', fontWeight: '500 !important' }}>
+            <AuthTitle
+              variant="body2"
+              sx={{ fontSize: '14px !important', fontWeight: '500 !important' }}
+            >
               {error?.message || '회원가입에 실패했습니다.'}
             </AuthTitle>
           </AuthMessage>

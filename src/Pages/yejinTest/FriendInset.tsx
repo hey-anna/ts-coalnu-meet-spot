@@ -13,6 +13,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import type {
   AddNewFriendRequest,
+  ErrorMsg,
   Friend,
 } from '../../domain/user/models/model';
 import { useUserStore } from '../../domain/user/store/userStore';
@@ -55,7 +56,21 @@ const FriendInset = () => {
     email: user?.email || '',
   });
 
-  const { mutate: addNewFriend } = useAddNewFriend();
+  const { mutate: addNewFriend, error: addNewFriendError } = useAddNewFriend();
+
+  useEffect(() => {
+    const error = addNewFriendError as ErrorMsg;
+
+    if (error?.code == '23505') {
+      console.log('화면단에서 확인 : ', addNewFriendError);
+      setNewFriendError({
+        label: 'sameFriend',
+        message: '같은 이름, 같은 출발지의 친구가 이미 있습니다.',
+      });
+    } else {
+      setNewFriendError({ label: '', message: '' });
+    }
+  }, [addNewFriendError]);
 
   const handleSaveFriend = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -173,9 +188,10 @@ const FriendInset = () => {
 
         <SubmitButton type="submit">저장</SubmitButton>
       </form>
-      {newFriendError.label == 'id' && (
-        <Typography>{newFriendError.message}</Typography>
-      )}
+      {newFriendError.label == 'id' ||
+        (newFriendError.label == 'sameFriend' && (
+          <Typography color="error">{newFriendError.message}</Typography>
+        ))}
     </Box>
   );
 };

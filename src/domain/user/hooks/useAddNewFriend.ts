@@ -13,6 +13,7 @@ const useAddNewFriend = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['friend-list'] });
     },
+    onError: (error) => {},
   });
 };
 
