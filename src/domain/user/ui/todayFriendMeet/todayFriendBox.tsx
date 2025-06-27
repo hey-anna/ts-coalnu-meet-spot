@@ -24,12 +24,15 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import AddIcon from '@mui/icons-material/Add';
 import PersonIcon from '@mui/icons-material/Person';
 import TrainIcon from '@mui/icons-material/Train';
+import SearchIcon from '@mui/icons-material/Search';
 
 // 분리된 컴포넌트들 import
 import TodayFriendCard from './todayFriendCard';
 import TodayFriendSearch from './todayFriendSearch';
 import { useNavigate } from 'react-router';
 import type { Friend, GetUserFriendByGroupResponse } from '../../models/model';
+import { getLineColor, STATION_CONFIG } from '@/shared/config/stationConfig';
+import type { StationData } from '@/shared/models/station';
 
 // Props 타입 정의
 interface TodayFriendBoxProps {
@@ -38,14 +41,7 @@ interface TodayFriendBoxProps {
   isLoggedIn?: boolean; // 로그인 상태를 받는 prop 추가
 }
 
-// 지하철역 목록 (예시)
-const SUBWAY_STATIONS = [
-  '강남', '강남구청', '강동', '강변', '건대입구', '경복궁', '고속터미널',
-  '교대', '구로', '금정', '노원', '동대문', '동작', '뚝섬', '명동',
-  '봉천', '사당', '서울역', '성신여대입구', '수유', '신도림', '신림',
-  '신촌', '양재', '역삼', '연신내', '오목교', '용산', '을지로입구',
-  '이태원', '잠실', '종각', '중구청', '충무로', '홍대입구'
-];
+
 
 // Styled Components
 const StyledContainer = styled(Container)(({ theme }) => ({
@@ -207,6 +203,87 @@ const FormRow = styled(Box)(({ theme }) => ({
   },
 }));
 
+// 지하철역 검색 관련 스타일
+const StationSearchContainer = styled(Box)(({ theme }) => ({
+  position: 'relative',
+  flex: 1,
+  minWidth: '200px',
+  
+  [theme.breakpoints.down('sm')]: {
+    minWidth: '100%',
+  },
+}));
+
+const StationSearchField = styled(TextField)(({ theme }) => ({
+  '& .MuiOutlinedInput-root': {
+    borderRadius: '4px',
+    backgroundColor: 'white',
+    '& fieldset': {
+      border: '1px solid rgba(0,0,0,0.23)',
+    },
+    '&:hover fieldset': {
+      border: `1px solid ${theme.palette.primary.main}`,
+    },
+    '&.Mui-focused fieldset': {
+      border: `2px solid ${theme.palette.primary.main}`,
+    },
+  },
+}));
+
+const StationDropdown = styled(Paper)(({ theme }) => ({
+  position: 'absolute',
+  top: '100%',
+  left: 0,
+  right: 0,
+  backgroundColor: 'white',
+  borderRadius: '0 0 8px 8px',
+  maxHeight: '200px',
+  overflowY: 'auto',
+  zIndex: 1300,
+  boxShadow: theme.shadows[8],
+  border: '1px solid rgba(0,0,0,0.12)',
+  borderTop: 'none',
+  
+  '&::-webkit-scrollbar': {
+    width: '6px',
+  },
+  '&::-webkit-scrollbar-track': {
+    background: 'transparent',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    background: 'rgba(0,0,0,0.2)',
+    borderRadius: '3px',
+  },
+}));
+
+const StationOption = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(1.5, 2),
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  borderBottom: '1px solid rgba(0,0,0,0.06)',
+  transition: 'background-color 0.2s ease',
+  
+  '&:hover': {
+    backgroundColor: '#f5f5f5',
+  },
+  
+  '&:last-child': {
+    borderBottom: 'none',
+  },
+}));
+
+const LineChip = styled(Chip)(({ theme }) => ({
+  fontSize: '0.7rem',
+  height: 22,
+  borderRadius: '11px',
+  '& .MuiChip-label': {
+    padding: '0 8px',
+    fontWeight: 500
+  }
+}));
+
 const FriendCard = styled(Card)(({ theme }) => ({
   marginBottom: theme.spacing(1.5),
   borderRadius: '12px',
@@ -254,6 +331,8 @@ const todayFriendBox: React.FC<TodayFriendBoxProps> = ({
   // 비회원 친구 추가 관련 상태
   const [friendName, setFriendName] = useState('');
   const [selectedStation, setSelectedStation] = useState('');
+  const [stationSearchQuery, setStationSearchQuery] = useState('');
+  const [showStationDropdown, setShowStationDropdown] = useState(false);
   const [guestFriends, setGuestFriends] = useState<Friend[]>([]);
 
   // 임시 그룹 데이터
@@ -362,8 +441,35 @@ const todayFriendBox: React.FC<TodayFriendBoxProps> = ({
       // 폼 초기화
       setFriendName('');
       setSelectedStation('');
+      setStationSearchQuery('');
     }
   };
+
+  // 지하철역 검색 기능
+  const handleStationSearch = (query: string) => {
+    setStationSearchQuery(query);
+    setShowStationDropdown(query.length > 0);
+    
+    // 검색어가 있으면 선택된 역 초기화 (새로 입력하는 경우)
+    if (query !== selectedStation) {
+      setSelectedStation('');
+    }
+  };
+
+  const handleStationSelect = (station: StationData) => {
+    const displayText = `${station.station_nm} (${station.line_num})`;
+    setSelectedStation(station.station_nm);
+    setStationSearchQuery(displayText);
+    setShowStationDropdown(false);
+  };
+
+  // 지하철역 필터링
+  const filteredStations = stationSearchQuery.length > 0 
+    ? STATION_CONFIG.DATA.filter((station: StationData) =>
+        station.station_nm.toLowerCase().includes(stationSearchQuery.toLowerCase()) ||
+        station.line_num.includes(stationSearchQuery)
+      ).slice(0, 8) // 최대 8개 결과만 표시
+    : [];
 
   // 비회원 친구 삭제 기능
   const handleRemoveGuestFriend = (friendId: number) => {
@@ -493,34 +599,60 @@ const todayFriendBox: React.FC<TodayFriendBoxProps> = ({
                           ),
                         }}
                       />
-                      <FormControl 
-                        variant="outlined" 
-                        size="small" 
-                        sx={{ 
-                          flex: 1,
-                          minWidth: { xs: '100%', sm: '200px' }
-                        }}
-                      >
-                        <InputLabel>출발역</InputLabel>
-                        <Select
-                          value={selectedStation}
-                          onChange={(e) => setSelectedStation(e.target.value)}
+                      <StationSearchContainer>
+                        <StationSearchField
                           label="출발역"
-                          startAdornment={
-                            <TrainIcon sx={{ 
-                              color: 'text.secondary', 
-                              mr: 1,
-                              fontSize: '20px'
-                            }} />
-                          }
-                        >
-                          {SUBWAY_STATIONS.map((station) => (
-                            <MenuItem key={station} value={station}>
-                              {station}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
+                          value={stationSearchQuery}
+                          onChange={(e) => handleStationSearch(e.target.value)}
+                          onFocus={() => {
+                            if (stationSearchQuery.length > 0) {
+                              setShowStationDropdown(true);
+                            }
+                          }}
+                          onBlur={() => {
+                            // 약간의 지연을 두어 클릭 이벤트가 처리되도록 함
+                            setTimeout(() => setShowStationDropdown(false), 200);
+                          }}
+                          variant="outlined"
+                          size="small"
+                          fullWidth
+                          InputProps={{
+                            startAdornment: (
+                              <TrainIcon sx={{ 
+                                color: 'text.secondary', 
+                                mr: 1,
+                                fontSize: '20px'
+                              }} />
+                            ),
+                          }}
+                        />
+                        {showStationDropdown && filteredStations.length > 0 && (
+                          <StationDropdown>
+                            {filteredStations.map((station) => (
+                              <StationOption
+                                key={`${station.station_cd}-${station.line_num}`}
+                                onClick={() => handleStationSelect(station)}
+                              >
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                  <TrainIcon sx={{ fontSize: '16px', color: 'text.secondary' }} />
+                                  <Typography variant="body2" fontWeight={500}>
+                                    {station.station_nm}
+                                  </Typography>
+                                </Box>
+                                <LineChip 
+                                  label={station.line_num}
+                                  size="small"
+                                  sx={{ 
+                                    backgroundColor: `${getLineColor(station.line_num)}15`,
+                                    color: getLineColor(station.line_num),
+                                    border: `1px solid ${getLineColor(station.line_num)}30`
+                                  }}
+                                />
+                              </StationOption>
+                            ))}
+                          </StationDropdown>
+                        )}
+                      </StationSearchContainer>
                       <Button
                         variant="contained"
                         onClick={handleAddGuestFriend}
