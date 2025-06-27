@@ -1,4 +1,4 @@
-import type { User } from '@supabase/supabase-js';
+import type { PostgrestError, User } from '@supabase/supabase-js';
 import { supabase } from '../../../shared/config/supabaseClient';
 import type {
   AddFriendListToGroupRequest,
@@ -75,17 +75,25 @@ export const addNewGroup = async (
 ): Promise<Group> => {
   try {
     console.log('insert 전 받은 값 : ', params);
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('friend_group')
       .insert(params)
       .select()
       .single();
 
+    if (error) {
+      throw error;
+    }
+
     console.log('반환된 data : ', data);
 
     return data;
   } catch (error) {
-    throw new Error('fail to add new Group');
+    if (!error.code) {
+      throw new Error('fail to add new Group');
+    } else {
+      throw error;
+    }
   }
 };
 
@@ -97,13 +105,15 @@ export const addNewFriend = async (
     console.log('api 전달 전의 값 : ', params);
     const { friend_group_id, ...friendInfo } = params;
 
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('friend')
       .insert(friendInfo)
       .select()
       .single<Friend>();
 
-    console.log('저장한 친구 데이터 : ', data);
+    if (error) {
+      throw error;
+    }
 
     // 그룹을 정해서 추가할 경우
     if (friend_group_id) {
@@ -115,7 +125,11 @@ export const addNewFriend = async (
 
     return data;
   } catch (error) {
-    throw new Error('fail to add new friend');
+    if (!error.code) {
+      throw new Error('fail to add new friend');
+    } else {
+      throw error;
+    }
   }
 };
 
@@ -231,9 +245,20 @@ export const deleteGroup = async (group_id: number): Promise<void> => {
 export const updateGroupInfo = async (params: UpdateGroupRequest) => {
   const { group_id, ...groupInfo } = params;
   try {
-    await supabase.from('friend_group').update(groupInfo).eq('id', group_id);
+    const { error } = await supabase
+      .from('friend_group')
+      .update(groupInfo)
+      .eq('id', group_id);
+
+    if (error) {
+      throw error;
+    }
   } catch (error) {
-    throw new Error('fail to update group info');
+    if (!error.code) {
+      throw new Error('fail to update group info');
+    } else {
+      throw error;
+    }
   }
 };
 
@@ -251,8 +276,19 @@ export const updateFriendInfo = async (params: UpdateFriendRequest) => {
   try {
     const { friend_id, ...updateFriendInfo } = params;
 
-    await supabase.from('friend').update(updateFriendInfo).eq('id', friend_id);
+    const { error } = await supabase
+      .from('friend')
+      .update(updateFriendInfo)
+      .eq('id', friend_id);
+
+    if (error) {
+      throw error;
+    }
   } catch (error) {
-    throw new Error('fail to update friend');
+    if (!error.code) {
+      throw new Error('fail to update friend');
+    } else {
+      throw error;
+    }
   }
 };

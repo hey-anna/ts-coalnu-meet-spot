@@ -11,7 +11,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import useDeleteFriendFromGroup from '@/domain/user/hooks/useDeleteFriendFromGroup';
 import useDeleteGroup from '@/domain/user/hooks/useDeleteGroup';
@@ -22,6 +22,7 @@ import useUpdateGroupInfo from '@/domain/user/hooks/useUpdateGroupInfo';
 import useGetUserFriendList from '@/domain/user/hooks/useGetUserFriendList';
 import useDeleteFriend from '@/domain/user/hooks/useDeleteFriend';
 import useUpdateFriendInfo from '@/domain/user/hooks/useUpdateFriendInfo';
+import type { ErrorMsg } from '@/domain/user/models/model';
 
 const FriendButton = styled(Button)(({ theme }) => ({
   color: 'white',
@@ -47,9 +48,11 @@ const YejinDeleteTest = () => {
     id: user?.id,
     email: user?.email,
   });
-  const { mutate: updateGroupInfoHook } = useUpdateGroupInfo();
+  const { mutate: updateGroupInfoHook, error: updateGroupInfoError } =
+    useUpdateGroupInfo();
   const { mutate: deleteFriend } = useDeleteFriend();
-  const { mutate: updateFriendInfoHook } = useUpdateFriendInfo();
+  const { mutate: updateFriendInfoHook, error: updateFriendInfoError } =
+    useUpdateFriendInfo();
 
   const [updateGroupInfo, setUpdateGroupInfo] = useState<{
     group_name: string;
@@ -90,37 +93,58 @@ const YejinDeleteTest = () => {
   const handleUpdateGroup = (group_id) => {
     console.log(group_id);
     console.log('updateGroupInfo : ', updateGroupInfo);
-    const isExisted = checkNewGroupName(updateGroupInfo.group_name);
+    // const isExisted = checkNewGroupName(updateGroupInfo.group_name);
 
-    console.log('isExisted : ', isExisted);
+    // console.log('isExisted : ', isExisted);
 
-    if (!isExisted) {
-      setNewGroupError('');
-      updateGroupInfoHook({
-        group_id,
-        ...(updateGroupInfo.group_name && {
-          group_name: updateGroupInfo.group_name || null,
-        }),
-        ...(updateGroupInfo.group_color && {
-          group_color: updateGroupInfo.group_color || null,
-        }),
-      });
-    }
+    setNewGroupError('');
+    updateGroupInfoHook({
+      group_id,
+      ...(updateGroupInfo.group_name && {
+        group_name: updateGroupInfo.group_name || null,
+      }),
+      ...(updateGroupInfo.group_color && {
+        group_color: updateGroupInfo.group_color || null,
+      }),
+    });
+    //   if (!isExisted) {
+    // }
   };
+
+  useEffect(() => {
+    const error = updateGroupInfoError as ErrorMsg;
+
+    if (error?.code == '23505') {
+      setNewGroupError('이미 있는 그룹명입니다.');
+    } else {
+      setNewGroupError('');
+    }
+  }, [updateGroupInfoError]);
+
+  useEffect(() => {
+    const error = updateFriendInfoError as ErrorMsg;
+
+    console.log('화면단 : ', error);
+    if (error?.code == '23505') {
+      setNewFriendError('같은 이름, 같은 출발지의 친구가 이미 있습니다.');
+    } else {
+      setNewFriendError('');
+    }
+  }, [updateFriendInfoError]);
 
   const handleInputShow = (group_id) => {
     setShowGroupInputBox(group_id);
   };
 
-  function checkNewGroupName(name: string): boolean {
-    if (groupData?.some((group) => group.group_name === name)) {
-      setNewGroupError('이미 있는 그룹명입니다.');
-      return true;
-    } else {
-      setNewGroupError('');
-      return false;
-    }
-  }
+  // function checkNewGroupName(name: string): boolean {
+  //   if (groupData?.some((group) => group.group_name === name)) {
+  //     setNewGroupError('이미 있는 그룹명입니다.');
+  //     return true;
+  //   } else {
+  //     setNewGroupError('');
+  //     return false;
+  //   }
+  // }
 
   function handleDeleteFriend(friend_id: number) {
     deleteFriend(friend_id);
@@ -164,51 +188,51 @@ const YejinDeleteTest = () => {
             <IconButton onClick={(e) => setShowFriendInputBox(friend.id)}>
               <ModeEditIcon />
             </IconButton>
-            <Box
-              gap="5px"
-              alignItems="center"
-              sx={{
-                display: showFriendInputBox === friend.id ? 'flex' : 'none',
-              }}
-            >
-              <TextField
-                type="text"
-                value={updateFriendInfo.name}
-                onChange={(e) =>
-                  setUpdateFriendInfo({
-                    ...updateFriendInfo,
-                    name: e.target.value,
-                  })
-                }
-                error={Boolean(newFriendError)}
-                helperText={newFriendError ? newFriendError : null}
-              />
-
-              <TextField
-                type="text"
-                value={updateFriendInfo.start_station}
-                onChange={(e) =>
-                  setUpdateFriendInfo({
-                    ...updateFriendInfo,
-                    start_station: e.target.value,
-                  })
-                }
-                error={Boolean(newFriendError)}
-                helperText={newFriendError ? newFriendError : null}
-              />
-
-              <Button
-                sx={{ color: 'black', border: 'solid 1px black' }}
-                onClick={() => handleUpdateFriend(friend.id)}
+            <Box>
+              <Box
+                gap="5px"
+                alignItems="center"
+                sx={{
+                  display: showFriendInputBox === friend.id ? 'flex' : 'none',
+                }}
               >
-                저장
-              </Button>
+                <TextField
+                  type="text"
+                  value={updateFriendInfo.name}
+                  onChange={(e) =>
+                    setUpdateFriendInfo({
+                      ...updateFriendInfo,
+                      name: e.target.value,
+                    })
+                  }
+                />
+
+                <TextField
+                  type="text"
+                  value={updateFriendInfo.start_station}
+                  onChange={(e) =>
+                    setUpdateFriendInfo({
+                      ...updateFriendInfo,
+                      start_station: e.target.value,
+                    })
+                  }
+                />
+
+                <Button
+                  sx={{ color: 'black', border: 'solid 1px black' }}
+                  onClick={() => handleUpdateFriend(friend.id)}
+                >
+                  저장
+                </Button>
+              </Box>
             </Box>
+
             <IconButton onClick={() => handleDeleteFriend(friend.id)}>
               <CloseIcon />
             </IconButton>
           </Grid>
         ))}
+        {newFriendError && <Box sx={{ color: 'red' }}>{newFriendError}</Box>}
       </Grid>
 
       <Typography variant="h5" sx={{ margin: '20px 0' }}>

@@ -81,6 +81,12 @@ export interface UpdateFriendRequest {
   start_station?: string;
 }
 
+export interface ErrorMsg {
+  code?: string;
+  message?: string;
+  details?: string;
+}
+
 //// 필요한 api 목록
 
 export type FriendInfo = {

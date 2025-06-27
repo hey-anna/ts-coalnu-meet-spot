@@ -19,6 +19,7 @@ import useGetUserFriendList from '../../domain/user/hooks/useGetUserFriendList';
 import useAddNewGroup from '../../domain/user/hooks/useAddNewGroup';
 import FriendInset from './FriendInset';
 import { colorPalette } from '@/shared/config/config';
+import type { ErrorMsg } from '@/domain/user/models/model';
 
 const SubmitButton = styled(Button)(({ theme }) => ({
   border: 'solid 1px',
@@ -31,7 +32,7 @@ const YejinTestPage = () => {
   const [newGroupName, setNewGroupName] = useState<string>('');
   const [newGroupError, setNewGroupError] = useState<string>('');
   const [selectColor, setSelectColor] = useState<string>('');
-  const { mutate: addNewGroup } = useAddNewGroup();
+  const { mutate: addNewGroup, error: addNewGroupError } = useAddNewGroup();
 
   const { data: groupData } = useGetCurrentUserGroup({
     id: user?.id || '',
@@ -48,6 +49,18 @@ const YejinTestPage = () => {
     console.log('현재 유저가 가지고 있는 friend list : ', friendData);
   }, [groupData, friendData]);
 
+  useEffect(() => {
+    const error = addNewGroupError as ErrorMsg;
+
+    console.log('화면단 : ', error);
+
+    if (error?.code == '23505') {
+      setNewGroupError('같은 이름의 그룹이 이미 있습니다.');
+    } else {
+      setNewGroupError('');
+    }
+  }, [addNewGroupError]);
+
   const handleSaveGroup = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log('새로운 그룹 이름 : ', newGroupName);
@@ -56,18 +69,19 @@ const YejinTestPage = () => {
       return setNewGroupError('로그인 먼저 해주세요');
     }
 
-    const isExisted = checkNewGroupName(newGroupName);
+    // const isExisted = checkNewGroupName(newGroupName);
 
-    console.log('isExisted : ', isExisted);
+    // console.log('isExisted : ', isExisted);
 
-    if (!isExisted) {
-      setNewGroupError('');
-      addNewGroup({
-        user_id: user?.id,
-        group_name: newGroupName,
-        ...(selectColor && { group_color: selectColor || null }),
-      });
-    }
+    setNewGroupError('');
+
+    addNewGroup({
+      user_id: user?.id,
+      group_name: newGroupName,
+      ...(selectColor && { group_color: selectColor || null }),
+    });
+    // if (!isExisted) {
+    // }
   };
 
   function checkNewGroupName(name: string): boolean {
