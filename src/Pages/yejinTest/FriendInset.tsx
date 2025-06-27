@@ -26,6 +26,7 @@ const SubmitButton = styled(Button)(({ theme }) => ({
   marginLeft: '10px',
 }));
 
+// 새로운 친구 추가하기에서 사용 (친구 이름 + 역명 + 그룹 id)
 const FriendInset = () => {
   const { user } = useUserStore();
   const [newFriend, setNewFriend] = useState<AddNewFriendRequest>({
@@ -33,7 +34,6 @@ const FriendInset = () => {
     name: '',
     start_station: '',
     friend_group_id: null,
-    subway_line: null,
   });
 
   const [newFriendError, setNewFriendError] = useState<{
@@ -170,22 +170,6 @@ const FriendInset = () => {
               : null}
           </FormHelperText>
         </FormControl>
-
-        <TextField
-          id="subway_line"
-          label="subway_line"
-          type="text"
-          value={newFriend.subway_line}
-          onChange={(e) =>
-            setNewFriend({ ...newFriend, subway_line: e.currentTarget.value })
-          }
-          error={newFriendError.label === 'subway_line'}
-          helperText={
-            newFriendError.label === 'subway_line'
-              ? newFriendError.message
-              : null
-          }
-        />
 
         <SubmitButton type="submit">저장</SubmitButton>
       </form>
