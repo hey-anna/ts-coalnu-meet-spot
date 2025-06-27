@@ -345,7 +345,6 @@ export default FriendGroupManagement;
 const pageContainerStyle = {
   maxWidth: 1200,
   margin: '0 auto',
-  padding: 3,
   backgroundColor: theme.palette.background.default,
   minHeight: '80vh',
 };

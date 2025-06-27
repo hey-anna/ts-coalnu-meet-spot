@@ -41,8 +41,6 @@ interface TodayFriendBoxProps {
   isLoggedIn?: boolean; // 로그인 상태를 받는 prop 추가
 }
 
-
-
 // Styled Components
 const StyledContainer = styled(Container)(({ theme }) => ({
   maxWidth: '800px',
@@ -51,6 +49,16 @@ const StyledContainer = styled(Container)(({ theme }) => ({
   height: '100%',
   display: 'flex',
   flexDirection: 'column',
+  
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1.5),
+    maxWidth: '100%',
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    padding: theme.spacing(1),
+  },
 }));
 
 const MainContentWrapper = styled(Box)(({ theme }) => ({
@@ -72,7 +80,18 @@ const HeaderIcon = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  color: 'white'
+  color: 'white',
+  
+  [theme.breakpoints.down('sm')]: {
+    width: 36,
+    height: 36,
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    width: 32,
+    height: 32,
+  },
 }));
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
@@ -90,7 +109,16 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
     flex: 'none',
   },
   [theme.breakpoints.down('sm')]: {
-    height: '350px',
+    height: '70vh',
+    minHeight: '300px',
+    borderRadius: '16px',
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    height: '58vh',
+    minHeight: '150px',
+    borderRadius: '12px',
   },
 }));
 
@@ -105,9 +133,18 @@ const StyledTabs = styled(Tabs)(({ theme }) => ({
     minHeight: 56,
     
     [theme.breakpoints.down('sm')]: {
-      fontSize: '0.875rem',
+      fontSize: '0.75rem',
       padding: theme.spacing(1.5, 2),
-      minHeight: 48,
+      minHeight: 40,
+      minWidth: '80px',
+    },
+    
+    // 아이폰 SE 대응
+    '@media (max-width: 375px)': {
+      fontSize: '0.7rem',
+      padding: theme.spacing(1, 1.5),
+      minHeight: 36,
+      minWidth: '70px',
     },
   },
   '& .MuiTabs-indicator': {
@@ -116,7 +153,12 @@ const StyledTabs = styled(Tabs)(({ theme }) => ({
   },
   
   [theme.breakpoints.down('sm')]: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(1.5),
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    padding: theme.spacing(1),
   },
 }));
 
@@ -133,6 +175,13 @@ const HeaderSection = styled(Box)(({ theme }) => ({
     paddingBottom: theme.spacing(1.5),
     gap: theme.spacing(1.5),
   },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    padding: theme.spacing(1.5),
+    paddingBottom: theme.spacing(1),
+    gap: theme.spacing(1),
+  },
 }));
 
 const ContentSection = styled(Box)(({ theme }) => ({
@@ -143,7 +192,12 @@ const ContentSection = styled(Box)(({ theme }) => ({
   flexDirection: 'column',
   
   [theme.breakpoints.down('sm')]: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(1.5),
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    padding: theme.spacing(1),
   },
 }));
 
@@ -175,7 +229,24 @@ const ActionButton = styled(Button)(({ theme }) => ({
   fontSize: '0.95rem',
   fontWeight: 600,
   minWidth: 110,
-  height: 48
+  height: 48,
+  
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1, 2),
+    fontSize: '0.8rem',
+    minWidth: '90px',
+    height: 40,
+    borderRadius: '12px',
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    padding: theme.spacing(0.8, 1.5),
+    fontSize: '0.75rem',
+    minWidth: '80px',
+    height: 36,
+    borderRadius: '10px',
+  },
 }));
 
 // 친구 추가 폼 스타일
@@ -189,6 +260,12 @@ const AddFriendForm = styled(Box)(({ theme }) => ({
     gap: theme.spacing(1.5),
     marginBottom: theme.spacing(2),
   },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    gap: theme.spacing(1.2),
+    marginBottom: theme.spacing(1.5),
+  },
 }));
 
 const FormRow = styled(Box)(({ theme }) => ({
@@ -197,6 +274,7 @@ const FormRow = styled(Box)(({ theme }) => ({
   alignItems: 'flex-end',
   
   [theme.breakpoints.down('sm')]: {
+    padding:"10px",
     flexDirection: 'column',
     gap: theme.spacing(1.5),
     alignItems: 'stretch',
@@ -226,6 +304,28 @@ const StationSearchField = styled(TextField)(({ theme }) => ({
     },
     '&.Mui-focused fieldset': {
       border: `2px solid ${theme.palette.primary.main}`,
+    },
+  },
+  
+  // 모바일 대응
+  [theme.breakpoints.down('sm')]: {
+    '& .MuiInputLabel-root': {
+      fontSize: '0.875rem',
+    },
+    '& .MuiOutlinedInput-input': {
+      fontSize: '0.875rem',
+      padding: '12px 14px',
+    },
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    '& .MuiInputLabel-root': {
+      fontSize: '0.8rem',
+    },
+    '& .MuiOutlinedInput-input': {
+      fontSize: '0.8rem',
+      padding: '10px 12px',
     },
   },
 }));
@@ -272,6 +372,16 @@ const StationOption = styled(Box)(({ theme }) => ({
   '&:last-child': {
     borderBottom: 'none',
   },
+  
+  // 모바일 대응
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1.2, 1.5),
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    padding: theme.spacing(1, 1.2),
+  },
 }));
 
 const LineChip = styled(Chip)(({ theme }) => ({
@@ -284,20 +394,54 @@ const LineChip = styled(Chip)(({ theme }) => ({
   }
 }));
 
-const FriendCard = styled(Card)(({ theme }) => ({
-  marginBottom: theme.spacing(1.5),
-  borderRadius: '12px',
-  border: '1px solid rgba(0,0,0,0.06)',
-  boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-  transition: 'all 0.2s ease',
+// 친구 칩 스타일 (모바일용)
+const FriendChip = styled(Chip)(({ theme }) => ({
+  backgroundColor: 'rgba(108, 92, 231, 0.08)',
+  color: theme.palette.custom.secondary,
+  border: '1px solid rgba(108, 92, 231, 0.12)',
+  borderRadius: '20px',
+  height: '32px',
+  fontSize: '0.8rem',
+  fontWeight: 500,
+  margin: theme.spacing(0.5),
   
-  '&:hover': {
-    boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-    transform: 'translateY(-1px)',
+  '& .MuiChip-label': {
+    padding: '0 12px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: theme.spacing(0.5),
   },
   
+  '& .MuiChip-deleteIcon': {
+    color: 'rgba(108, 92, 231, 0.7)',
+    fontSize: '18px',
+    '&:hover': {
+      color: theme.palette.error.main,
+    },
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    height: '28px',
+    fontSize: '0.75rem',
+    margin: theme.spacing(0.3),
+    '& .MuiChip-label': {
+      padding: '0 10px',
+    },
+    '& .MuiChip-deleteIcon': {
+      fontSize: '16px',
+    },
+  },
+}));
+
+const ChipsContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: theme.spacing(0.5),
+  marginTop: theme.spacing(1),
+  
   [theme.breakpoints.down('sm')]: {
-    marginBottom: theme.spacing(1),
+    gap: theme.spacing(0.3),
   },
 }));
 
@@ -315,6 +459,14 @@ const FriendCardContent = styled(CardContent)(({ theme }) => ({
     padding: theme.spacing(1.5),
     '&:last-child': {
       paddingBottom: theme.spacing(1.5),
+    },
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    padding: theme.spacing(1.2),
+    '&:last-child': {
+      paddingBottom: theme.spacing(1.2),
     },
   },
 }));
@@ -405,9 +557,19 @@ const todayFriendBox: React.FC<TodayFriendBoxProps> = ({
   const handleFriendSelect = (friend: Friend) => {
     if (onFriendsChange && selectedFriends) {
       const isAlreadySelected = selectedFriends.some(f => f.id === friend.id);
+      
       if (isAlreadySelected) {
+        // 이미 선택된 친구는 제거
         onFriendsChange(selectedFriends.filter(f => f.id !== friend.id));
       } else {
+        // 새로 추가하려는 경우 개수 제한 확인
+        const maxFriends = isLoggedIn ? 3 : 4;
+        
+        if (selectedFriends.length >= maxFriends) {
+          alert(`${isLoggedIn ? '로그인' : '비로그인'} 상태에서는 최대 ${maxFriends}명까지만 선택할 수 있습니다.`);
+          return; // 추가하지 않음
+        }
+        
         onFriendsChange([...selectedFriends, friend]);
       }
     }
@@ -415,6 +577,14 @@ const todayFriendBox: React.FC<TodayFriendBoxProps> = ({
 
   const handleGroupSelect = (newFriendsList: Friend[]) => {
     if (onFriendsChange) {
+      const maxFriends = isLoggedIn ? 3 : 4;
+      
+      // 그룹 선택 시에도 개수 제한 확인
+      if (newFriendsList.length > maxFriends) {
+        alert(`${isLoggedIn ? '로그인' : '비로그인'} 상태에서는 최대 ${maxFriends}명까지만 선택할 수 있습니다.`);
+        return; // 변경하지 않음
+      }
+      
       onFriendsChange(newFriendsList);
     }
   };
@@ -422,6 +592,14 @@ const todayFriendBox: React.FC<TodayFriendBoxProps> = ({
   // 비회원 친구 추가 기능
   const handleAddGuestFriend = () => {
     if (friendName.trim() && selectedStation) {
+      const maxFriends = isLoggedIn ? 3 : 4;
+      
+      // 현재 선택된 친구 수가 최대치에 도달했는지 확인
+      if (selectedFriends.length >= maxFriends) {
+        alert(`${isLoggedIn ? '로그인' : '비로그인'} 상태에서는 최대 ${maxFriends}명까지만 선택할 수 있습니다.`);
+        return; // 추가하지 않음
+      }
+      
       const newFriend: Friend = {
         id: Date.now(), // 임시 ID
         user_id: "", // 비회원용 임시 user_id
@@ -516,7 +694,12 @@ const todayFriendBox: React.FC<TodayFriendBoxProps> = ({
           <Diversity3Icon />
         </HeaderIcon>
         <Typography variant="h5" fontWeight={700} sx={{ 
-          fontSize: { xs: '1.2rem', sm: '1.4rem' }, flex: 1
+          fontSize: { xs: '1.1rem', sm: '1.4rem' }, 
+          flex: 1,
+          // 아이폰 SE 대응
+          '@media (max-width: 375px)': {
+            fontSize: '1rem',
+          },
         }}>
           오늘 만날 친구
         </Typography>
@@ -587,7 +770,24 @@ const todayFriendBox: React.FC<TodayFriendBoxProps> = ({
                         size="small"
                         sx={{ 
                           flex: 1,
-                          minWidth: { xs: '100%', sm: '200px' }
+                          minWidth: { xs: '100%', sm: '200px' },
+                          // 모바일에서 텍스트 필드 크기 조정
+                          '& .MuiInputLabel-root': {
+                            fontSize: { xs: '0.875rem', sm: '1rem' },
+                          },
+                          '& .MuiOutlinedInput-input': {
+                            fontSize: { xs: '0.875rem', sm: '1rem' },
+                          },
+                          // 아이폰 SE 대응
+                          '@media (max-width: 375px)': {
+                            '& .MuiInputLabel-root': {
+                              fontSize: '0.8rem',
+                            },
+                            '& .MuiOutlinedInput-input': {
+                              fontSize: '0.8rem',
+                              padding: '10px 12px',
+                            },
+                          },
                         }}
                         InputProps={{
                           startAdornment: (
@@ -661,14 +861,23 @@ const todayFriendBox: React.FC<TodayFriendBoxProps> = ({
                         sx={{
                           backgroundColor: theme.palette.custom.secondary,
                           borderRadius: '8px',
-                          px: 3,
-                          py: 1.5,
+                          px: { xs: 2, sm: 3 },
+                          py: { xs: 1.2, sm: 1.5 },
                           fontWeight: 600,
+                          fontSize: { xs: '0.8rem', sm: '0.9rem' },
                           minWidth: { xs: '100%', sm: 'auto' },
+                          height: { xs: '40px', sm: '48px' },
                           '&:hover': {
                             backgroundColor: theme.palette.custom.secondary,
                             filter: 'brightness(0.9)',
-                          }
+                          },
+                          // 아이폰 SE 대응
+                          '@media (max-width: 375px)': {
+                            fontSize: '0.75rem',
+                            height: '36px',
+                            px: 1.5,
+                            py: 1,
+                          },
                         }}
                       >
                         추가
@@ -684,46 +893,98 @@ const todayFriendBox: React.FC<TodayFriendBoxProps> = ({
                         sx={{ 
                           mb: 2, 
                           fontWeight: 600,
-                          color: 'text.secondary'
+                          color: 'text.secondary',
+                          fontSize: { xs: '0.8rem', sm: '0.875rem' },
+                          // 아이폰 SE 대응
+                          '@media (max-width: 375px)': {
+                            fontSize: '0.75rem',
+                            mb: 1.5,
+                          },
                         }}
                       >
                         추가된 친구들 ({guestFriends.length}명)
                       </Typography>
-                      {guestFriends.map((friend) => (
-                        <FriendCard key={friend.id}>
-                          <FriendCardContent>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                              <PersonIcon sx={{ color: 'text.secondary', fontSize: '20px' }} />
-                              <Box>
-                                <Typography variant="body1" fontWeight={600}>
-                                  {friend.name}
-                                </Typography>
-                                <Typography 
-                                  variant="body2" 
-                                  color="text.secondary"
-                                  sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
-                                >
-                                  <TrainIcon sx={{ fontSize: '16px' }} />
-                                  {friend.start_station}
-                                </Typography>
+                      
+                      {/* 모바일: 칩 형태로 표시 */}
+                      {isMobile ? (
+                        <ChipsContainer>
+                          {guestFriends.map((friend) => (
+                            <FriendChip
+                              key={friend.id}
+                              label={
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                  <PersonIcon sx={{ fontSize: '14px' }} />
+                                  <span>{friend.name}</span>
+                                  <TrainIcon sx={{ fontSize: '12px', opacity: 0.7 }} />
+                                  <span style={{ fontSize: '0.75em', opacity: 0.8 }}>
+                                    {friend.start_station}
+                                  </span>
+                                </Box>
+                              }
+                              onDelete={() => handleRemoveGuestFriend(friend.id)}
+                              deleteIcon={<CloseIcon />}
+                            />
+                          ))}
+                        </ChipsContainer>
+                      ) : (
+                        /* 데스크톱: 카드 형태로 표시 */
+                        guestFriends.map((friend) => (
+                          <Card 
+                            key={friend.id}
+                            sx={{
+                              marginBottom: 1.5,
+                              borderRadius: '12px',
+                              border: '1px solid rgba(0,0,0,0.06)',
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+                              transition: 'all 0.2s ease',
+                              '&:hover': {
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                                transform: 'translateY(-1px)',
+                              },
+                            }}
+                          >
+                            <CardContent sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              padding: 2,
+                              '&:last-child': {
+                                paddingBottom: 2,
+                              },
+                            }}>
+                              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                                <PersonIcon sx={{ color: 'text.secondary', fontSize: '20px' }} />
+                                <Box>
+                                  <Typography variant="body1" fontWeight={600}>
+                                    {friend.name}
+                                  </Typography>
+                                  <Typography 
+                                    variant="body2" 
+                                    color="text.secondary"
+                                    sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
+                                  >
+                                    <TrainIcon sx={{ fontSize: '16px' }} />
+                                    {friend.start_station}
+                                  </Typography>
+                                </Box>
                               </Box>
-                            </Box>
-                            <IconButton
-                              size="small"
-                              onClick={() => handleRemoveGuestFriend(friend.id)}
-                              sx={{ 
-                                color: 'text.secondary',
-                                '&:hover': {
-                                  color: 'error.main',
-                                  backgroundColor: 'error.light',
-                                }
-                              }}
-                            >
-                              <CloseIcon fontSize="small" />
-                            </IconButton>
-                          </FriendCardContent>
-                        </FriendCard>
-                      ))}
+                              <IconButton
+                                size="small"
+                                onClick={() => handleRemoveGuestFriend(friend.id)}
+                                sx={{ 
+                                  color: 'text.secondary',
+                                  '&:hover': {
+                                    color: 'error.main',
+                                    backgroundColor: 'error.light',
+                                  }
+                                }}
+                              >
+                                <CloseIcon fontSize="small" />
+                              </IconButton>
+                            </CardContent>
+                          </Card>
+                        ))
+                      )}
                     </Box>
                   )}
                 </Box>
