@@ -47,7 +47,7 @@ const LoginForm = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!user) {
+    if (!user?.id) {
       console.log('Email:', email);
       console.log('Password:', password);
       loginWithEmail({ email: email, password: password });
@@ -77,7 +77,7 @@ const LoginForm = () => {
       <AuthFormContainer noValidate autoComplete="off" onSubmit={handleSubmit}>
         <AuthTitle variant="h4">로그인</AuthTitle>
 
-        {!user ? (
+        {!user?.id ? (
           <>
             <TextField
               id="email-input"
