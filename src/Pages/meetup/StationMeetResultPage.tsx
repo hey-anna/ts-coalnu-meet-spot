@@ -79,6 +79,7 @@ type ParticipantInfo = {
 type CalculationResult = {
   name: string;
   time: number | null;
+  transfers: number;
   stationCount: number;
   station: string;
   x: number;
@@ -180,6 +181,7 @@ const StationMeetResultPage = () => {
                     return {
                       name: participant.name,
                       time: 0,
+                      transfers: 0,
                       stationCount: 0,
                       station: station,
                       x: from.x,
@@ -191,7 +193,10 @@ const StationMeetResultPage = () => {
                     startID: from.stationID,
                     endID: to.stationID,
                   });
-
+                  // 환승 횟수 계산
+                  const transferCount = result.driveInfoSet?.driveInfo
+                    ? result.driveInfoSet.driveInfo.length - 1
+                    : -1;
                   console.log(`${participant.name} 경로 결과:`, result);
                   console.log(`globalStationCount (${participant.name}):`, result.globalStationCount);
 
@@ -207,6 +212,7 @@ const StationMeetResultPage = () => {
                   return {
                     name: participant.name,
                     time: result.globalTravelTime,
+                    transfers: transferCount,
                     stationCount: result.globalStationCount,
                     station: station,
                     x: from.x,
@@ -217,6 +223,7 @@ const StationMeetResultPage = () => {
                   return {
                     name: participant.name,
                     time: null,
+                    transfers: -1,
                     stationCount: -1,
                     station: station,
                     x: 0,
@@ -233,6 +240,7 @@ const StationMeetResultPage = () => {
               allResults.push({
                 name: participant.name,
                 time: null,
+                transfers: -1,
                 stationCount: -1,
                 station: station,
                 x: 0,
@@ -303,12 +311,12 @@ const StationMeetResultPage = () => {
   // 역별 평균 환승 횟수 계산
   const getAverageTransferCountForStation = (station: string) => {
     const stationResults = getResultsByStation(station);
-    const validTransfers = stationResults.filter((r) => r.stationCount >= 0);
+    const validTransfers = stationResults.filter((r) => r.transfers >= 0);
 
     if (validTransfers.length === 0) return null;
 
     return Math.round(
-      validTransfers.reduce((sum, cur) => sum + cur.stationCount, 0) / validTransfers.length
+      validTransfers.reduce((sum, cur) => sum + cur.transfers, 0) / validTransfers.length
     );
   };
 
