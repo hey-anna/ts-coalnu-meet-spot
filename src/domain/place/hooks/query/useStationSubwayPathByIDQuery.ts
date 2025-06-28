@@ -1,13 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
-import { getStationSubwayPathByID } from '../apis/stationSubwayApi';
-import type { StationSubwayPathResult } from '../models/stationSubwayPath.response';
+import { getStationSubwayPathByID } from '../../apis/stationSubwayApi';
+import type { StationSubwayPathResult } from '../../models/stationSubwayPath.response';
 
 interface SubwayPathByIDParams {
   startID: number;
   endID: number;
 }
 
-export const useSubwayPathByIDQuery = (params?: SubwayPathByIDParams) => {
+export const useStationSubwayPathByIDQuery = (
+  params?: SubwayPathByIDParams,
+) => {
   return useQuery<StationSubwayPathResult>({
     queryKey: ['subway-path-by-ID', params],
     queryFn: () => {

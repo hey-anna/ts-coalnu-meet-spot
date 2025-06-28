@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import type { StationSubwayPathParams } from '../models/stationSubwayPath.request';
-import type { StationSubwayPathResult } from '../models/stationSubwayPath.response';
-import { getStationSubwayPath } from '../apis/stationSubwayApi';
+import type { StationSubwayPathParams } from '../../models/stationSubwayPath.request';
+import type { StationSubwayPathResult } from '../../models/stationSubwayPath.response';
+import { getStationSubwayPath } from '../../apis/stationSubwayApi';
 
 export const useStationSubwayPathQuery = (params?: StationSubwayPathParams) => {
   return useQuery<StationSubwayPathResult>({

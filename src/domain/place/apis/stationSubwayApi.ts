@@ -65,6 +65,15 @@ export const getStationSubwayPathByID = async ({
 // 역 이름 - 좌표 변환
 // 지하철역 이름 → 좌표 및 ID 변환
 export const getStationSubwayCoords = async (stationName: string) => {
+  // if (!stationName) {
+  //   throw new Error('역 이름이 없습니다!');
+  // }
+  if (!stationName) {
+    // 추가된 방어 처리
+    console.warn('getStationSubwayCoords: stationName이 비어 있습니다.');
+    throw new Error('역 이름이 없습니다!');
+  }
+
   const cleanName = stationName.replace(/역$/, '');
 
   const url = 'https://api.odsay.com/v1/api/searchStation';
@@ -79,6 +88,21 @@ export const getStationSubwayCoords = async (stationName: string) => {
     },
   });
 
+  // 추가된 방어 처리
+  if (
+    !data?.result ||
+    data.result.totalCount === 0 ||
+    !Array.isArray(data.result.station) ||
+    data.result.station.length === 0
+  ) {
+    console.warn(
+      `getStationSubwayCoords: "${cleanName}" 에 대한 유효한 역 데이터가 없습니다.`,
+      data.result,
+    );
+    throw new Error(`"${cleanName}"에 해당하는 역을 찾을 수 없습니다.`);
+  }
+
+  //
   const stations = data.result?.station;
   if (!stations || stations.length === 0) {
     throw new Error(`"${cleanName}"에 해당하는 역을 찾을 수 없습니다.`);
@@ -115,8 +139,12 @@ export const searchSubwayStationByKeyword = async (
 
   console.log('Odsay 응답 데이터:', data);
 
-  if (!data.result?.station) {
-    throw new Error(`"${keyword}"에 대한 역 목록을 불러오지 못했습니다.`);
+  // if (!data.result?.station) {
+  //   throw new Error(`"${keyword}"에 대한 역 목록을 불러오지 못했습니다.`);
+  // }
+
+  if (!data.result || data.result.station.length === 0) {
+    throw new Error('역 이름이 없습니다!');
   }
 
   return data.result.station;
