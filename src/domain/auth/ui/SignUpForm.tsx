@@ -14,6 +14,8 @@ import {
 const SignUpForm = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [userName, setUserName] = useState<string>('');
+  const [userStartStation, setUserStartStation] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [showMessage, setShowMessage] = useState<boolean>(false);
   const {
@@ -44,7 +46,12 @@ const SignUpForm = () => {
     console.log('Email:', email);
     console.log('Password:', password);
 
-    signupWithEmail({ email: email, password: password });
+    signupWithEmail({
+      email: email,
+      password: password,
+      user_name: userName,
+      user_start_station: userStartStation,
+    });
 
     setEmail('');
     setPassword('');
@@ -164,6 +171,32 @@ const SignUpForm = () => {
               }
             />
 
+            <TextField
+              id="user_name"
+              label="사용자이름"
+              type="text"
+              value={userName}
+              onChange={(e) => {
+                setUserName(e.target.value);
+              }}
+              placeholder="사용자 이름"
+              required
+              fullWidth
+            />
+
+            <TextField
+              id="user_start_station"
+              label="사용자출발지"
+              type="text"
+              value={userStartStation}
+              onChange={(e) => {
+                setUserStartStation(e.target.value);
+              }}
+              placeholder="출발지"
+              required
+              fullWidth
+            />
+
             <AuthLink onClick={() => navigate('/login')}>
               이미 계정이 있으신가요? 로그인하기
             </AuthLink>
@@ -174,6 +207,8 @@ const SignUpForm = () => {
               disabled={
                 isPending ||
                 !email ||
+                !userName ||
+                !userStartStation ||
                 password.length < 8 ||
                 !password ||
                 !confirmPassword ||

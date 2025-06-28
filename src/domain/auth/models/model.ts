@@ -1,7 +1,8 @@
 export interface SignUpRequest {
   email: string;
   password: string;
-  option?: {};
+  user_name: string;
+  user_start_station: string;
 }
 
 export interface LoginRequest {

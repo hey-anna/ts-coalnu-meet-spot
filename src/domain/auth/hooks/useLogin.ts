@@ -19,10 +19,12 @@ const useLogin = () => {
     onSuccess: async () => {
       try {
         const userInfo = await getCurrentUserInfo();
-        if (userInfo?.user?.email && userInfo.user.id) {
+        if (userInfo?.email && userInfo.id) {
           setUser({
-            email: userInfo.user.email,
-            id: userInfo.user.id,
+            id: userInfo.id,
+            email: userInfo.email,
+            user_name: userInfo.user_name,
+            user_start_station: userInfo.user_start_station,
           });
         }
         navigate('/');

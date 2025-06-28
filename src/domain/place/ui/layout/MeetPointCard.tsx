@@ -19,12 +19,19 @@ interface MeetPointCardProps {
 const StatLabel = styled(Typography)(({ theme }) => ({
   color: theme.palette.text.secondary,
   fontSize: theme.typography.body2.fontSize,
+  // 모바일 최적화
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '0.5rem',
+  },
 }));
 
 const StatValue = styled(Typography)(({ theme }) => ({
   fontWeight: 600,
-  // fontSize: theme.typography.h6.fontSize,
   fontSize: theme.typography.h5.fontSize,
+  // 모바일 최적화
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '1.1rem',
+  },
 }));
 
 const IconWrapper = styled(Box)(({ theme }) => ({
@@ -38,6 +45,14 @@ const IconWrapper = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   justifyContent: 'center',
   flexShrink: 0,
+  // 모바일 최적화
+  [theme.breakpoints.down('sm')]: {
+    width: 40,
+    height: 40,
+    minWidth: 40,
+    minHeight: 40,
+    borderRadius: 6,
+  },
 }));
 
 const MeetPointCard = ({
@@ -49,16 +64,28 @@ const MeetPointCard = ({
   return (
     <BasicStyledCard>
       <Box position="relative">
-        <CardContent sx={{ p: 3 }}>
-          <Box position="absolute" top={16} right={16} zIndex={1}>
+        <CardContent sx={{ 
+          p: { xs: 2, sm: 3 } // 모바일에서 패딩 줄임
+        }}>
+          <Box 
+            position="absolute" 
+            top={{ xs: 12, sm: 16 }} 
+            right={{ xs: 12, sm: 16 }} 
+            zIndex={1}
+          >
             <SatisfactionTooltip />
           </Box>
-          <Box display="flex" alignItems="center" gap={2} mb={3}>
+          
+          <Box 
+            display="flex" 
+            alignItems="center" 
+            gap={{ xs: 1.5, sm: 2 }} // 모바일에서 간격 줄임
+            mb={{ xs: 2, sm: 3 }}
+          >
             <IconWrapper>
               <Room
                 sx={{
-                  fontSize: 32,
-                  // color: 'primary.main',
+                  fontSize: { xs: 24, sm: 32 }, // 모바일에서 아이콘 크기 줄임
                   color: '#fff',
                   flexShrink: 0,
                 }}
@@ -67,9 +94,8 @@ const MeetPointCard = ({
             </IconWrapper>
             <Box>
               <Typography
-                // variant="h5"
                 sx={{
-                  fontSize: '2rem',
+                  fontSize: { xs: '1.25rem', sm: '2rem' }, // 모바일 최적화
                   fontWeight: 'bold',
                   lineHeight: 1.2,
                 }}
@@ -77,58 +103,124 @@ const MeetPointCard = ({
               >
                 {selectedStationName || '도착역 선택'}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography 
+                variant="body2" 
+                color="text.secondary"
+                sx={{
+                  fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                }}
+              >
                 모든 친구들의 중간 지점
               </Typography>
             </Box>
           </Box>
-          {/* <Typography variant="h5" fontWeight={700}>
-          {selectedStationName || '도착역 선택'}
-        </Typography> */}
-          <Grid container spacing={2} mt={1}>
+          
+          <Grid container spacing={{ xs: 1, sm: 2 }} mt={1}>
             <Grid size={4} textAlign="center">
-              <StatValue>
-                {averageTime !== null ? `${averageTime}분` : '-'}
-              </StatValue>
-              <Stack
-                direction="row"
-                spacing={0.5}
-                justifyContent="center"
-                sx={{ mt: 0.5, color: 'text.secondary' }}
+              <Box
+                sx={{
+                  p: { xs: 1.5, sm: 2 },
+                  borderRadius: 2,
+                  backgroundColor: '#f8f9ff', // 친구 카드와 동일한 배경색
+                  border: '1px solid #e8eaf6', // 친구 카드와 동일한 테두리
+                  textAlign: 'center',
+                  transition: 'all 0.2s ease',
+                  '&:hover': {
+                    boxShadow: 1,
+                    transform: 'translateY(-1px)'
+                  }
+                }}
               >
-                <AccessTime fontSize="small" color="inherit" />
-                <StatLabel>평균 이동 시간</StatLabel>
-              </Stack>
+                <StatValue sx={{ color: 'primary.main' }}>
+                  {averageTime !== null ? `${averageTime}분` : '-'}
+                </StatValue>
+                <Stack
+                  direction="row"
+                  spacing={0.5}
+                  justifyContent="center"
+                  sx={{ mt: 0.5, color: 'text.secondary' }}
+                >
+                  <AccessTime 
+                    fontSize="small" 
+                    color="inherit"
+                    sx={{ fontSize: { xs: 14, sm: 16 } }}
+                  />
+                  <StatLabel>평균 이동 시간</StatLabel>
+                </Stack>
+              </Box>
             </Grid>
+            
             <Grid size={4} textAlign="center">
-              <StatValue>
-                {averageTransferCount ? `${averageTransferCount}회` : '-'}
-              </StatValue>
-              <Stack
-                direction="row"
-                spacing={0.5}
-                justifyContent="center"
-                sx={{ mt: 0.5, color: 'text.secondary' }}
+              <Box
+                sx={{
+                  p: { xs: 1.5, sm: 2 },
+                  borderRadius: 2,
+                  backgroundColor: '#f8f9ff', // 친구 카드와 동일한 배경색
+                  border: '1px solid #e8eaf6', // 친구 카드와 동일한 테두리
+                  textAlign: 'center',
+                  transition: 'all 0.2s ease',
+                  '&:hover': {
+                    boxShadow: 1,
+                    transform: 'translateY(-1px)'
+                  }
+                }}
               >
-                <DirectionsTransit fontSize="small" color="inherit" />
-                <StatLabel>평균 환승 횟수</StatLabel>
-              </Stack>
+                <StatValue sx={{ color: 'primary.main' }}>
+                  {averageTransferCount ? `${averageTransferCount}회` : '-'}
+                </StatValue>
+                <Stack
+                  direction="row"
+                  spacing={0.5}
+                  justifyContent="center"
+                  sx={{ mt: 0.5, color: 'text.secondary' }}
+                >
+                  <DirectionsTransit 
+                    fontSize="small" 
+                    color="inherit"
+                    sx={{ fontSize: { xs: 14, sm: 16 } }}
+                  />
+                  <StatLabel>평균 환승 횟수</StatLabel>
+                </Stack>
+              </Box>
             </Grid>
+            
             <Grid size={4} textAlign="center">
-              <StatValue>
-                <Box component="span" fontSize="1.75rem">
-                  {satisfactionRate?.trim() ? satisfactionRate : '-'}
-                </Box>
-              </StatValue>
-              <Stack
-                direction="row"
-                spacing={0.5}
-                justifyContent="center"
-                sx={{ mt: 0.5, color: 'text.secondary' }}
+              <Box
+                sx={{
+                  p: { xs: 1.5, sm: 2 },
+                  borderRadius: 2,
+                  backgroundColor: '#f8f9ff', // 친구 카드와 동일한 배경색
+                  border: '1px solid #e8eaf6', // 친구 카드와 동일한 테두리
+                  textAlign: 'center',
+                  transition: 'all 0.2s ease',
+                  '&:hover': {
+                    boxShadow: 1,
+                    transform: 'translateY(-1px)'
+                  }
+                }}
               >
-                <SentimentSatisfiedAlt fontSize="small" color="inherit" />
-                <StatLabel>이동 만족도</StatLabel>
-              </Stack>
+                <StatValue sx={{ color: 'primary.main' }}>
+                  <Box 
+                    component="span" 
+                    fontSize={{ xs: '1.25rem', sm: '1.75rem' }}
+                  >
+                    {satisfactionRate?.trim() ? satisfactionRate : '-'}
+                  </Box>
+                </StatValue>
+                <Stack
+                  direction="row"
+                  spacing={0.5}
+                  justifyContent="center"
+                  sx={{ mt: 0.5, color: 'text.secondary' }}
+                >
+                  <SentimentSatisfiedAlt 
+                    fontSize="small" 
+                    color="inherit"
+                    sx={{ fontSize: { xs: 14, sm: 16 } }}
+                  />
+                  <StatLabel>이동 만족도</StatLabel>
+                </Stack>
+              </Box>
             </Grid>
           </Grid>
         </CardContent>

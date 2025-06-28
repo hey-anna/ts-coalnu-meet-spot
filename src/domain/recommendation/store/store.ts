@@ -19,6 +19,9 @@ interface SidebarData {
   isLoadingRestaurants?: boolean;
   isLoadingCafes?: boolean;
   searchRadius?: number;
+  // TodayRecommend 관련 데이터 추가
+  stationName?: string;
+  showHeader?: boolean;
   [key: string]: any;
 }
 
@@ -41,6 +44,10 @@ interface SidebarStore {
   setCafes: (cafes: any[]) => void;
   setLoadingRestaurants: (loading: boolean) => void;
   setLoadingCafes: (loading: boolean) => void;
+  
+  // TodayRecommend 관련 액션들 추가
+  setStationRecommend: (stationName: string, showHeader?: boolean) => void;
+  clearStationRecommend: () => void;
 }
 
 export const RecommendSideBar = create<SidebarStore>((set, get) => ({
@@ -86,5 +93,22 @@ export const RecommendSideBar = create<SidebarStore>((set, get) => ({
   
   setLoadingCafes: (loading) => set((state) => ({
     data: { ...state.data, isLoadingCafes: loading }
+  })),
+
+  // TodayRecommend 관련 액션들
+  setStationRecommend: (stationName, showHeader = false) => set((state) => ({
+    data: { 
+      ...state.data, 
+      stationName,
+      showHeader 
+    }
+  })),
+  
+  clearStationRecommend: () => set((state) => ({
+    data: { 
+      ...state.data, 
+      stationName: undefined,
+      showHeader: undefined 
+    }
   })),
 }));
