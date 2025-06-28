@@ -55,17 +55,3 @@ type FriendsStoreType = {
 //       }),
 //   })),
 // );
-
-import type { FriendInfo } from '../models/model';
-
-interface FriendStore {
-  friendList: FriendInfo[];
-  setFriendList: (friends: FriendInfo[]) => void;
-  clearFriendList: () => void;
-}
-
-export const useFriendStore = create<FriendStore>((set) => ({
-  friendList: [],
-  setFriendList: (friends) => set({ friendList: friends }),
-  clearFriendList: () => set({ friendList: [] }),
-}));

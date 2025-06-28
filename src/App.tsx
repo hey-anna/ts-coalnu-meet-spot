@@ -3,7 +3,6 @@ import './styles/App.css';
 import { Route, Routes } from 'react-router';
 import AppLayout from './layout/AppLayout';
 import StationMeetResultPage from './Pages/meetup/StationMeetResultPage';
-import TestPage from './Pages/test/TestPage';
 import MainPage from './Pages/main/MainPage';
 import YejinGetFriendListpage from './Pages/yejinTest/YejinGetFriendListpage';
 import YejinDeleteTest from './Pages/yejinTest/YejinDeleteTest';
@@ -47,7 +46,6 @@ function App() {
             <Route path="delete" element={<YejinDeleteTest />} />
             <Route path="insert" element={<YejinInsertUserInfo />} />
           </Route>
-          <Route path="/test" element={<TestPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
