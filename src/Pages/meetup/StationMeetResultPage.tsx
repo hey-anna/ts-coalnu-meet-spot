@@ -13,6 +13,7 @@ import FriendMarkerLegend from '@/domain/place/ui/layout/FriendMarkerLegend';
 import type { Friend } from '../../domain/user/models/model';
 import { useUserStore } from '../../domain/user/store/userStore.ts'; // 실제 store import
 import RecommendResultInfo from '@/domain/recommendation/ui/recommendResult/recommendResultInfo.tsx';
+import { RecommendSideBar } from '../../domain/recommendation/store/store';
 
 // 스타일 변수 - 모바일 최적화
 const containerStyle = { 
@@ -97,6 +98,7 @@ const StationMeetResultPage = () => {
 
   // zustand store에서 내 정보 가져오기
   const { user } = useUserStore();
+  const { setStationRecommend, clearStationRecommend } = RecommendSideBar();
 
   // 메인에서 받은 데이터
   const { selectedFriends, selectedStations } = location.state || {};
@@ -340,6 +342,17 @@ const StationMeetResultPage = () => {
 
   // 최적의 역
   const bestStation = getBestStation();
+    // bestStation이 결정되면 사이드바에 역 정보 설정
+  useEffect(() => {
+    if (bestStation) {
+      setStationRecommend(bestStation, false); // 헤더 숨김
+    }
+    
+    // 페이지를 벗어날 때 사이드바 데이터 초기화
+    return () => {
+      clearStationRecommend();
+    };
+  }, [bestStation, setStationRecommend, clearStationRecommend]);
 
   // 친구 색상 맵
   const friendsColorMap = useFriendColorMap(friendCoords);
