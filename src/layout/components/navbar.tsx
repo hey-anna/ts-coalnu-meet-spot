@@ -110,14 +110,8 @@ const SubMenu = styled(Menu)(({ theme }) => ({
   borderRadius: '8px',
 
   '& ul': {
-    display: 'flex',
-    padding: '10px',
-    gap: '5px',
-
+    padding: '0',
     '& li': {
-      border: 'solid 2px',
-      borderColor: '#6c5ce7',
-      borderRadius: '15px',
       color: '#6c5ce7',
 
       '&:hover': {
@@ -129,18 +123,9 @@ const SubMenu = styled(Menu)(({ theme }) => ({
 
   [theme.breakpoints.down('sm')]: {
     '& ul': {
-      display: 'flex',
-      padding: '10px',
-      gap: '5px',
-
       '& li': {
         padding: '0px 10px',
         fontSize: '12px',
-
-        '&:hover': {
-          backgroundColor: '#6c5ce7',
-          color: 'white',
-        },
       },
     },
   },
