@@ -102,10 +102,12 @@ const navbar = () => {
   const isLogin = !!loginUser?.email && !!loginUser?.id;
 
   useEffect(() => {
-    if (fetchedUser?.user?.email && fetchedUser.user.id) {
+    if (fetchedUser?.email && fetchedUser.id) {
       setUser({
-        email: fetchedUser.user.email,
-        id: fetchedUser.user.id,
+        email: fetchedUser.email,
+        id: fetchedUser.id,
+        user_name: fetchedUser.user_name,
+        user_start_station: fetchedUser.user_start_station,
       });
     }
   }, [fetchedUser]);
@@ -114,7 +116,6 @@ const navbar = () => {
     if (isLogin) {
       logout();
     } else {
-      console.log('클릭');
       navigate('/login');
     }
   };

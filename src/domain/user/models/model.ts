@@ -1,6 +1,8 @@
 export interface User {
   email: string;
   id: string;
+  user_name: string;
+  user_start_station: string;
 }
 
 export interface Group {
@@ -87,31 +89,16 @@ export interface ErrorMsg {
   details?: string;
 }
 
-//// 필요한 api 목록
+// 사용자 정보(user_info 테이블) 저장 요청
+export interface UserInfoReQuest {
+  user_id: string;
+  user_name: string;
+  user_start_station: string;
+}
 
-export type FriendInfo = {
-  id?: number;
-  name: string;
-  start_station: string;
-};
-
-// 1. 그룹 정보 + 그룹에 속한 친구 목록
-// request : user_id 하나
-// response는 아래 타입
-export type GroupFriendsInfo = {
-  id: number;
-  group_name: string;
-  memberInfos: FriendInfo[];
-};
-
-// 2. 그룹에 안속한 친구 목록
-// request: user_id
-// response : Friend[]
-export type NoneGroupFriendsInfo = FriendInfo[];
-
-// 3. 그룹 추가 하기
-export type addGroupRequest = {
-  user_id: number;
-  group_name: string;
-  memberInfos: FriendInfo[]; // 화면에서는 새로 추가하는 친구의 경우 이 두 정보 밖에 없음
-};
+// 사용자 정보(user_info 테이블)
+export interface UserSubInfo {
+  user_id: string;
+  user_name: string;
+  user_start_station: string;
+}
