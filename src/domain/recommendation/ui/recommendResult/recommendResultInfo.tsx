@@ -209,23 +209,6 @@ const RecommendResultInfo: React.FC<RecommendResultInfoProps> = ({ location }) =
   return (
     <Box sx={containerStyles}>
       <Box sx={innerContainerStyles}>
-        {/* 헤더 */}
-        <Box sx={headerContainerStyles}>
-          <Typography 
-            variant={isMobile ? "h5" : "h4"}
-            component="h1"
-            sx={titleStyles}
-          >
-            {location} 추천
-          </Typography>
-          <Typography 
-            variant="body2" 
-            sx={subtitleStyles}
-          >
-            {location} 주변의 인기 맛집과 카페를 확인해보세요
-          </Typography>
-        </Box>
-
         {/* 탭 메뉴 */}
         <Paper elevation={0} sx={tabContainerStyles}>
           <ButtonGroup 
