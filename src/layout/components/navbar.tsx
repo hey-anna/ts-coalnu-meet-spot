@@ -281,12 +281,13 @@ const navbar = () => {
     <StyledAppBar position="sticky">
       <StyledToolbar>
         {/* 로고 영역 */}
-        <LogoContainer onClick={handleLogoClick}>
+        <LogoContainer>
           <Box
             display="flex"
             alignItems="flex-end"
             gap="12px"
             sx={{ cursor: 'pointer' }}
+            onClick={handleLogoClick}
           >
             <LogoImage src="/meetspot_logo_font.png" alt="MeetSpot Logo" />
             <LogoText>어디서 만날까?</LogoText>
