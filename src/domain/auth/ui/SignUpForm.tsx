@@ -13,7 +13,6 @@ import {
 import TrainIcon from '@mui/icons-material/Train';
 import { getLineColor, STATION_CONFIG } from '@/shared/config/stationConfig';
 import type { StationData } from '@/shared/models/station';
-import { TextFields } from '@mui/icons-material';
 
 const SignUpForm = () => {
   const [email, setEmail] = useState<string>('');
@@ -68,7 +67,7 @@ const SignUpForm = () => {
   // 이메일 형식 검사
   const pattern = /^[A-Za-z0-9_\.\-]+@[A-Za-z0-9\-]+\.[A-za-z0-9\-]+/;
 
-  function emailValidChk(value) {
+  function emailValidChk(value: string) {
     if (pattern.test(value) === false) {
       setValidationErrorMsg({
         label: 'email',
@@ -221,10 +220,11 @@ const SignUpForm = () => {
               fullWidth
             />
 
+            {/* 출발역 입력창 - 다른 TextField와 동일한 디자인 */}
             <StationSearchContainer>
               <TextField
                 id="user_start_station"
-                label="사용자 출발지"
+                label="출발역"
                 value={stationSearchQuery}
                 onChange={(e) => handleStationSearch(e.target.value)}
                 onFocus={() => {
@@ -236,8 +236,8 @@ const SignUpForm = () => {
                   // 약간의 지연을 두어 클릭 이벤트가 처리되도록 함
                   setTimeout(() => setShowStationDropdown(false), 200);
                 }}
-                variant="outlined"
-                size="small"
+                placeholder="역 이름을 검색하세요"
+                required
                 fullWidth
                 InputProps={{
                   startAdornment: (
@@ -245,14 +245,27 @@ const SignUpForm = () => {
                       sx={{
                         color: 'text.secondary',
                         mr: 1,
-                        fontSize: '20px',
+                        fontSize: { xs: '18px', sm: '20px' },
                       }}
                     />
                   ),
                 }}
+                sx={{
+                  // 드롭다운이 열릴 때 하단 보더 제거
+                  '& .MuiOutlinedInput-root': {
+                    ...(showStationDropdown && filteredStations.length > 0 && {
+                      '& fieldset': {
+                        borderBottomLeftRadius: 0,
+                        borderBottomRightRadius: 0,
+                      }
+                    })
+                  }
+                }}
               />
+              
+              {/* 드롭다운 */}
               {showStationDropdown && filteredStations.length > 0 && (
-                <StationDropdown>
+                <StationDropdown elevation={3}>
                   {filteredStations.map((station) => (
                     <StationOption
                       key={`${station.station_cd}-${station.line_num}`}
@@ -262,16 +275,20 @@ const SignUpForm = () => {
                         sx={{
                           display: 'flex',
                           alignItems: 'center',
-                          gap: 1,
+                          gap: { xs: 0.8, sm: 1 },
                         }}
                       >
                         <TrainIcon
                           sx={{
-                            fontSize: '16px',
+                            fontSize: { xs: '14px', sm: '16px' },
                             color: 'text.secondary',
                           }}
                         />
-                        <Typography variant="body2" fontWeight={500}>
+                        <Typography 
+                          variant="body2" 
+                          fontWeight={500}
+                          sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}
+                        >
                           {station.station_nm}
                         </Typography>
                       </Box>
@@ -282,6 +299,8 @@ const SignUpForm = () => {
                           backgroundColor: `${getLineColor(station.line_num)}15`,
                           color: getLineColor(station.line_num),
                           border: `1px solid ${getLineColor(station.line_num)}30`,
+                          fontSize: { xs: '0.6rem', sm: '0.7rem' },
+                          height: { xs: 20, sm: 22 },
                         }}
                       />
                     </StationOption>
@@ -301,7 +320,7 @@ const SignUpForm = () => {
                 isPending ||
                 !email ||
                 !userName ||
-                !stationSearchQuery ||
+                !selectedStation ||
                 password.length < 8 ||
                 !password ||
                 !confirmPassword ||
@@ -331,31 +350,34 @@ const SignUpForm = () => {
 
 export default SignUpForm;
 
+// 스타일 컴포넌트들
 const StationSearchContainer = styled(Box)(({ theme }) => ({
   position: 'relative',
-  flex: 1,
-  minWidth: '200px',
-  minHeight: '60px',
-
+  width: '100%',
+  
+  // 모바일 최적화
   [theme.breakpoints.down('sm')]: {
-    minWidth: '100%',
+    width: '100%',
   },
 }));
 
 const StationDropdown = styled(Paper)(({ theme }) => ({
   position: 'absolute',
-  top: '100%',
+  top: 'calc(100% - 1px)', // TextField와 정확히 붙도록
   left: 0,
   right: 0,
   backgroundColor: 'white',
-  borderRadius: '0 0 8px 8px',
+  borderTopLeftRadius: 0,
+  borderTopRightRadius: 0,
+  borderBottomLeftRadius: 4,
+  borderBottomRightRadius: 4,
   maxHeight: '200px',
   overflowY: 'auto',
   zIndex: 1300,
-  boxShadow: theme.shadows[8],
-  border: '1px solid rgba(0,0,0,0.12)',
-  borderTop: 'none',
+  border: '1px solid rgba(0,0,0,0.23)',
+  borderTop: 'none', // 상단 보더 제거로 TextField와 연결
 
+  // 스크롤바 스타일
   '&::-webkit-scrollbar': {
     width: '6px',
   },
@@ -365,6 +387,19 @@ const StationDropdown = styled(Paper)(({ theme }) => ({
   '&::-webkit-scrollbar-thumb': {
     background: 'rgba(0,0,0,0.2)',
     borderRadius: '3px',
+  },
+  
+  // 모바일 최적화
+  [theme.breakpoints.down('sm')]: {
+    maxHeight: '180px',
+    '&::-webkit-scrollbar': {
+      width: '4px',
+    },
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    maxHeight: '160px',
   },
 }));
 
@@ -403,5 +438,14 @@ const LineChip = styled(Chip)(({ theme }) => ({
   '& .MuiChip-label': {
     padding: '0 8px',
     fontWeight: 500,
+  },
+  
+  // 모바일 최적화
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '0.6rem',
+    height: 20,
+    '& .MuiChip-label': {
+      padding: '0 6px',
+    },
   },
 }));
