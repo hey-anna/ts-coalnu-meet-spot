@@ -20,6 +20,7 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import UserInfoUpdateForm from '@/domain/auth/ui/userInfoUpdateForm';
 import type { StationData } from '@/shared/models/station';
 import useUpdateUserInfo from '@/domain/auth/hooks/useUpdateUserInfo';
+import { useQueryClient } from '@tanstack/react-query';
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -102,6 +103,7 @@ const LogoText = styled(Typography)(({ theme }) => ({
 }));
 
 const navbar = () => {
+  const queryClient = useQueryClient();
   const { user: loginUser, setUser } = useUserStore();
   const { data: fetchedUser, isLoading, isError } = useGetUserApi();
   const { mutate: logout } = useLogout();
@@ -143,12 +145,6 @@ const navbar = () => {
 
   const handleLogin = () => {
     if (isLogin) {
-      setUser({
-        id: '',
-        email: '',
-        user_name: '',
-        user_start_station: '',
-      });
       logout();
     } else {
       navigate('/login');

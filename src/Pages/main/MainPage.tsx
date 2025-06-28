@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, styled, Typography, Button } from '@mui/material';
 import { useNavigate } from 'react-router'; // react-router로 변경
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -438,6 +438,10 @@ const MainPage: React.FC = () => {
     return '#6c757d'; // 기본 색상 (그룹에 속하지 않은 친구)
   };
 
+  useEffect(() => {
+    setSelectedFriends([]);
+    setSelectedStations([]);
+  }, [loginUser]);
   const canProceed = selectedFriends.length > 0 && selectedStations.length > 0;
 
   return (
