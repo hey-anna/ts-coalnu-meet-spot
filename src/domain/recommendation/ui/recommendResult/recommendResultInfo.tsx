@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import LocalCafeIcon from '@mui/icons-material/LocalCafe';
+import LocationOffIcon from '@mui/icons-material/LocationOff';
 import places from '../../apis/api';
 import type { PlaceData } from '../../models/model';
 import RecommendPlaceCard from './recommendPlaceCard';
@@ -24,7 +25,6 @@ interface RecommendResultInfoProps {
 // 스타일 변수들을 컴포넌트 외부에서 선언 - 이미지 참고한 깔끔한 디자인
 const createContainerStyles = (theme: Theme, isMobile: boolean) => ({
   backgroundColor: '#fafafa',
-  minHeight: '100vh',
   py: isMobile ? 2 : 3
 });
 
@@ -98,7 +98,7 @@ const createContentContainerStyles = (theme: Theme) => ({
   backgroundColor: theme.palette.background.paper,
   borderRadius: 3,
   border: `1px solid ${theme.palette.divider}`,
-  minHeight: '400px',
+  minHeight: '300px',
   overflow: 'hidden',
   boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
 });
@@ -156,6 +156,45 @@ const createEmptyTextStyles = (theme: Theme) => ({
   fontSize: '0.9rem'
 });
 
+// 위치 정보 없음 스타일
+const createNoLocationContainerStyles = (theme: Theme) => ({
+  backgroundColor: theme.palette.background.paper,
+  borderRadius: 3,
+  border: `1px solid ${theme.palette.divider}`,
+  minHeight: '400px',
+  overflow: 'hidden',
+  boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center'
+});
+
+const createNoLocationContentStyles = (isMobile: boolean) => ({
+  textAlign: 'center',
+  py: isMobile ? 4 : 6,
+  px: 3
+});
+
+const createNoLocationIconStyles = (theme: Theme, isMobile: boolean) => ({
+  fontSize: isMobile ? 48 : 64,
+  color: theme.palette.text.secondary,
+  mb: 2,
+  opacity: 0.6
+});
+
+const createNoLocationTextStyles = (theme: Theme, isMobile: boolean) => ({
+  color: theme.palette.text.secondary,
+  fontSize: isMobile ? '1rem' : '1.1rem',
+  fontWeight: 500,
+  mb: 1
+});
+
+const createNoLocationSubTextStyles = (theme: Theme, isMobile: boolean) => ({
+  color: theme.palette.text.secondary,
+  fontSize: isMobile ? '0.8rem' : '0.9rem',
+  opacity: 0.8
+});
+
 const RecommendResultInfo: React.FC<RecommendResultInfoProps> = ({ location }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -164,6 +203,11 @@ const RecommendResultInfo: React.FC<RecommendResultInfoProps> = ({ location }) =
   const [restaurants, setRestaurants] = useState<PlaceData[]>([]);
   const [cafes, setCafes] = useState<PlaceData[]>([]);
   const [loading, setLoading] = useState(false);
+
+  // location 유효성 검사 함수
+  const isValidLocation = (loc: string): boolean => {
+    return loc && typeof loc === 'string' && loc.trim().length > 0;
+  };
 
   // 스타일 변수들 적용
   const containerStyles = createContainerStyles(theme, isMobile);
@@ -177,13 +221,25 @@ const RecommendResultInfo: React.FC<RecommendResultInfoProps> = ({ location }) =
   const contentHeaderStyles = createContentHeaderStyles(theme, isMobile);
   const contentTitleStyles = createContentTitleStyles(theme, isMobile);
   const contentBodyStyles = createContentBodyStyles(isMobile);
-  const loadingSpinnerStyles = createLoadingSpinnerStyles(theme,activeTab);
+  const loadingSpinnerStyles = createLoadingSpinnerStyles(theme, activeTab);
   const loadingTextStyles = createLoadingTextStyles(theme);
   const emptyTextStyles = createEmptyTextStyles(theme);
   const emptyStateStyles = createEmptyStateStyles(isMobile);
   const contentIconStyles = createContentIconStyles(theme, activeTab, isMobile);
+  
+  // 위치 정보 없음 스타일
+  const noLocationContainerStyles = createNoLocationContainerStyles(theme);
+  const noLocationContentStyles = createNoLocationContentStyles(isMobile);
+  const noLocationIconStyles = createNoLocationIconStyles(theme, isMobile);
+  const noLocationTextStyles = createNoLocationTextStyles(theme, isMobile);
+  const noLocationSubTextStyles = createNoLocationSubTextStyles(theme, isMobile);
 
   useEffect(() => {
+    // location이 유효하지 않으면 API 호출하지 않음
+    if (!isValidLocation(location)) {
+      return;
+    }
+
     const fetchPlaces = async () => {
       try {
         setLoading(true);
@@ -196,6 +252,8 @@ const RecommendResultInfo: React.FC<RecommendResultInfoProps> = ({ location }) =
         setCafes(cafeData);
       } catch (error) {
         console.error('데이터를 가져오는데 실패했습니다:', error);
+        setRestaurants([]);
+        setCafes([]);
       } finally {
         setLoading(false);
       }
@@ -203,6 +261,33 @@ const RecommendResultInfo: React.FC<RecommendResultInfoProps> = ({ location }) =
 
     fetchPlaces();
   }, [location]);
+
+  // location이 유효하지 않은 경우 처리
+  if (!isValidLocation(location)) {
+    return (
+      <Box sx={containerStyles}>
+        <Box sx={innerContainerStyles}>
+          <Paper elevation={0} sx={noLocationContainerStyles}>
+            <Box sx={noLocationContentStyles}>
+              <LocationOffIcon sx={noLocationIconStyles} />
+              <Typography 
+                variant={isMobile ? "h6" : "h5"}
+                sx={noLocationTextStyles}
+              >
+                위치 정보를 불러오는 중입니다
+              </Typography>
+              <Typography 
+                variant="body2"
+                sx={noLocationSubTextStyles}
+              >
+                잠시만 기다려주세요...
+              </Typography>
+            </Box>
+          </Paper>
+        </Box>
+      </Box>
+    );
+  }
 
   const currentData = activeTab === '맛집' ? restaurants : cafes;
 
@@ -242,7 +327,7 @@ const RecommendResultInfo: React.FC<RecommendResultInfoProps> = ({ location }) =
               component="h2"
               sx={contentTitleStyles}
             >
-              {activeTab}
+              {location} 근처 {activeTab}
             </Typography>
           </Box>
 
@@ -268,7 +353,7 @@ const RecommendResultInfo: React.FC<RecommendResultInfoProps> = ({ location }) =
                       variant="body1" 
                       sx={emptyTextStyles}
                     >
-                      {activeTab} 정보가 없습니다.
+                      {location} 근처 {activeTab} 정보가 없습니다.
                     </Typography>
                   </Box>
                 ) : (
