@@ -508,7 +508,7 @@ const MainPage: React.FC = () => {
         <InfoRow>
           <InfoLabel>
             <LocationOnIcon sx={{ fontSize: { xs: 16, sm: 18 }, mr: 0.5 }} />
-            후보 장소 ({selectedStations.length}/{isLogin ? 3 : 4}개)
+            후보 장소 ({selectedStations.length}/4개)
           </InfoLabel>
           <InfoContent>
             {selectedStations.length > 0 ? (
@@ -535,7 +535,7 @@ const MainPage: React.FC = () => {
               </>
             ) : (
               <EmptyState>
-                지하철역을 선택해주세요 (최대 {isLogin ? 3 : 4}개)
+                지하철역을 선택해주세요 (최대 4개)
               </EmptyState>
             )}
           </InfoContent>
