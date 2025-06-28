@@ -6,6 +6,8 @@ import {
   Box,
   Typography,
   IconButton,
+  Menu,
+  MenuItem,
 } from '@mui/material';
 import {
   getLineColor,
@@ -20,6 +22,7 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import UserInfoUpdateForm from '@/domain/auth/ui/UserInfoUpdateForm';
 import type { StationData } from '@/shared/models/station';
 import useUpdateUserInfo from '@/domain/auth/hooks/useUpdateUserInfo';
+import { BorderColor } from '@mui/icons-material';
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -38,8 +41,10 @@ const StyledToolbar = styled(Toolbar)({
 const LogoContainer = styled(Box)({
   display: 'flex',
   alignItems: 'flex-end', // 하단 정렬
-  cursor: 'pointer',
   gap: '12px',
+
+  width: '100%',
+  justifyContent: 'space-between',
 });
 
 const LogoImage = styled('img')({
@@ -101,6 +106,50 @@ const LogoText = styled(Typography)(({ theme }) => ({
   },
 }));
 
+const SubMenu = styled(Menu)(({ theme }) => ({
+  borderRadius: '8px',
+
+  '& ul': {
+    display: 'flex',
+    padding: '10px',
+    gap: '5px',
+
+    '& li': {
+      border: 'solid 2px',
+      borderColor: '#6c5ce7',
+      borderRadius: '15px',
+      color: '#6c5ce7',
+
+      '&:hover': {
+        backgroundColor: '#6c5ce7',
+        color: 'white',
+      },
+    },
+  },
+
+  [theme.breakpoints.down('sm')]: {
+    '& ul': {
+      display: 'flex',
+      padding: '10px',
+      gap: '5px',
+
+      '& li': {
+        padding: '0px 10px',
+        fontSize: '12px',
+
+        '&:hover': {
+          backgroundColor: '#6c5ce7',
+          color: 'white',
+        },
+      },
+    },
+  },
+}));
+
+const SubMenuItem = styled(MenuItem)(({ theme }) => ({
+  '& li': {},
+}));
+
 const navbar = () => {
   const { user: loginUser, setUser } = useUserStore();
   const { data: fetchedUser, isLoading, isError } = useGetUserApi();
@@ -120,11 +169,27 @@ const navbar = () => {
     null,
   );
 
+  const [isMobile, setIsMobile] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const subMenuOpen = Boolean(anchorEl);
+
   const { mutate: updateUserInfo } = useUpdateUserInfo();
 
   const navigate = useNavigate();
 
   const isLogin = !!loginUser?.email && !!loginUser?.id;
+
+  // 모바일인지 체크
+  React.useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 900); // todayFriendBox와 동일한 기준
+    };
+
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
 
   useEffect(() => {
     if (fetchedUser?.email && fetchedUser.id) {
@@ -205,38 +270,99 @@ const navbar = () => {
     setSearchResults([]);
   };
 
+  const handleSubMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleSubMenuClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <StyledAppBar position="sticky">
       <StyledToolbar>
         {/* 로고 영역 */}
         <LogoContainer onClick={handleLogoClick}>
-          <LogoImage src="/meetspot_logo_font.png" alt="MeetSpot Logo" />
-          <LogoText>어디서 만날까?</LogoText>
+          <Box
+            display="flex"
+            alignItems="flex-end"
+            gap="12px"
+            sx={{ cursor: 'pointer' }}
+          >
+            <LogoImage src="/meetspot_logo_font.png" alt="MeetSpot Logo" />
+            <LogoText>어디서 만날까?</LogoText>
+          </Box>
+
+          {/* 로그인/로그아웃 버튼 영역 */}
+          <Box sx={{ justifySelf: 'end' }}>
+            {isLogin ? (
+              !isMobile ? (
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  gap="10px"
+                  sx={{ color: 'black' }}
+                >
+                  <Typography>
+                    {loginUser?.user_name} / {loginUser?.user_start_station}역
+                  </Typography>
+
+                  <IconButton
+                    onClick={() => setIsUserInfoUpdateModalOpen(true)}
+                  >
+                    <EditOutlinedIcon />
+                  </IconButton>
+
+                  <LogoutButton onClick={handleLogin}>로그아웃</LogoutButton>
+                </Box>
+              ) : (
+                <Box
+                  display="flex"
+                  alignItems="flex-end"
+                  gap="10px"
+                  sx={{
+                    color: 'black',
+                    cursor: 'pointer',
+                    position: 'relative',
+                  }}
+                >
+                  <Button
+                    sx={{ color: 'black', padding: '0' }}
+                    onClick={handleSubMenuClick}
+                  >
+                    {loginUser?.user_name} / {loginUser?.user_start_station}역
+                  </Button>
+
+                  <SubMenu
+                    anchorEl={anchorEl}
+                    open={subMenuOpen}
+                    onClose={handleSubMenuClose}
+                    sx={{ display: 'flex', flexDirection: 'row' }}
+                  >
+                    <MenuItem
+                      onClick={() => {
+                        handleSubMenuClose();
+                        setIsUserInfoUpdateModalOpen(true);
+                      }}
+                    >
+                      정보변경
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        handleSubMenuClose();
+                        handleLogin();
+                      }}
+                    >
+                      로그아웃
+                    </MenuItem>
+                  </SubMenu>
+                </Box>
+              )
+            ) : (
+              <LoginButton onClick={handleLogin}>로그인</LoginButton>
+            )}
+          </Box>
         </LogoContainer>
 
-        {/* 로그인/로그아웃 버튼 영역 */}
-        <Box>
-          {isLogin ? (
-            <Box
-              display="flex"
-              alignItems="center"
-              gap="10px"
-              sx={{ color: 'black' }}
-            >
-              <Typography>
-                {loginUser?.user_name} / {loginUser?.user_start_station}역
-              </Typography>
-
-              <IconButton onClick={() => setIsUserInfoUpdateModalOpen(true)}>
-                <EditOutlinedIcon />
-              </IconButton>
-
-              <LogoutButton onClick={handleLogin}>로그아웃</LogoutButton>
-            </Box>
-          ) : (
-            <LoginButton onClick={handleLogin}>로그인</LoginButton>
-          )}
-        </Box>
         <UserInfoUpdateForm
           isUserInfoUpdateModalOpen={isUserInfoUpdateModalOpen}
           handleCloseUserInfoDialog={handleCloseUserInfoDialog}
