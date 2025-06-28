@@ -189,7 +189,7 @@ const OutletArea = styled(Box)(({theme})=>({
 }));
 
 const AppLayout = () => {
-    const { sidebarContent } = RecommendSideBar();
+    const { sidebarContent, data } = RecommendSideBar(); // data에서 stationName, showHeader 가져오기
     const location = useLocation();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -198,7 +198,17 @@ const AppLayout = () => {
     const getSidebarContent = () => {
         // store에 커스텀 사이드바가 있으면 그것을 사용
         if (sidebarContent) {
-        return sidebarContent;
+            return sidebarContent;
+        }
+        
+        // data에 stationName이 있으면 해당 역 정보로 표시
+        if (data.stationName) {
+            return (
+                <TodayRecommend 
+                    stationName={data.stationName}
+                    showHeader={data.showHeader ?? true}
+                />
+            );
         }
         
         // 없으면 기본 TodayRecommend

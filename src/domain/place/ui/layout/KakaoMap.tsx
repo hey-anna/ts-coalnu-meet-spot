@@ -10,6 +10,7 @@ interface KakaoMapProps {
     color?: string;
   }[];
   children?: ReactNode;
+  showAllMarkers?: boolean; // 새로 추가된 prop
 }
 
 declare global {
@@ -22,6 +23,7 @@ declare global {
       maps: {
         load: (callback: () => void) => void;
         LatLng: new (lat: number, lng: number) => LatLng;
+        LatLngBounds: new () => LatLngBounds;
         Map: new (
           container: HTMLElement,
           options: { center: LatLng; level: number },
@@ -46,7 +48,14 @@ declare global {
     getLng(): number;
   }
 
-  type KakaoMap = unknown;
+  interface LatLngBounds {
+    extend(latlng: LatLng): void;
+    isEmpty(): boolean;
+  }
+
+  interface KakaoMap {
+    setBounds(bounds: LatLngBounds): void;
+  }
 
   interface Marker {
     setMap(map: KakaoMap): void;
@@ -62,8 +71,10 @@ const KakaoMap = ({
   longitude,
   markers,
   children,
+  showAllMarkers = false,
 }: KakaoMapProps) => {
   const [isMapReady, setIsMapReady] = useState(false);
+  
   const initializeMap = (markers?: KakaoMapProps['markers']) => {
     const container = document.getElementById('map');
     if (!container) return;
@@ -72,19 +83,18 @@ const KakaoMap = ({
     const options = { center: center, level: 4 };
     const map = new window.kakao.maps.Map(container, options);
     setIsMapReady(true);
-    // 조건 변경: 좌표가 없어도 항상 초기 div는 그리게 하기
-    // if (typeof latitude !== 'number' || typeof longitude !== 'number') {
-    //   setIsMapReady(false);
-    //   return;
-    // }
-    // if (!latitude || !longitude) {
-    //   setIsMapReady(false); // 맵 준비 안 됨 상태로 렌더링
-    //   return;
-    // }
 
     // 목적지 마커
-    const marker = new window.kakao.maps.Marker({ position: center });
-    marker.setMap(map);
+    const centerMarker = new window.kakao.maps.Marker({ position: center });
+    centerMarker.setMap(map);
+
+    // 모든 마커 위치를 포함할 bounds 생성
+    const bounds = new window.kakao.maps.LatLngBounds();
+    
+    // 중심 좌표도 bounds에 추가
+    if (latitude && longitude) {
+      bounds.extend(center);
+    }
 
     // 친구들 마커 표시
     markers?.forEach(({ lat, lng, label, color }) => {
@@ -93,6 +103,9 @@ const KakaoMap = ({
         position: new window.kakao.maps.LatLng(lat, lng),
       });
       marker.setMap(map);
+
+      // bounds에 마커 위치 추가
+      bounds.extend(position);
 
       if (label) {
         const overlay = new window.kakao.maps.CustomOverlay({
@@ -116,26 +129,27 @@ const KakaoMap = ({
             width: 10px;
             height: 10px;
             border-radius: 50%;
-            background-color: ${color};
+            background-color: ${color || '#007bff'};
             margin-right: 6px;
           "></div>
           <span>${label}</span>
         </div>
       `,
-          yAnchor: 1, // 마커 기준으로 위에 붙게 설정
+          yAnchor: 1,
         });
         overlay.setMap(map);
       }
     });
-    // const marker = new window.kakao.maps.Marker({
-    //   position: new window.kakao.maps.LatLng(latitude, longitude),
-    // });
 
-    // marker.setMap(map);
+    // showAllMarkers가 true이고 마커가 있으면 모든 마커가 보이도록 지도 범위 조정
+    if (showAllMarkers && markers && markers.length > 0 && !bounds.isEmpty()) {
+      map.setBounds(bounds);
+    }
   };
 
   useEffect(() => {
     if (!latitude || !longitude) return;
+    
     // 이미 로드된 경우 바로 초기화
     if (window.kakao?.maps) {
       window.kakao.maps.load(() => {
@@ -158,7 +172,7 @@ const KakaoMap = ({
     };
 
     document.head.appendChild(script);
-  }, [latitude, longitude, markers]);
+  }, [latitude, longitude, markers, showAllMarkers]);
 
   return (
     <div
