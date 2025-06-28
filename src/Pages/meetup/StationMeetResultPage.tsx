@@ -90,6 +90,7 @@ type CalculationResult = {
   time: number | null;
   stationCount: number;
   station: string;
+  transferCount: number; // 환승 횟수
   x: number;
   y: number;
 };
@@ -205,6 +206,7 @@ const StationMeetResultPage = () => {
                       time: 0,
                       stationCount: 0,
                       station: station,
+                      transferCount: 0,
                       x: from.x,
                       y: from.y,
                     };
@@ -214,6 +216,12 @@ const StationMeetResultPage = () => {
                     startID: from.stationID,
                     endID: to.stationID,
                   });
+
+                  // exChangeInfoSet - 환승 정보가 없을수도 있어, 데이터 받아올때 안전한,
+                  // driveInfoSet - 이용할 노선수로 환승 정보를 대체해서 확인
+                  const transferCount = result?.driveInfoSet?.driveInfo?.length
+                    ? result.driveInfoSet.driveInfo.length - 1
+                    : 0;
 
                   console.log(`${participant.name} 경로 결과:`, result);
                   console.log(
@@ -239,6 +247,7 @@ const StationMeetResultPage = () => {
                     time: result.globalTravelTime,
                     stationCount: result.globalStationCount,
                     station: station,
+                    transferCount,
                     x: from.x,
                     y: from.y,
                   };
@@ -252,6 +261,7 @@ const StationMeetResultPage = () => {
                     time: null,
                     stationCount: -1,
                     station: station,
+                    transferCount: -1,
                     x: 0,
                     y: 0,
                   };
@@ -268,6 +278,7 @@ const StationMeetResultPage = () => {
                 time: null,
                 stationCount: -1,
                 station: station,
+                transferCount: -1,
                 x: 0,
                 y: 0,
               });
@@ -341,12 +352,12 @@ const StationMeetResultPage = () => {
   // 역별 평균 환승 횟수 계산
   const getAverageTransferCountForStation = (station: string) => {
     const stationResults = getResultsByStation(station);
-    const validTransfers = stationResults.filter((r) => r.stationCount >= 0);
+    const validTransfers = stationResults.filter((r) => r.transferCount >= 0);
 
     if (validTransfers.length === 0) return null;
 
     return Math.round(
-      validTransfers.reduce((sum, cur) => sum + cur.stationCount, 0) /
+      validTransfers.reduce((sum, cur) => sum + cur.transferCount, 0) /
         validTransfers.length,
     );
   };
