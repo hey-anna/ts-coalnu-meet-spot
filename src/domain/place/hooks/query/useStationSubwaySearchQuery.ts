@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { searchSubwayStationByKeyword } from '../apis/stationSubwayApi';
-import type { StationSubwaySearchResult } from '../models/stationSubwayPath.response';
+import { searchSubwayStationByKeyword } from '../../apis/stationSubwayApi';
+import type { StationSubwaySearchResult } from '../../models/stationSubwayPath.response';
 
 export const useStationSubwaySearchQuery = (keyword?: string) => {
   return useQuery<StationSubwaySearchResult[]>({
