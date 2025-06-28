@@ -1,6 +1,7 @@
 import { createUserInfo } from '@/domain/user/apis/api';
 import { supabase } from '../../../shared/config/supabaseClient';
 import type { LoginRequest, SignUpRequest } from '../models/model';
+import type { UserInfoReQuest } from '@/domain/user/models/model';
 
 export const signupWithEmail = async (params: SignUpRequest) => {
   try {
@@ -59,5 +60,20 @@ export const Logout = async () => {
     await supabase.auth.signOut();
   } catch (error) {
     throw new Error('fail to logout');
+  }
+};
+
+export const updateUserInfo = async (params: UserInfoReQuest) => {
+  try {
+    const { user_id, user_name, user_start_station } = params;
+
+    const { data } = await supabase
+      .from('user_info')
+      .update({ user_name, user_start_station })
+      .eq('user_id', user_id)
+      .select()
+      .single();
+  } catch (error) {
+    throw new Error('fail to update user Info');
   }
 };
