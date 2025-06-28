@@ -22,7 +22,9 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import UserInfoUpdateForm from '@/domain/auth/ui/UserInfoUpdateForm';
 import type { StationData } from '@/shared/models/station';
 import useUpdateUserInfo from '@/domain/auth/hooks/useUpdateUserInfo';
+import { useQueryClient } from '@tanstack/react-query';
 import { BorderColor } from '@mui/icons-material';
+
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -110,14 +112,8 @@ const SubMenu = styled(Menu)(({ theme }) => ({
   borderRadius: '8px',
 
   '& ul': {
-    display: 'flex',
-    padding: '10px',
-    gap: '5px',
-
+    padding: '0',
     '& li': {
-      border: 'solid 2px',
-      borderColor: '#6c5ce7',
-      borderRadius: '15px',
       color: '#6c5ce7',
 
       '&:hover': {
@@ -129,18 +125,9 @@ const SubMenu = styled(Menu)(({ theme }) => ({
 
   [theme.breakpoints.down('sm')]: {
     '& ul': {
-      display: 'flex',
-      padding: '10px',
-      gap: '5px',
-
       '& li': {
         padding: '0px 10px',
         fontSize: '12px',
-
-        '&:hover': {
-          backgroundColor: '#6c5ce7',
-          color: 'white',
-        },
       },
     },
   },
@@ -151,6 +138,7 @@ const SubMenuItem = styled(MenuItem)(({ theme }) => ({
 }));
 
 const navbar = () => {
+  const queryClient = useQueryClient();
   const { user: loginUser, setUser } = useUserStore();
   const { data: fetchedUser, isLoading, isError } = useGetUserApi();
   const { mutate: logout } = useLogout();
@@ -208,12 +196,6 @@ const navbar = () => {
 
   const handleLogin = () => {
     if (isLogin) {
-      setUser({
-        id: '',
-        email: '',
-        user_name: '',
-        user_start_station: '',
-      });
       logout();
     } else {
       navigate('/login');
