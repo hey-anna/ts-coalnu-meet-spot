@@ -92,21 +92,17 @@ const todayRecommend = ({
 }: TodayRecommendProps) => {
   const [currentStation, setCurrentStation] = useState<SubwayStation | null>(null);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const fetchPlaces = async () => {
       try {
         setLoading(true);
-        
-        // stationName이 있으면 해당 역 정보를 찾고, 없으면 랜덤 역 사용
+        setCurrentStation(null);
+
         if (stationName) {
-          // RECOMMEND_SUBWAY_STATIONS에서 해당 역 찾기
-          // 실제 구현에서는 stationName으로 역 정보를 찾는 로직 필요
-          // 지금은 임시로 getRandomStation() 사용하되, name을 stationName으로 변경
-          const randomStation = getRandomStation();
-          const stationWithCustomName = {
-            ...randomStation,
-            name: stationName
+          const stationWithCustomName: SubwayStation = {
+            name: stationName,
+            description: `${stationName} 주변의 다양한 맛집과 카페를 만나보세요!`,
+            tags: ['지하철역', '만남의 장소', '교통 편리']
           };
           setCurrentStation(stationWithCustomName);
         } else {
@@ -168,7 +164,7 @@ const todayRecommend = ({
             </Box>
           )}
 
-          <RecommendList randomStation={currentStation}/>
+          <RecommendList key={currentStation.name} randomStation={currentStation}/>
         </Box>
       </Container>
     </ThemeProvider>
