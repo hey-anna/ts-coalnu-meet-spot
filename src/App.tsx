@@ -9,6 +9,7 @@ import YejinGetFriendListpage from './Pages/yejinTest/YejinGetFriendListpage';
 import YejinDeleteTest from './Pages/yejinTest/YejinDeleteTest';
 import AuthGuard from './shared/guard/authGuard';
 import YejinInsertUserInfo from './Pages/yejinTest/YejinInsertUserInfo';
+import RecommendPlaceList from './Pages/meetup/RecommendPlaceList';
 
 const JoinPage = React.lazy(() => import('./Pages/auth/JoinPage'));
 
@@ -31,6 +32,7 @@ function App() {
           <Route index element={<MainPage />}></Route>
           <Route path="/join" element={<JoinPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/placesy" element={<RecommendPlaceList />} />
           <Route
             path="/friend/group-management"
             element={

@@ -2,9 +2,8 @@ import {
   Box,
   Typography,
 } from '@mui/material';
-import type { RECOMMEND_SUBWAY_STATIONS } from "../../models/model";
+import type { PlaceData, RECOMMEND_SUBWAY_STATIONS } from "../../models/model";
 import RecommendListItem from "./recommendListItem";
-import type { PlaceData } from '../../../../shared/config/config';
 import { useEffect, useState } from 'react';
 import places from '../../apis/api';
 

@@ -7,18 +7,36 @@ import {
 import { styled } from '@mui/material/styles';
 import type { Friend, GetUserFriendByGroupResponse } from '../../models/model';
 
-const GridContainer = styled('div')({
+const GridContainer = styled('div')(({ theme }) => ({
   display: 'grid',
   gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
   gap: '16px',
   padding: '16px 0',
-});
+  
+  [theme.breakpoints.down('md')]: {
+    gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+    gap: '12px',
+    padding: '12px 0',
+  },
+  
+  [theme.breakpoints.down('sm')]: {
+    gridTemplateColumns: '1fr',
+    gap: '8px',
+    padding: '8px 0',
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    gap: '6px',
+    padding: '6px 0',
+  },
+}));
 
 const FriendCard = styled('div')<{ 
   selected?: boolean; 
   partiallySelected?: boolean; 
   groupColor?: string;
-}>(({ selected, partiallySelected, groupColor }) => ({
+}>(({ selected, partiallySelected, groupColor, theme }) => ({
   padding: '16px',
   border: '2px solid',
   borderColor: selected 
@@ -37,43 +55,106 @@ const FriendCard = styled('div')<{
   '&:hover': {
     borderColor: groupColor || '#1976d2',
     boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-  }
+  },
+  
+  [theme.breakpoints.down('sm')]: {
+    padding: '12px',
+    borderRadius: '12px',
+    borderWidth: '1.5px',
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    padding: '10px',
+    borderRadius: '10px',
+  },
 }));
 
-const CardHeader = styled('div')({
+const CardHeader = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   marginBottom: '12px',
-});
+  
+  [theme.breakpoints.down('sm')]: {
+    marginBottom: '8px',
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    marginBottom: '6px',
+  },
+}));
 
-const GroupColorDot = styled('div')<{ color: string }>(({ color }) => ({
+const GroupColorDot = styled('div')<{ color: string }>(({ color, theme }) => ({
   width: '12px',
   height: '12px',
   borderRadius: '50%',
   backgroundColor: color,
   marginRight: '8px',
+  
+  [theme.breakpoints.down('sm')]: {
+    width: '10px',
+    height: '10px',
+    marginRight: '6px',
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    width: '8px',
+    height: '8px',
+    marginRight: '5px',
+  },
 }));
 
-const FriendName = styled('div')({
+const FriendName = styled('div')(({ theme }) => ({
   fontSize: '16px',
   fontWeight: 600,
   flex: 1,
-});
+  
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '14px',
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    fontSize: '13px',
+  },
+}));
 
-const FriendCount = styled('span')({
+const FriendCount = styled('span')(({ theme }) => ({
   fontSize: '14px',
   color: '#666',
   fontWeight: 400,
-});
+  
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '12px',
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    fontSize: '11px',
+  },
+}));
 
-const FriendPreview = styled('div')({
+const FriendPreview = styled('div')(({ theme }) => ({
   display: 'flex',
   flexWrap: 'wrap',
   gap: '6px',
   marginBottom: '12px',
-});
+  
+  [theme.breakpoints.down('sm')]: {
+    gap: '4px',
+    marginBottom: '8px',
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    gap: '3px',
+    marginBottom: '6px',
+  },
+}));
 
-const FriendTag = styled('div')({
+const FriendTag = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   gap: '4px',
@@ -84,29 +165,77 @@ const FriendTag = styled('div')({
   cursor: 'pointer',
   '&:hover': {
     backgroundColor: '#e0e0e0',
-  }
-});
+  },
+  
+  [theme.breakpoints.down('sm')]: {
+    padding: '3px 6px',
+    borderRadius: '8px',
+    fontSize: '11px',
+    gap: '3px',
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    padding: '2px 5px',
+    borderRadius: '6px',
+    fontSize: '10px',
+    gap: '2px',
+  },
+}));
 
-const StationTag = styled('span')({
+const StationTag = styled('span')(({ theme }) => ({
   fontSize: '10px',
   color: '#888',
   backgroundColor: '#fff',
   padding: '2px 6px',
   borderRadius: '8px',
-});
+  
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '9px',
+    padding: '1px 4px',
+    borderRadius: '6px',
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    fontSize: '8px',
+    padding: '1px 3px',
+    borderRadius: '4px',
+  },
+}));
 
-const MoreFriends = styled('div')({
+const MoreFriends = styled('div')(({ theme }) => ({
   fontSize: '12px',
   color: '#666',
   fontStyle: 'italic',
   padding: '4px 8px',
-});
+  
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '11px',
+    padding: '3px 6px',
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    fontSize: '10px',
+    padding: '2px 5px',
+  },
+}));
 
-const SelectionStatus = styled('div')({
+const SelectionStatus = styled('div')(({ theme }) => ({
   marginTop: '8px',
-});
+  
+  [theme.breakpoints.down('sm')]: {
+    marginTop: '6px',
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    marginTop: '4px',
+  },
+}));
 
-const StatusBadge = styled('div')<{ status: 'full' | 'partial' | 'none' }>(({ status }) => ({
+const StatusBadge = styled('div')<{ status: 'full' | 'partial' | 'none' }>(({ status, theme }) => ({
   fontSize: '11px',
   padding: '4px 8px',
   borderRadius: '8px',
@@ -121,6 +250,19 @@ const StatusBadge = styled('div')<{ status: 'full' | 'partial' | 'none' }>(({ st
     : status === 'partial' 
       ? '#f57c00' 
       : '#666',
+  
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '10px',
+    padding: '3px 6px',
+    borderRadius: '6px',
+  },
+  
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    fontSize: '9px',
+    padding: '2px 5px',
+    borderRadius: '5px',
+  },
 }));
 
 // Props 인터페이스
@@ -134,10 +276,11 @@ interface FriendCardProps {
 const todayFriendCard: React.FC<FriendCardProps> = ({
   friendGroups,
   selectedFriends,
-  onFriendSelect, onGroupSelect
+  onFriendSelect, 
+  onGroupSelect
 }) => {
   // FriendWithGroup 데이터를 그룹별로 정리하는 함수
- const isGroupFullySelected = (group: GetUserFriendByGroupResponse) => {
+  const isGroupFullySelected = (group: GetUserFriendByGroupResponse) => {
     return group.friend_link_group.every(linkGroup => 
       selectedFriends.some(selected => selected.id === linkGroup.friend.id)
     );
@@ -152,36 +295,36 @@ const todayFriendCard: React.FC<FriendCardProps> = ({
   };
 
   // 그룹 클릭 시 처리 함수
-const handleGroupClick = (group: GetUserFriendByGroupResponse) => {
-  const isFullySelected = isGroupFullySelected(group);
-  
-  if (isFullySelected) {
-    // 그룹의 모든 친구 제거
-    const friendsToRemove = group.friend_link_group.map(linkGroup => linkGroup.friend.id);
-    const newSelectedFriends = selectedFriends.filter(
-      friend => !friendsToRemove.includes(friend.id)
-    );
+  const handleGroupClick = (group: GetUserFriendByGroupResponse) => {
+    const isFullySelected = isGroupFullySelected(group);
     
-    // 부모의 onFriendsChange에 전체 배열 전달
-    if (onGroupSelect) { // 새로운 prop 필요
-      onGroupSelect(newSelectedFriends);
+    if (isFullySelected) {
+      // 그룹의 모든 친구 제거
+      const friendsToRemove = group.friend_link_group.map(linkGroup => linkGroup.friend.id);
+      const newSelectedFriends = selectedFriends.filter(
+        friend => !friendsToRemove.includes(friend.id)
+      );
+      
+      // 부모의 onFriendsChange에 전체 배열 전달
+      if (onGroupSelect) { // 새로운 prop 필요
+        onGroupSelect(newSelectedFriends);
+      }
+    } else {
+      // 그룹의 모든 친구 추가
+      const friendsToAdd = group.friend_link_group
+        .map(linkGroup => ({
+          ...linkGroup.friend,
+          user_id: '' // Friend 타입에 맞게 변환
+        }))
+        .filter(friend => !selectedFriends.some(selected => selected.id === friend.id));
+      
+      const newSelectedFriends = [...selectedFriends, ...friendsToAdd];
+      
+      if (onGroupSelect) {
+        onGroupSelect(newSelectedFriends);
+      }
     }
-  } else {
-    // 그룹의 모든 친구 추가
-    const friendsToAdd = group.friend_link_group
-      .map(linkGroup => ({
-        ...linkGroup.friend,
-        user_id: '' // Friend 타입에 맞게 변환
-      }))
-      .filter(friend => !selectedFriends.some(selected => selected.id === friend.id));
-    
-    const newSelectedFriends = [...selectedFriends, ...friendsToAdd];
-    
-    if (onGroupSelect) {
-      onGroupSelect(newSelectedFriends);
-    }
-  }
-};
+  };
 
   return (
     <GridContainer>
