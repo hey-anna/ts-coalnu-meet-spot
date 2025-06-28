@@ -17,7 +17,7 @@ import useGetUserApi from '../../domain/user/hooks/useGetUserApi';
 import useLogout from '../../domain/auth/hooks/useLogout';
 import { useNavigate } from 'react-router';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import UserInfoUpdateForm from '@/domain/auth/ui/userInfoUpdateForm';
+import UserInfoUpdateForm from '@/domain/auth/ui/UserInfoUpdateForm';
 import type { StationData } from '@/shared/models/station';
 import useUpdateUserInfo from '@/domain/auth/hooks/useUpdateUserInfo';
 
