@@ -1035,7 +1035,7 @@ const TodayFriendBox: React.FC<TodayFriendBoxProps> = ({
                 ) : (
                   <Box sx={{ textAlign: 'center', py: 4 }}>
                     <Typography color="text.secondary">
-                      친구 그룹 데이터를 불러오는 중입니다...
+                      생성된 그룹이 없습니다.
                     </Typography>
                   </Box>
                 ))}
