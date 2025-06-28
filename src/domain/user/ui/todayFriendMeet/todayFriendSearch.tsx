@@ -6,9 +6,11 @@ import {
   Card,
   CardContent,
   Chip,
+  IconButton,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from '@mui/icons-material/Clear';
 import type { Friend } from '../../models/model';
 
 // Styled Components
@@ -50,6 +52,32 @@ const SearchTextField = styled(TextField)(({ theme }) => ({
     '& .MuiOutlinedInput-input': {
       padding: '10px 12px',
       fontSize: '0.85rem',
+    },
+  },
+}));
+
+const ClearButton = styled(IconButton)(({ theme }) => ({
+  padding: '4px',
+  color: 'rgba(0,0,0,0.4)',
+  transition: 'all 0.2s ease',
+  '&:hover': {
+    color: theme.palette.error.main,
+    backgroundColor: 'rgba(244, 67, 54, 0.08)',
+  },
+
+  // 모바일 최적화
+  [theme.breakpoints.down('sm')]: {
+    padding: '3px',
+    '& .MuiSvgIcon-root': {
+      fontSize: '1.2rem',
+    },
+  },
+
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    padding: '2px',
+    '& .MuiSvgIcon-root': {
+      fontSize: '1.1rem',
     },
   },
 }));
@@ -231,6 +259,12 @@ const TodayFriendSearch: React.FC<FriendSearchProps> = ({
     setSearchResults(filtered);
   };
 
+  // 검색어 초기화 함수
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    setSearchResults([]);
+  };
+
   return (
     <Box>
       {/* 검색 입력 */}
@@ -249,6 +283,15 @@ const TodayFriendSearch: React.FC<FriendSearchProps> = ({
                 fontSize: { xs: '1.2rem', sm: '1.5rem' },
               }}
             />
+          ),
+          endAdornment: searchQuery && ( // 검색어가 있을 때만 X 버튼 표시
+            <ClearButton
+              onClick={handleClearSearch}
+              size="small"
+              aria-label="검색어 지우기"
+            >
+              <ClearIcon />
+            </ClearButton>
           ),
         }}
         sx={{
@@ -343,19 +386,3 @@ const TodayFriendSearch: React.FC<FriendSearchProps> = ({
 };
 
 export default TodayFriendSearch;
-
-const sortFriendsBySelection = (
-  allFriends: Friend[],
-  selectedFriends: Friend[],
-): Friend[] => {
-  const selectedIds = new Set(selectedFriends.map((f) => f.id));
-
-  return [...allFriends].sort((a, b) => {
-    const aSelected = selectedIds.has(a.id);
-    const bSelected = selectedIds.has(b.id);
-
-    if (aSelected && !bSelected) return -1;
-    if (!aSelected && bSelected) return 1;
-    return 0;
-  });
-};

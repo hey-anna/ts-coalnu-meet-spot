@@ -72,15 +72,19 @@ export const GroupList = ({
                     sx={{ fontSize: isMobile ? '1.2rem' : '1.5rem' }}
                   />
                 </Avatar>
-                <Box sx={{ flex: 1, minWidth: 0 }}>
+                <Box sx={{ flex: 1, minWidth: 0, mr: 1 }}>
                   <Typography
                     variant={isMobile ? 'body1' : 'h6'}
                     fontWeight={600}
+                    title={group.name} // 전체 텍스트를 툴팁으로 표시
                     sx={{
                       fontSize: isMobile ? '1rem' : '1.25rem',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap',
+                      // 그룹명이 길어도 레이아웃이 깨지지 않도록 최대 너비 설정
+                      maxWidth: '100%',
+                      lineHeight: 1.2,
                     }}
                   >
                     {group.name}
@@ -88,7 +92,12 @@ export const GroupList = ({
                   <Typography
                     variant="body2"
                     color="text.secondary"
-                    sx={{ fontSize: isMobile ? '0.8rem' : '0.875rem' }}
+                    sx={{ 
+                      fontSize: isMobile ? '0.8rem' : '0.875rem',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}
                   >
                     {group.members.length}명
                   </Typography>
@@ -294,6 +303,10 @@ const getAccordionSummaryStyle = (isMobile) => ({
   '& .MuiAccordionSummary-content': {
     margin: isMobile ? '8px 0' : '12px 0',
     alignItems: 'center',
+    minWidth: 0, // 텍스트 오버플로우를 위해 추가
+  },
+  '& .MuiAccordionSummary-expandIconWrapper': {
+    flexShrink: 0, // 확장 아이콘이 줄어들지 않도록
   },
 });
 
@@ -301,8 +314,9 @@ const getGroupHeaderStyle = (isMobile) => ({
   display: 'flex',
   alignItems: 'center',
   flex: 1,
-  minWidth: 0,
+  minWidth: 0, // 텍스트 오버플로우를 위해 필수
   gap: isMobile ? 1 : 2,
+  overflow: 'hidden', // 전체 헤더에서 오버플로우 숨김
 });
 
 const getAvatarStyle = (color, isMobile) => ({
@@ -315,7 +329,8 @@ const getAvatarStyle = (color, isMobile) => ({
 const getActionButtonsStyle = (isMobile) => ({
   display: 'flex',
   gap: isMobile ? 0.5 : 1,
-  flexShrink: 0,
+  flexShrink: 0, // 액션 버튼들이 줄어들지 않도록
+  marginLeft: 'auto', // 오른쪽 정렬
 });
 
 const getAccordionDetailsStyle = (isMobile) => ({
@@ -339,6 +354,10 @@ const getMemberChipStyle = (isMobile) => ({
   height: isMobile ? '28px' : '32px',
   '& .MuiChip-label': {
     padding: isMobile ? '0 8px' : '0 12px',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    maxWidth: isMobile ? '120px' : '150px', // 멤버 칩도 최대 너비 제한
   },
   '& .MuiChip-deleteIcon': {
     fontSize: isMobile ? '16px' : '18px',

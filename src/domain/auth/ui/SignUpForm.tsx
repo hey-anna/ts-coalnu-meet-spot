@@ -1,4 +1,4 @@
-import { Box, Chip, Paper, styled, TextField, Typography } from '@mui/material';
+import { Box, Chip, Paper, styled, TextField, Typography, IconButton } from '@mui/material';
 import { useState } from 'react';
 import useSignUp from '../hooks/useSignUp';
 import { useNavigate } from 'react-router';
@@ -11,6 +11,7 @@ import {
   AuthMessage,
 } from './authStyle';
 import TrainIcon from '@mui/icons-material/Train';
+import ClearIcon from '@mui/icons-material/Clear'; // 추가된 아이콘
 import { getLineColor, STATION_CONFIG } from '@/shared/config/stationConfig';
 import type { StationData } from '@/shared/models/station';
 
@@ -109,6 +110,13 @@ const SignUpForm = () => {
       console.log('setSelectedStation');
       setSelectedStation('');
     }
+  };
+
+  // 지하철역 검색창 초기화 함수 추가
+  const handleClearStation = () => {
+    setStationSearchQuery('');
+    setSelectedStation('');
+    setShowStationDropdown(false);
   };
 
   return (
@@ -248,6 +256,26 @@ const SignUpForm = () => {
                         fontSize: { xs: '18px', sm: '20px' },
                       }}
                     />
+                  ),
+                  // 삭제 버튼 추가
+                  endAdornment: stationSearchQuery && (
+                    <IconButton
+                      aria-label="clear search"
+                      onClick={handleClearStation}
+                      edge="end"
+                      size="small"
+                      sx={{
+                        color: 'text.secondary',
+                        padding: '4px',
+                        fontSize: { xs: '16px', sm: '18px' },
+                        '&:hover': {
+                          color: 'text.primary',
+                          backgroundColor: 'rgba(0,0,0,0.04)',
+                        },
+                      }}
+                    >
+                      <ClearIcon fontSize="small" />
+                    </IconButton>
                   ),
                 }}
                 sx={{

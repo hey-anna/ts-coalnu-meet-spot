@@ -43,13 +43,32 @@ export const AddFriendsGroupList: React.FC<AddFriendsGroupListProps> = ({
               key={group.id}
               variant={isSelected ? 'contained' : 'outlined'}
               onClick={() => setSelectedGroup(group)}
+              title={group.group_name} // 전체 텍스트를 툴팁으로 표시
               sx={{
                 borderRadius: 20,
                 height: 40,
+                minWidth: 0, // 최소 너비 제한 해제
                 // selected 시 색상
                 backgroundColor: isSelected ? 'primary.main' : 'transparent',
                 color: isSelected ? '#fff' : 'text.primary',
                 borderColor: 'primary.main',
+                // 텍스트 오버플로우 처리
+                '& .MuiButton-startIcon': {
+                  margin: 0,
+                },
+                '& .MuiButton-endIcon': {
+                  margin: 0,
+                },
+                // 버튼 내부 텍스트 스타일
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                fontSize: {
+                  xs: '0.8rem',    // 모바일에서 작은 글자
+                  sm: '0.875rem',  // 데스크톱에서 기본 글자
+                },
+                fontWeight: 500,
+                px: 2, // 좌우 패딩을 충분히 확보
                 '&:hover': {
                   backgroundColor: isSelected
                     ? 'primary.dark'
@@ -60,9 +79,25 @@ export const AddFriendsGroupList: React.FC<AddFriendsGroupListProps> = ({
                     ? '0 6px 20px rgba(108, 92, 231, 0.35)'
                     : undefined,
                 },
+                // 아이폰 SE 대응
+                '@media (max-width: 375px)': {
+                  fontSize: '0.75rem',
+                  px: 1.5,
+                },
               }}
             >
-              {group.group_name}
+              <Box
+                component="span"
+                sx={{
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  maxWidth: '100%',
+                  display: 'block',
+                }}
+              >
+                {group.group_name}
+              </Box>
             </Button>
           );
         })}
