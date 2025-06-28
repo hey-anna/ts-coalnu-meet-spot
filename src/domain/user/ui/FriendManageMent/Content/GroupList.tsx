@@ -95,7 +95,8 @@ export const GroupList = ({
                 </Box>
               </Box>
               <Box sx={getActionButtonsStyle(isMobile)}>
-                <div
+                <IconButton
+                  size={isMobile ? 'small' : 'medium'}
                   onClick={(e) => {
                     e.stopPropagation();
                     setEditingGroup(group);
@@ -112,8 +113,9 @@ export const GroupList = ({
                   }}
                 >
                   <EditIcon sx={{ fontSize: isMobile ? '1rem' : '1.25rem' }} />
-                </div>
-                <div
+                </IconButton>
+                <IconButton
+                  size={isMobile ? 'small' : 'medium'}
                   color="error"
                   onClick={(e) => {
                     e.stopPropagation();
@@ -128,7 +130,7 @@ export const GroupList = ({
                   <DeleteIcon
                     sx={{ fontSize: isMobile ? '1rem' : '1.25rem' }}
                   />
-                </div>
+                </IconButton>
               </Box>
             </AccordionSummary>
             <AccordionDetails sx={getAccordionDetailsStyle(isMobile)}>

@@ -307,7 +307,7 @@ export const FriendList = ({
               <ListItemText
                 primary={
                   <ChipContainer>
-                    <FriendName component="span">{friend.name}</FriendName>
+                    <FriendName>{friend.name}</FriendName>
                     {isInExpandedGroup && (
                       <StatusChip
                         label="그룹 멤버"
@@ -321,7 +321,7 @@ export const FriendList = ({
                   </ChipContainer>
                 }
                 secondary={
-                  <StationInfo component="div">
+                  <StationInfo>
                     <TrainIcon
                       sx={{
                         fontSize: { xs: '1rem', sm: '1.25rem' },
@@ -332,44 +332,27 @@ export const FriendList = ({
                         ),
                       }}
                     />
-                    <Typography
-                      component="span"
-                      variant="body2"
+                    <StationText
                       sx={{
                         color: getLineColor(
                           STATION_CONFIG.DATA.find(
                             (s) => s.station_nm === friend.station,
                           )?.line_num || '',
                         ),
-                        ml: 0.5,
                       }}
                     >
                       {friend.station}
-                    </Typography>
-                    <Typography
-                      component="span"
-                      variant="caption"
-                      sx={{ ml: 0.5 }}
-                    >
+                    </StationText>
+                    <LineInfo>
                       (
                       {STATION_CONFIG.DATA.find(
                         (s) => s.station_nm === friend.station,
                       )?.line_num || '정보없음'}
                       )
-                    </Typography>
+                    </LineInfo>
                   </StationInfo>
                 }
-                secondaryTypographyProps={{
-                  component: 'div',
-                  sx: {
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 0.5,
-                    mt: 0.5, // 필요시 위아래 여백 조정
-                  },
-                }}
               />
-
               <ListItemSecondaryAction>
                 <DeleteButton
                   edge="end"

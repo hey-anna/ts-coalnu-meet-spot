@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getStationSubwayCoords } from '../apis/stationSubwayApi';
+import { getStationSubwayCoords } from '../../apis/stationSubwayApi';
 
 export const useStationSubwayCoordsQuery = (stationName?: string) => {
   return useQuery({
