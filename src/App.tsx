@@ -9,6 +9,7 @@ import YejinGetFriendListpage from './Pages/yejinTest/YejinGetFriendListpage';
 import YejinDeleteTest from './Pages/yejinTest/YejinDeleteTest';
 import AuthGuard from './shared/guard/authGuard';
 import YejinInsertUserInfo from './Pages/yejinTest/YejinInsertUserInfo';
+import NotFoundPage from './Pages/NotFoundPage';
 
 const JoinPage = React.lazy(() => import('./Pages/auth/JoinPage'));
 
@@ -48,6 +49,7 @@ function App() {
           </Route>
           <Route path="/test" element={<TestPage />} />
         </Route>
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Suspense>
   );

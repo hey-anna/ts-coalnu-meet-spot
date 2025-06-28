@@ -5,7 +5,7 @@ import {
   TextField,
   Card,
   CardContent,
-  Chip
+  Chip,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
@@ -29,7 +29,29 @@ const SearchTextField = styled(TextField)(({ theme }) => ({
   },
   '& .MuiOutlinedInput-input': {
     padding: '14px 16px',
-  }
+  },
+
+  // 모바일 최적화
+  [theme.breakpoints.down('sm')]: {
+    '& .MuiOutlinedInput-root': {
+      borderRadius: '12px',
+    },
+    '& .MuiOutlinedInput-input': {
+      padding: '12px 14px',
+      fontSize: '0.9rem',
+    },
+  },
+
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    '& .MuiOutlinedInput-root': {
+      borderRadius: '10px',
+    },
+    '& .MuiOutlinedInput-input': {
+      padding: '10px 12px',
+      fontSize: '0.85rem',
+    },
+  },
 }));
 
 const SearchResultCard = styled(Card)(({ theme }) => ({
@@ -43,13 +65,39 @@ const SearchResultCard = styled(Card)(({ theme }) => ({
     borderColor: theme.palette.custom.secondary,
     backgroundColor: '#f8f9ff',
     transform: 'translateY(-2px)',
-    boxShadow: '0 6px 20px rgba(108, 92, 231, 0.12)'
-  }
+    boxShadow: '0 6px 20px rgba(108, 92, 231, 0.12)',
+  },
+
+  // 모바일 최적화
+  [theme.breakpoints.down('sm')]: {
+    marginBottom: theme.spacing(1),
+    borderRadius: '10px',
+    '&:hover': {
+      transform: 'translateY(-1px)', // 모바일에서는 더 적은 움직임
+      boxShadow: '0 4px 15px rgba(108, 92, 231, 0.1)',
+    },
+  },
+
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    marginBottom: theme.spacing(0.8),
+    borderRadius: '8px',
+  },
 }));
 
-const SearchCardContent = styled(CardContent)({
-  padding: '16px 20px !important'
-});
+const SearchCardContent = styled(CardContent)(({ theme }) => ({
+  padding: '16px 20px !important',
+
+  // 모바일 최적화
+  [theme.breakpoints.down('sm')]: {
+    padding: '12px 16px !important',
+  },
+
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    padding: '10px 14px !important',
+  },
+}));
 
 const LineChip = styled(Chip)(({ theme }) => ({
   fontSize: '0.7rem',
@@ -60,8 +108,28 @@ const LineChip = styled(Chip)(({ theme }) => ({
   border: '1px solid rgba(108, 92, 231, 0.12)',
   '& .MuiChip-label': {
     padding: '0 8px',
-    fontWeight: 500
-  }
+    fontWeight: 500,
+  },
+
+  // 모바일 최적화
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '0.65rem',
+    height: 20,
+    borderRadius: '10px',
+    '& .MuiChip-label': {
+      padding: '0 6px',
+    },
+  },
+
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    fontSize: '0.6rem',
+    height: 18,
+    borderRadius: '9px',
+    '& .MuiChip-label': {
+      padding: '0 5px',
+    },
+  },
 }));
 
 const EmptyStateBox = styled(Box)(({ theme }) => ({
@@ -69,27 +137,78 @@ const EmptyStateBox = styled(Box)(({ theme }) => ({
   padding: theme.spacing(5, 2),
   backgroundColor: '#f8f9fa',
   borderRadius: '12px',
-  border: '1px solid rgba(0,0,0,0.06)'
+  border: '1px solid rgba(0,0,0,0.06)',
+
+  // 모바일 최적화
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(3, 1.5),
+    borderRadius: '10px',
+  },
+
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    padding: theme.spacing(2.5, 1),
+    borderRadius: '8px',
+  },
+}));
+
+const SearchResultsContainer = styled(Box)(({ theme }) => ({
+  // 모바일에서 검색 결과 간격 조정
+  [theme.breakpoints.down('sm')]: {
+    '& > *:last-child': {
+      marginBottom: 0,
+    },
+  },
+}));
+
+const FriendInfoContainer = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+
+  // 모바일에서 레이아웃 조정
+  [theme.breakpoints.down('sm')]: {
+    alignItems: 'flex-start',
+    gap: theme.spacing(1),
+  },
+
+  // 아이폰 SE에서 더 컴팩트하게
+  '@media (max-width: 375px)': {
+    gap: theme.spacing(0.5),
+  },
+}));
+
+const FriendDetails = styled(Box)({
+  flex: 1,
+});
+
+const FriendLabel = styled(Typography)(({ theme }) => ({
+  // 모바일에서 라벨 크기 조정
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '0.75rem',
+  },
+
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    fontSize: '0.7rem',
+  },
 }));
 
 // Props 인터페이스
 interface FriendSearchProps {
   onFriendSelect: (friend: Friend) => void;
-  selectedFriends?: Friend[];
   placeholder?: string;
   maxResults?: number;
+  friends: Friend[];
+  selectedFriends: Friend[];
 }
 
-const friends: Friend[] = [
-  { id: 1, user_id: "user1", name: "지민", start_station: "강남" },
-  { id: 2, user_id: "user2", name: "수아", start_station: "잠실" },
-  { id: 48, user_id: "user3", name: "시영", start_station: "홍대입구" },
-];
-
-const todayFriendSearch: React.FC<FriendSearchProps> = ({
+const TodayFriendSearch: React.FC<FriendSearchProps> = ({
   onFriendSelect,
-  placeholder = "등록 하신 친구 이름을 검색해보세요",
-  maxResults = 10
+  placeholder = '등록 하신 친구 이름을 검색해보세요',
+  maxResults = 10,
+  friends,
+  selectedFriends,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Friend[]>([]);
@@ -97,18 +216,18 @@ const todayFriendSearch: React.FC<FriendSearchProps> = ({
   // 검색 기능
   const handleSearch = (query: string) => {
     setSearchQuery(query);
-    
+
     if (query.trim() === '') {
       setSearchResults([]);
       return;
     }
 
-    // stationConfig의 DATA에서 검색
-    const filtered = friends.filter((friend: Friend) => 
-        friend.name.toLowerCase().includes(query.toLowerCase())
-    )
-    .slice(0, maxResults);
-    
+    const filtered = friends
+      .filter((friend: Friend) =>
+        friend.name.toLowerCase().includes(query.toLowerCase()),
+      )
+      .slice(0, maxResults);
+
     setSearchResults(filtered);
   };
 
@@ -121,52 +240,100 @@ const todayFriendSearch: React.FC<FriendSearchProps> = ({
         value={searchQuery}
         onChange={(e) => handleSearch(e.target.value)}
         InputProps={{
-          startAdornment: <SearchIcon sx={{ mr: 1.5, color: 'action.active' }} />
+          startAdornment: (
+            <SearchIcon
+              sx={{
+                mr: 1.5,
+                color: 'action.active',
+                // 모바일에서 아이콘 크기 조정
+                fontSize: { xs: '1.2rem', sm: '1.5rem' },
+              }}
+            />
+          ),
         }}
-        sx={{ mb: 3 }}
+        sx={{
+          mb: { xs: 2, sm: 3 }, // 모바일에서 여백 조정
+        }}
       />
 
       {/* 검색 결과 */}
       {searchResults.length > 0 && (
-        <Box>
-            {searchResults.map((friend, index) => (
-              <SearchResultCard 
-                  key={friend.id}
-                  onClick={() => onFriendSelect(friend)}
+        <SearchResultsContainer>
+          {searchResults.map((friend) => {
+            // console.log(selectedFriends);
+            // console.log(friend);
+
+            // const friendId = friend.id;
+            // const exists = selectedFriends.some((item) => item.id === friendId);
+
+            return (
+              <SearchResultCard
+                key={friend.id}
+                onClick={() => onFriendSelect(friend)}
               >
-                  <SearchCardContent>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <Box>
-                              <Typography variant="h6" fontWeight={600} sx={{ fontSize: '1.1rem' }}>
-                                  {friend.name}
-                              </Typography>
-                              <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
-                                  {friend.start_station}
-                              </Typography>
-                          </Box>
-                          <Typography variant="caption" color="text.secondary">
-                              친구
-                          </Typography>
-                      </Box>
-                  </SearchCardContent>
+                <SearchCardContent>
+                  <FriendInfoContainer>
+                    <FriendDetails>
+                      <Typography
+                        variant="h6"
+                        fontWeight={600}
+                        sx={{
+                          fontSize: { xs: '1rem', sm: '1.1rem' }, // 모바일에서 폰트 크기 조정
+                          lineHeight: 1.3,
+                        }}
+                      >
+                        {friend.name}
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{
+                          fontSize: { xs: '0.8rem', sm: '0.85rem' }, // 모바일에서 폰트 크기 조정
+                          mt: 0.5,
+                        }}
+                      >
+                        {friend.start_station}
+                      </Typography>
+                    </FriendDetails>
+                    <FriendLabel variant="caption" color="text.secondary">
+                      친구
+                    </FriendLabel>
+                  </FriendInfoContainer>
+                </SearchCardContent>
               </SearchResultCard>
-            ))}
-            
-            {/* 더 많은 결과가 있을 때 안내 */}
-            {friends.filter((friend: Friend) =>
-              friend.name.toLowerCase().includes(searchQuery.toLowerCase())
-            ).length > maxResults && (
-            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', mt: 2 }}>
-                더 많은 결과가 있습니다. 검색어를 더 구체적으로 입력해보세요.
+            );
+          })}
+
+          {/* 더 많은 결과가 있을 때 안내 */}
+          {friends.filter((friend: Friend) =>
+            friend.name.toLowerCase().includes(searchQuery.toLowerCase()),
+          ).length > maxResults && (
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{
+                textAlign: 'center',
+                mt: { xs: 1.5, sm: 2 }, // 모바일에서 여백 조정
+                fontSize: { xs: '0.8rem', sm: '0.875rem' }, // 모바일에서 폰트 크기 조정
+                px: 1, // 모바일에서 좌우 패딩 추가
+              }}
+            >
+              더 많은 결과가 있습니다. 검색어를 더 구체적으로 입력해보세요.
             </Typography>
-            )}
-        </Box>
-        )}
+          )}
+        </SearchResultsContainer>
+      )}
 
       {/* 검색했지만 결과가 없을 때 */}
       {searchQuery.trim() !== '' && searchResults.length === 0 && (
         <EmptyStateBox>
-          <Typography color="text.secondary" sx={{ fontSize: '0.95rem' }}>
+          <Typography
+            color="text.secondary"
+            sx={{
+              fontSize: { xs: '0.85rem', sm: '0.95rem' }, // 모바일에서 폰트 크기 조정
+              lineHeight: 1.5,
+            }}
+          >
             "{searchQuery}"에 대한 검색 결과가 없습니다.
           </Typography>
         </EmptyStateBox>
@@ -175,4 +342,20 @@ const todayFriendSearch: React.FC<FriendSearchProps> = ({
   );
 };
 
-export default todayFriendSearch;
+export default TodayFriendSearch;
+
+const sortFriendsBySelection = (
+  allFriends: Friend[],
+  selectedFriends: Friend[],
+): Friend[] => {
+  const selectedIds = new Set(selectedFriends.map((f) => f.id));
+
+  return [...allFriends].sort((a, b) => {
+    const aSelected = selectedIds.has(a.id);
+    const bSelected = selectedIds.has(b.id);
+
+    if (aSelected && !bSelected) return -1;
+    if (!aSelected && bSelected) return 1;
+    return 0;
+  });
+};
