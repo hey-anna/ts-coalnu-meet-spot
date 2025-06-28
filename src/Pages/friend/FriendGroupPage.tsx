@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import {
@@ -50,8 +50,18 @@ const FriendGroupManagement: React.FC = () => {
   const { data: friendGroupResponse } = useGetUserFriendByGroup(user?.id);
   const { data: friendResponse } = useGetUserFriendList(user);
 
-  const friendGroups = friendGroupResponsePort(friendGroupResponse);
-  const allFriends = allFriendResponsePort(friendResponse);
+  // friendGroupResponse 가 바뀔 때만 port 연산
+  const friendGroups = useMemo(
+    () => friendGroupResponsePort(friendGroupResponse ?? []),
+    [friendGroupResponse],
+  );
+
+  // friendResponse 가 바뀔 때만 port 연산
+  const allFriends = useMemo(
+    () => allFriendResponsePort(friendResponse ?? []),
+    [friendResponse],
+  );
+
   const { mutate: addNewFriend, error: addNewFriendError } = useAddNewFriend();
   const { mutate: deleteFriend } = useDeleteFriend();
   const { mutate: deleteGroup } = useDeleteGroup();
