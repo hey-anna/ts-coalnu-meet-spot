@@ -424,14 +424,17 @@ const MainPage: React.FC = () => {
   // 친구의 그룹 색상을 가져오는 함수 (TodayFriendBox와 동일한 로직)
   const getFriendGroupColor = (friendId: string | number): string => {
     // TodayFriendBox의 mockFriendGroups와 동일한 데이터 구조 참조
-    for (const group of mockFriendGroups) {
-      const foundFriend = group.friend_link_group.find(
-        (linkGroup) => linkGroup.friend.id === Number(friendId),
-      );
-      if (foundFriend) {
-        return group.group_color;
+    if (mockFriendGroups) {
+      for (const group of mockFriendGroups) {
+        const foundFriend = group.friend_link_group.find(
+          (linkGroup) => linkGroup.friend.id === Number(friendId),
+        );
+        if (foundFriend) {
+          return group.group_color;
+        }
       }
     }
+
     return '#6c757d'; // 기본 색상 (그룹에 속하지 않은 친구)
   };
 
