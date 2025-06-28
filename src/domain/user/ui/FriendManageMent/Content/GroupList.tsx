@@ -237,7 +237,7 @@ export const GroupList = ({
                     mt: 2,
                   }}
                 >
-                  오른쪽 친구 목록에서 친구를 선택하여 그룹에 추가하세요
+                  친구 목록에서 친구를 선택하여 그룹에 추가하세요
                 </Typography>
               </Box>
             </AccordionDetails>
