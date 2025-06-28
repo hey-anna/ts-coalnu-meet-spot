@@ -27,6 +27,8 @@ const YejinGetFriendListpage = () => {
   const { data: friendData } = useGetUserFriendList({
     id: user?.id || '',
     email: user?.email || '',
+    user_name: '',
+    user_start_station: '',
   });
 
   const { mutate: friendListAddToGroup } = useAddFriendListToGroup();
