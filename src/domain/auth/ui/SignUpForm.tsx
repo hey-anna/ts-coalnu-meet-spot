@@ -1,4 +1,4 @@
-import { TextField } from '@mui/material';
+import { Box, Chip, Paper, styled, TextField, Typography } from '@mui/material';
 import { useState } from 'react';
 import useSignUp from '../hooks/useSignUp';
 import { useNavigate } from 'react-router';
@@ -10,12 +10,18 @@ import {
   AuthLink,
   AuthMessage,
 } from './authStyle';
+import TrainIcon from '@mui/icons-material/Train';
+import { getLineColor, STATION_CONFIG } from '@/shared/config/stationConfig';
+import type { StationData } from '@/shared/models/station';
+import { TextFields } from '@mui/icons-material';
 
 const SignUpForm = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [userName, setUserName] = useState<string>('');
-  const [userStartStation, setUserStartStation] = useState<string>('');
+  const [selectedStation, setSelectedStation] = useState('');
+  const [stationSearchQuery, setStationSearchQuery] = useState<string>('');
+  const [showStationDropdown, setShowStationDropdown] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [showMessage, setShowMessage] = useState<boolean>(false);
   const {
@@ -50,7 +56,7 @@ const SignUpForm = () => {
       email: email,
       password: password,
       user_name: userName,
-      user_start_station: userStartStation,
+      user_start_station: selectedStation,
     });
 
     setEmail('');
@@ -74,6 +80,37 @@ const SignUpForm = () => {
       return true;
     }
   }
+
+  const filteredStations =
+    stationSearchQuery.length > 0
+      ? STATION_CONFIG.DATA.filter(
+          (station: StationData) =>
+            station.station_nm
+              .toLowerCase()
+              .includes(stationSearchQuery.toLowerCase()) ||
+            station.line_num.includes(stationSearchQuery),
+        ).slice(0, 8) // 최대 8개 결과만 표시
+      : [];
+
+  const handleStationSelect = (station: StationData) => {
+    const displayText = `${station.station_nm} (${station.line_num})`;
+    console.log('setSelectedStation');
+    setSelectedStation(station.station_nm);
+    setStationSearchQuery(displayText);
+    setShowStationDropdown(false);
+  };
+
+  const handleStationSearch = (query: string) => {
+    console.log('선택됨?');
+    setStationSearchQuery(query);
+    setShowStationDropdown(query.length > 0);
+
+    // 검색어가 있으면 선택된 역 초기화 (새로 입력하는 경우)
+    if (query !== selectedStation) {
+      console.log('setSelectedStation');
+      setSelectedStation('');
+    }
+  };
 
   return (
     <AuthPageContainer>
@@ -184,18 +221,74 @@ const SignUpForm = () => {
               fullWidth
             />
 
-            <TextField
-              id="user_start_station"
-              label="사용자출발지"
-              type="text"
-              value={userStartStation}
-              onChange={(e) => {
-                setUserStartStation(e.target.value);
-              }}
-              placeholder="출발지"
-              required
-              fullWidth
-            />
+            <StationSearchContainer>
+              <TextField
+                id="user_start_station"
+                label="사용자 출발지"
+                value={stationSearchQuery}
+                onChange={(e) => handleStationSearch(e.target.value)}
+                onFocus={() => {
+                  if (stationSearchQuery.length > 0) {
+                    setShowStationDropdown(true);
+                  }
+                }}
+                onBlur={() => {
+                  // 약간의 지연을 두어 클릭 이벤트가 처리되도록 함
+                  setTimeout(() => setShowStationDropdown(false), 200);
+                }}
+                variant="outlined"
+                size="small"
+                fullWidth
+                InputProps={{
+                  startAdornment: (
+                    <TrainIcon
+                      sx={{
+                        color: 'text.secondary',
+                        mr: 1,
+                        fontSize: '20px',
+                      }}
+                    />
+                  ),
+                }}
+              />
+              {showStationDropdown && filteredStations.length > 0 && (
+                <StationDropdown>
+                  {filteredStations.map((station) => (
+                    <StationOption
+                      key={`${station.station_cd}-${station.line_num}`}
+                      onClick={() => handleStationSelect(station)}
+                    >
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1,
+                        }}
+                      >
+                        <TrainIcon
+                          sx={{
+                            fontSize: '16px',
+                            color: 'text.secondary',
+                          }}
+                        />
+                        <Typography variant="body2" fontWeight={500}>
+                          {station.station_nm}
+                        </Typography>
+                      </Box>
+                      <LineChip
+                        label={station.line_num}
+                        size="small"
+                        sx={{
+                          backgroundColor: `${getLineColor(station.line_num)}15`,
+                          color: getLineColor(station.line_num),
+                          border: `1px solid ${getLineColor(station.line_num)}30`,
+                        }}
+                      />
+                    </StationOption>
+                  ))}
+                </StationDropdown>
+              )}
+            </StationSearchContainer>
 
             <AuthLink onClick={() => navigate('/login')}>
               이미 계정이 있으신가요? 로그인하기
@@ -208,7 +301,7 @@ const SignUpForm = () => {
                 isPending ||
                 !email ||
                 !userName ||
-                !userStartStation ||
+                !stationSearchQuery ||
                 password.length < 8 ||
                 !password ||
                 !confirmPassword ||
@@ -237,3 +330,78 @@ const SignUpForm = () => {
 };
 
 export default SignUpForm;
+
+const StationSearchContainer = styled(Box)(({ theme }) => ({
+  position: 'relative',
+  flex: 1,
+  minWidth: '200px',
+  minHeight: '60px',
+
+  [theme.breakpoints.down('sm')]: {
+    minWidth: '100%',
+  },
+}));
+
+const StationDropdown = styled(Paper)(({ theme }) => ({
+  position: 'absolute',
+  top: '100%',
+  left: 0,
+  right: 0,
+  backgroundColor: 'white',
+  borderRadius: '0 0 8px 8px',
+  maxHeight: '200px',
+  overflowY: 'auto',
+  zIndex: 1300,
+  boxShadow: theme.shadows[8],
+  border: '1px solid rgba(0,0,0,0.12)',
+  borderTop: 'none',
+
+  '&::-webkit-scrollbar': {
+    width: '6px',
+  },
+  '&::-webkit-scrollbar-track': {
+    background: 'transparent',
+  },
+  '&::-webkit-scrollbar-thumb': {
+    background: 'rgba(0,0,0,0.2)',
+    borderRadius: '3px',
+  },
+}));
+
+const StationOption = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(1.5, 2),
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  borderBottom: '1px solid rgba(0,0,0,0.06)',
+  transition: 'background-color 0.2s ease',
+
+  '&:hover': {
+    backgroundColor: '#f5f5f5',
+  },
+
+  '&:last-child': {
+    borderBottom: 'none',
+  },
+
+  // 모바일 대응
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1.2, 1.5),
+  },
+
+  // 아이폰 SE 대응
+  '@media (max-width: 375px)': {
+    padding: theme.spacing(1, 1.2),
+  },
+}));
+
+const LineChip = styled(Chip)(({ theme }) => ({
+  fontSize: '0.7rem',
+  height: 22,
+  borderRadius: '11px',
+  '& .MuiChip-label': {
+    padding: '0 8px',
+    fontWeight: 500,
+  },
+}));
