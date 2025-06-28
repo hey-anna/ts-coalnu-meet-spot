@@ -18,8 +18,15 @@ export const useInitMeetupStateFromRoute = <TFriend extends Friend>(
     if (state?.selectedStations) {
       setStations(state.selectedStations);
     }
+    // if (state?.selectedFriends) {
+    //   setFriends(state.selectedFriends);
+    // }
     if (state?.selectedFriends) {
-      setFriends(state.selectedFriends);
+      const enrichedFriends = state.selectedFriends.map((f) => ({
+        ...f,
+        from: f.start_station, // from 값 추가
+      }));
+      setFriends(enrichedFriends);
     }
   }, [location, setStations, setFriends]);
 };

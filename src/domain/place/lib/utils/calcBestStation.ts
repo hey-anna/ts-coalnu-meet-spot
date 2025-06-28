@@ -3,6 +3,7 @@ import {
   getStationSubwayPathByID,
 } from '../../apis/stationSubwayApi';
 import type { Friend } from '@/domain/user/models/model';
+import { calcSatisfactionScore } from './calcSatisfactionScore';
 
 export type FriendWithFrom = Friend & { from: string };
 
@@ -62,11 +63,20 @@ export const calcBestStation = async (
               endID: to.stationID,
             });
 
+            const time = result.globalTravelTime ?? Infinity;
             const transferCount = result.driveInfoSet?.driveInfo
               ? result.driveInfoSet.driveInfo.length - 1
               : -1;
-            // console.log('처리 중인 역 이름:', stationName);
-            console.log(`역 "${stationName}" 평균 계산 중...`);
+
+            const score = calcSatisfactionScore(time, transferCount);
+
+            // console.log(`역 "${stationName}" 평균 계산 중...`);
+            console.log(
+              `[${stationName}] ${friend.name} 경로`,
+              `출발: ${friend.from}, 도착: ${stationName},`,
+              `시간: ${time}분,
+                환승: ${transferCount}회, 점수: ${score.toFixed(2)}`,
+            );
             return {
               time: result.globalTravelTime ?? Infinity,
               transfers: transferCount,
@@ -74,11 +84,19 @@ export const calcBestStation = async (
           }),
         );
 
-        const averageTime =
-          resultList.reduce((sum, r) => sum + (r.time ?? 0), 0) /
-          resultList.length;
+        // const averageTime =
+        //   resultList.reduce((sum, r) => sum + (r.time ?? 0), 0) /
+        //   resultList.length;
 
-        return { stationName, averageTime };
+        const averageScore =
+          resultList.reduce((sum, r) => {
+            const score = calcSatisfactionScore(r.time, r.transfers);
+            return sum + score;
+          }, 0) / resultList.length;
+        console.log(
+          `[${stationName}] 평균 만족도 점수: ${averageScore.toFixed(2)}`,
+        );
+        return { stationName, averageScore };
       } catch (err) {
         console.warn(`역 ${stationName} 처리 중 오류`, err);
         return null;
@@ -86,9 +104,13 @@ export const calcBestStation = async (
     }),
   );
 
+  //   const validResults = candidates.filter(Boolean) as {
+  //     stationName: string;
+  //     averageTime: number;
+  //   }[];
   const validResults = candidates.filter(Boolean) as {
     stationName: string;
-    averageTime: number;
+    averageScore: number;
   }[];
 
   if (validResults.length === 0) {
@@ -96,8 +118,12 @@ export const calcBestStation = async (
     return null;
   }
 
-  const best = validResults.reduce((a, b) =>
-    a.averageTime < b.averageTime ? a : b,
+  //   const best = validResults.reduce((a, b) =>
+  //     a.averageTime < b.averageTime ? a : b,
+  //   );
+
+  const best = validResults.reduce(
+    (a, b) => (a.averageScore > b.averageScore ? a : b), // 높은 점수가 더 좋은 것
   );
 
   console.log('추천된 역 계산 완료:', best);

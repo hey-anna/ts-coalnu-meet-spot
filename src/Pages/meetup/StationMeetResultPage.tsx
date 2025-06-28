@@ -189,7 +189,7 @@ const StationMeetResultPage = () => {
       return;
     }
 
-    // 🔍 로그 추가
+    // 로그 추가
     console.log('selectedStations raw:', selectedStations);
     console.log('typeof:', typeof selectedStations[0]);
     console.log('JSON:', JSON.stringify(selectedStations[0]));
