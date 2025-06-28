@@ -88,6 +88,7 @@ type ParticipantInfo = {
 type CalculationResult = {
   name: string;
   time: number | null;
+  transfers: number;
   stationCount: number;
   station: string;
   transferCount: number; // 환승 횟수
@@ -204,6 +205,7 @@ const StationMeetResultPage = () => {
                     return {
                       name: participant.name,
                       time: 0,
+                      transfers: 0,
                       stationCount: 0,
                       station: station,
                       transferCount: 0,
@@ -216,13 +218,10 @@ const StationMeetResultPage = () => {
                     startID: from.stationID,
                     endID: to.stationID,
                   });
-
-                  // exChangeInfoSet - 환승 정보가 없을수도 있어, 데이터 받아올때 안전한,
-                  // driveInfoSet - 이용할 노선수로 환승 정보를 대체해서 확인
-                  const transferCount = result?.driveInfoSet?.driveInfo?.length
+                  // 환승 횟수 계산
+                  const transferCount = result.driveInfoSet?.driveInfo
                     ? result.driveInfoSet.driveInfo.length - 1
-                    : 0;
-
+                    : -1;
                   console.log(`${participant.name} 경로 결과:`, result);
                   console.log(
                     `globalStationCount (${participant.name}):`,
@@ -245,6 +244,7 @@ const StationMeetResultPage = () => {
                   return {
                     name: participant.name,
                     time: result.globalTravelTime,
+                    transfers: transferCount,
                     stationCount: result.globalStationCount,
                     station: station,
                     transferCount,
@@ -259,6 +259,7 @@ const StationMeetResultPage = () => {
                   return {
                     name: participant.name,
                     time: null,
+                    transfers: -1,
                     stationCount: -1,
                     station: station,
                     transferCount: -1,
@@ -276,6 +277,7 @@ const StationMeetResultPage = () => {
               allResults.push({
                 name: participant.name,
                 time: null,
+                transfers: -1,
                 stationCount: -1,
                 station: station,
                 transferCount: -1,
@@ -352,13 +354,12 @@ const StationMeetResultPage = () => {
   // 역별 평균 환승 횟수 계산
   const getAverageTransferCountForStation = (station: string) => {
     const stationResults = getResultsByStation(station);
-    const validTransfers = stationResults.filter((r) => r.transferCount >= 0);
+    const validTransfers = stationResults.filter((r) => r.transfers >= 0);
 
     if (validTransfers.length === 0) return null;
 
     return Math.round(
-      validTransfers.reduce((sum, cur) => sum + cur.transferCount, 0) /
-        validTransfers.length,
+      validTransfers.reduce((sum, cur) => sum + cur.transfers, 0) / validTransfers.length
     );
   };
 

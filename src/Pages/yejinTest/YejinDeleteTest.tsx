@@ -43,10 +43,14 @@ const YejinDeleteTest = () => {
   const { data: groupData } = useGetCurrentUserGroup({
     id: user?.id,
     email: user?.email,
+    user_name: '',
+    user_start_station: '',
   });
   const { data: friendData } = useGetUserFriendList({
     id: user?.id,
     email: user?.email,
+    user_name: '',
+    user_start_station: '',
   });
   const { mutate: updateGroupInfoHook, error: updateGroupInfoError } =
     useUpdateGroupInfo();

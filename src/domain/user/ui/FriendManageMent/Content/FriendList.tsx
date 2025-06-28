@@ -29,13 +29,13 @@ const SectionCard = styled(Card)(({ theme }) => ({
   width: '100%',
   maxWidth: '100%',
   margin: 0,
-  
+
   // 모바일 최적화
   [theme.breakpoints.down('sm')]: {
     borderRadius: theme.spacing(1.5),
     boxShadow: '0 1px 8px rgba(0,0,0,0.06)',
   },
-  
+
   // 아이폰 SE 대응
   '@media (max-width: 375px)': {
     borderRadius: theme.spacing(1),
@@ -49,12 +49,12 @@ const SectionHeader = styled(Box)(({ theme }) => ({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  
+
   // 모바일 최적화
   [theme.breakpoints.down('sm')]: {
     padding: theme.spacing(1.5),
   },
-  
+
   // 아이폰 SE 대응
   '@media (max-width: 375px)': {
     padding: theme.spacing(1.2),
@@ -64,12 +64,12 @@ const SectionHeader = styled(Box)(({ theme }) => ({
 const HeaderTitle = styled(Typography)(({ theme }) => ({
   variant: 'h6',
   fontWeight: 600,
-  
+
   // 모바일 최적화
   [theme.breakpoints.down('sm')]: {
     fontSize: '1.1rem',
   },
-  
+
   // 아이폰 SE 대응
   '@media (max-width: 375px)': {
     fontSize: '1rem',
@@ -78,12 +78,12 @@ const HeaderTitle = styled(Typography)(({ theme }) => ({
 
 const StyledList = styled(List)(({ theme }) => ({
   padding: theme.spacing(2),
-  
+
   // 모바일 최적화
   [theme.breakpoints.down('sm')]: {
     padding: theme.spacing(1.5),
   },
-  
+
   // 아이폰 SE 대응
   '@media (max-width: 375px)': {
     padding: theme.spacing(1),
@@ -99,14 +99,14 @@ const FriendListItem = styled(ListItem)(({ theme }) => ({
   '&:hover': {
     backgroundColor: theme.palette.custom.bgHover,
   },
-  
+
   // 모바일 최적화
   [theme.breakpoints.down('sm')]: {
     borderRadius: theme.spacing(0.8),
     marginBottom: theme.spacing(0.8),
     minHeight: '60px', // 터치하기 쉬운 최소 높이
   },
-  
+
   // 아이폰 SE 대응
   '@media (max-width: 375px)': {
     borderRadius: theme.spacing(0.6),
@@ -121,7 +121,7 @@ const FriendAvatar = styled(Avatar)(({ theme }) => ({
     width: 36,
     height: 36,
   },
-  
+
   // 아이폰 SE 대응
   '@media (max-width: 375px)': {
     width: 32,
@@ -131,13 +131,13 @@ const FriendAvatar = styled(Avatar)(({ theme }) => ({
 
 const FriendName = styled(Typography)(({ theme }) => ({
   variant: 'body1',
-  
+
   // 모바일 최적화
   [theme.breakpoints.down('sm')]: {
     fontSize: '0.9rem',
     fontWeight: 500,
   },
-  
+
   // 아이폰 SE 대응
   '@media (max-width: 375px)': {
     fontSize: '0.85rem',
@@ -149,12 +149,12 @@ const ChipContainer = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   gap: theme.spacing(1),
   flexWrap: 'wrap',
-  
+
   // 모바일 최적화
   [theme.breakpoints.down('sm')]: {
     gap: theme.spacing(0.8),
   },
-  
+
   // 아이폰 SE 대응
   '@media (max-width: 375px)': {
     gap: theme.spacing(0.6),
@@ -164,7 +164,7 @@ const ChipContainer = styled(Box)(({ theme }) => ({
 const StatusChip = styled(Chip)(({ theme }) => ({
   fontSize: '0.7rem',
   height: '20px',
-  
+
   // 모바일 최적화
   [theme.breakpoints.down('sm')]: {
     fontSize: '0.65rem',
@@ -173,7 +173,7 @@ const StatusChip = styled(Chip)(({ theme }) => ({
       padding: '0 6px',
     },
   },
-  
+
   // 아이폰 SE 대응
   '@media (max-width: 375px)': {
     fontSize: '0.6rem',
@@ -188,7 +188,7 @@ const StationInfo = styled(Box)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   gap: theme.spacing(0.5),
-  
+
   // 모바일 최적화
   [theme.breakpoints.down('sm')]: {
     gap: theme.spacing(0.3),
@@ -197,12 +197,12 @@ const StationInfo = styled(Box)(({ theme }) => ({
 
 const StationText = styled(Typography)(({ theme }) => ({
   variant: 'body2',
-  
+
   // 모바일 최적화
   [theme.breakpoints.down('sm')]: {
     fontSize: '0.8rem',
   },
-  
+
   // 아이폰 SE 대응
   '@media (max-width: 375px)': {
     fontSize: '0.75rem',
@@ -212,12 +212,12 @@ const StationText = styled(Typography)(({ theme }) => ({
 const LineInfo = styled(Typography)(({ theme }) => ({
   variant: 'caption',
   color: theme.palette.text.secondary,
-  
+
   // 모바일 최적화
   [theme.breakpoints.down('sm')]: {
     fontSize: '0.7rem',
   },
-  
+
   // 아이폰 SE 대응
   '@media (max-width: 375px)': {
     fontSize: '0.65rem',
@@ -232,7 +232,7 @@ const DeleteButton = styled(IconButton)(({ theme }) => ({
       fontSize: '1.2rem',
     },
   },
-  
+
   // 아이폰 SE 대응
   '@media (max-width: 375px)': {
     padding: theme.spacing(0.8),
@@ -253,9 +253,7 @@ export const FriendList = ({
   return (
     <SectionCard>
       <SectionHeader>
-        <HeaderTitle>
-          전체 친구 ({allFriends.length})
-        </HeaderTitle>
+        <HeaderTitle>전체 친구 ({allFriends.length})</HeaderTitle>
       </SectionHeader>
       <StyledList>
         {allFriends.map((friend) => {
@@ -301,13 +299,15 @@ export const FriendList = ({
                     opacity: isDisabled ? 0.5 : 1,
                   }}
                 >
-                  <PersonIcon sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }} />
+                  <PersonIcon
+                    sx={{ fontSize: { xs: '1rem', sm: '1.25rem' } }}
+                  />
                 </FriendAvatar>
               </ListItemAvatar>
               <ListItemText
                 primary={
                   <ChipContainer>
-                    <FriendName>{friend.name}</FriendName>
+                    <FriendName component="span">{friend.name}</FriendName>
                     {isInExpandedGroup && (
                       <StatusChip
                         label="그룹 멤버"
@@ -316,16 +316,12 @@ export const FriendList = ({
                       />
                     )}
                     {isSelected && (
-                      <StatusChip
-                        label="선택됨"
-                        size="small"
-                        color="primary"
-                      />
+                      <StatusChip label="선택됨" size="small" color="primary" />
                     )}
                   </ChipContainer>
                 }
                 secondary={
-                  <StationInfo>
+                  <StationInfo component="div">
                     <TrainIcon
                       sx={{
                         fontSize: { xs: '1rem', sm: '1.25rem' },
@@ -336,27 +332,44 @@ export const FriendList = ({
                         ),
                       }}
                     />
-                    <StationText
+                    <Typography
+                      component="span"
+                      variant="body2"
                       sx={{
                         color: getLineColor(
                           STATION_CONFIG.DATA.find(
                             (s) => s.station_nm === friend.station,
                           )?.line_num || '',
                         ),
+                        ml: 0.5,
                       }}
                     >
                       {friend.station}
-                    </StationText>
-                    <LineInfo>
+                    </Typography>
+                    <Typography
+                      component="span"
+                      variant="caption"
+                      sx={{ ml: 0.5 }}
+                    >
                       (
                       {STATION_CONFIG.DATA.find(
                         (s) => s.station_nm === friend.station,
                       )?.line_num || '정보없음'}
                       )
-                    </LineInfo>
+                    </Typography>
                   </StationInfo>
                 }
+                secondaryTypographyProps={{
+                  component: 'div',
+                  sx: {
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 0.5,
+                    mt: 0.5, // 필요시 위아래 여백 조정
+                  },
+                }}
               />
+
               <ListItemSecondaryAction>
                 <DeleteButton
                   edge="end"

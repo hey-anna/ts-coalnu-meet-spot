@@ -44,8 +44,8 @@ export const GroupList = ({
   return (
     <Card sx={getSectionCardStyle(isMobile)}>
       <Box sx={getSectionHeaderStyle(isMobile)}>
-        <Typography 
-          variant={isMobile ? "subtitle1" : "h6"} 
+        <Typography
+          variant={isMobile ? 'subtitle1' : 'h6'}
           fontWeight={600}
           sx={{ fontSize: isMobile ? '1.1rem' : '1.25rem' }}
         >
@@ -62,29 +62,31 @@ export const GroupList = ({
               handleGroupExpand(group.id, isExpanded)
             }
           >
-            <AccordionSummary 
+            <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               sx={getAccordionSummaryStyle(isMobile)}
             >
               <Box sx={getGroupHeaderStyle(isMobile)}>
                 <Avatar sx={getAvatarStyle(group.color, isMobile)}>
-                  <GroupIcon sx={{ fontSize: isMobile ? '1.2rem' : '1.5rem' }} />
+                  <GroupIcon
+                    sx={{ fontSize: isMobile ? '1.2rem' : '1.5rem' }}
+                  />
                 </Avatar>
                 <Box sx={{ flex: 1, minWidth: 0 }}>
-                  <Typography 
-                    variant={isMobile ? "body1" : "h6"} 
+                  <Typography
+                    variant={isMobile ? 'body1' : 'h6'}
                     fontWeight={600}
-                    sx={{ 
+                    sx={{
                       fontSize: isMobile ? '1rem' : '1.25rem',
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap'
+                      whiteSpace: 'nowrap',
                     }}
                   >
                     {group.name}
                   </Typography>
-                  <Typography 
-                    variant="body2" 
+                  <Typography
+                    variant="body2"
                     color="text.secondary"
                     sx={{ fontSize: isMobile ? '0.8rem' : '0.875rem' }}
                   >
@@ -93,8 +95,7 @@ export const GroupList = ({
                 </Box>
               </Box>
               <Box sx={getActionButtonsStyle(isMobile)}>
-                <IconButton
-                  size={isMobile ? "small" : "medium"}
+                <div
                   onClick={(e) => {
                     e.stopPropagation();
                     setEditingGroup(group);
@@ -104,39 +105,40 @@ export const GroupList = ({
                     });
                     setGroupDialogOpen(true);
                   }}
-                  sx={{ 
+                  sx={{
                     padding: isMobile ? '6px' : '8px',
                     minWidth: isMobile ? '36px' : '40px',
-                    minHeight: isMobile ? '36px' : '40px'
+                    minHeight: isMobile ? '36px' : '40px',
                   }}
                 >
                   <EditIcon sx={{ fontSize: isMobile ? '1rem' : '1.25rem' }} />
-                </IconButton>
-                <IconButton
-                  size={isMobile ? "small" : "medium"}
+                </div>
+                <div
                   color="error"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleDeleteGroup(group.id);
                   }}
-                  sx={{ 
+                  sx={{
                     padding: isMobile ? '6px' : '8px',
                     minWidth: isMobile ? '36px' : '40px',
-                    minHeight: isMobile ? '36px' : '40px'
+                    minHeight: isMobile ? '36px' : '40px',
                   }}
                 >
-                  <DeleteIcon sx={{ fontSize: isMobile ? '1rem' : '1.25rem' }} />
-                </IconButton>
+                  <DeleteIcon
+                    sx={{ fontSize: isMobile ? '1rem' : '1.25rem' }}
+                  />
+                </div>
               </Box>
             </AccordionSummary>
             <AccordionDetails sx={getAccordionDetailsStyle(isMobile)}>
               <Box>
-                <Typography 
-                  variant="subtitle2" 
+                <Typography
+                  variant="subtitle2"
                   gutterBottom
-                  sx={{ 
+                  sx={{
                     fontSize: isMobile ? '0.9rem' : '1rem',
-                    fontWeight: 600
+                    fontWeight: 600,
                   }}
                 >
                   그룹 멤버:
@@ -145,12 +147,16 @@ export const GroupList = ({
                   {group.members.map((member) => (
                     <Chip
                       key={member.id}
-                      icon={<TrainIcon sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }} />}
+                      icon={
+                        <TrainIcon
+                          sx={{ fontSize: isMobile ? '0.9rem' : '1rem' }}
+                        />
+                      }
                       label={`${member.name} (${member.station})`}
                       onDelete={() =>
                         handleRemoveFriendFromGroup(group.id, member.id)
                       }
-                      size={isMobile ? "small" : "medium"}
+                      size={isMobile ? 'small' : 'medium'}
                       sx={{
                         ...getMemberChipStyle(isMobile),
                         borderColor: getLineColor(
@@ -174,13 +180,13 @@ export const GroupList = ({
                   <Box sx={getSelectedFriendsActionsStyle(isMobile)}>
                     <Button
                       variant="contained"
-                      size={isMobile ? "small" : "medium"}
+                      size={isMobile ? 'small' : 'medium'}
                       onClick={() => handleAddSelectedFriendsToGroup(group.id)}
-                      sx={{ 
+                      sx={{
                         mr: 1,
                         fontSize: isMobile ? '0.8rem' : '0.875rem',
                         padding: isMobile ? '6px 12px' : '8px 16px',
-                        minHeight: isMobile ? '32px' : '36px'
+                        minHeight: isMobile ? '32px' : '36px',
                       }}
                       fullWidth={isMobile}
                     >
@@ -191,10 +197,10 @@ export const GroupList = ({
                         variant="outlined"
                         size="small"
                         onClick={() => setSelectedFriendsForGroup([])}
-                        sx={{ 
+                        sx={{
                           fontSize: '0.8rem',
                           padding: '6px 12px',
-                          minHeight: '32px'
+                          minHeight: '32px',
                         }}
                       >
                         선택 취소
@@ -205,11 +211,11 @@ export const GroupList = ({
                         variant="outlined"
                         size="small"
                         onClick={() => setSelectedFriendsForGroup([])}
-                        sx={{ 
+                        sx={{
                           mt: 1,
                           fontSize: '0.8rem',
                           padding: '6px 12px',
-                          minHeight: '32px'
+                          minHeight: '32px',
                         }}
                         fullWidth
                       >
@@ -222,11 +228,11 @@ export const GroupList = ({
                 <Typography
                   variant="body2"
                   color="text.secondary"
-                  sx={{ 
+                  sx={{
                     fontStyle: 'italic',
                     fontSize: isMobile ? '0.75rem' : '0.875rem',
                     lineHeight: 1.4,
-                    mt: 2
+                    mt: 2,
                   }}
                 >
                   오른쪽 친구 목록에서 친구를 선택하여 그룹에 추가하세요
@@ -244,8 +250,8 @@ export const GroupList = ({
 const getSectionCardStyle = (isMobile) => ({
   backgroundColor: theme.palette.background.paper,
   borderRadius: isMobile ? 1 : 2,
-  boxShadow: isMobile 
-    ? '0 1px 8px rgba(0,0,0,0.06)' 
+  boxShadow: isMobile
+    ? '0 1px 8px rgba(0,0,0,0.06)'
     : '0 2px 12px rgba(0,0,0,0.08)',
   overflow: 'hidden',
   width: '100%',
@@ -272,8 +278,8 @@ const getGroupCardStyle = (isMobile) => ({
   borderRadius: isMobile ? 1 : 2,
   transition: 'all 0.3s ease',
   '&:hover': {
-    boxShadow: isMobile 
-      ? '0 2px 12px rgba(0,0,0,0.08)' 
+    boxShadow: isMobile
+      ? '0 2px 12px rgba(0,0,0,0.08)'
       : '0 4px 16px rgba(0,0,0,0.1)',
     transform: isMobile ? 'none' : 'translateY(-2px)',
     backgroundColor: theme.palette.custom.bgHover,

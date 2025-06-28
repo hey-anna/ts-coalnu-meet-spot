@@ -45,9 +45,9 @@ export const GroupDialog = ({
           그룹 색상 선택:
         </Typography>
         <ColorPicker>
-          {colorPalette.map((color) => (
+          {colorPalette.map((color, index) => (
             <ColorOption
-              key={color}
+              key={`color-${index}`}
               selected={groupForm.color === color}
               sx={{ backgroundColor: color }}
               onClick={() => setGroupForm((prev) => ({ ...prev, color }))}

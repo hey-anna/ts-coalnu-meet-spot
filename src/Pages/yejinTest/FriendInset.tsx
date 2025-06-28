@@ -54,6 +54,8 @@ const FriendInset = () => {
   const { data: groupData } = useGetCurrentUserGroup({
     id: user?.id || '',
     email: user?.email || '',
+    user_name: '',
+    user_start_station: '',
   });
 
   const { mutate: addNewFriend, error: addNewFriendError } = useAddNewFriend();
