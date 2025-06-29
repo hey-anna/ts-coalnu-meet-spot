@@ -9,7 +9,7 @@ const Header = () => {
         color: '#fff',
         py: 2, // 패딩 줄임
         borderRadius: 2,
-        mb: 2,
+        mb: 3,
       }}
     >
       <Typography variant="h6" fontWeight="bold" sx={{ fontSize: '1rem' }}>
