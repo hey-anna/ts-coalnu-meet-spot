@@ -117,7 +117,6 @@ const FriendGroupManagement: React.FC = () => {
 
   // 그룹 생성/수정
   const handleSaveGroup = () => {
-    console.log('뭔데');
     if (!groupForm.name.trim()) return;
 
     if (editingGroup) {
@@ -135,7 +134,10 @@ const FriendGroupManagement: React.FC = () => {
     }
 
     setGroupDialogOpen(false);
-    setEditingGroup(null);
+    setTimeout(() => {
+      setEditingGroup(null);
+    }, 1000);
+
     setGroupForm({ name: '', color: theme.palette.primary.main });
   };
 
