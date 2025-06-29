@@ -19,7 +19,7 @@ const useAddNewGroup = () => {
       queryClient.invalidateQueries({ queryKey: ['friend-list-by-group'] });
     },
     onError: (error) => {
-      console.log(error.message);
+      console.error(error.message);
     },
   });
 };

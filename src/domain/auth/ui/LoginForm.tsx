@@ -38,18 +38,10 @@ const LoginForm = () => {
     message: '',
   });
 
-  useEffect(() => {
-    if (user) {
-      console.log('로그인 한 user 정보 : ', user);
-    }
-  }, [user]);
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!user?.id) {
-      console.log('Email:', email);
-      console.log('Password:', password);
       loginWithEmail({ email: email, password: password });
     } else {
       logout();

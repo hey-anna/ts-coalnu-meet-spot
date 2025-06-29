@@ -137,8 +137,6 @@ export const searchSubwayStationByKeyword = async (
     },
   });
 
-  console.log('Odsay 응답 데이터:', data);
-
   // if (!data.result?.station) {
   //   throw new Error(`"${keyword}"에 대한 역 목록을 불러오지 못했습니다.`);
   // }

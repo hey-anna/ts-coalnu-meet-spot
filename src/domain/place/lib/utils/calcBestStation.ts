@@ -25,12 +25,8 @@ export const calcBestStation = async (
   selectedFriends: FriendWithFrom[],
 ): Promise<string | null> => {
   // 후보 리스트 출력
-  console.log('selectedStations:', selectedStations);
   const filteredStations = selectedStations.filter(Boolean);
   const filteredFriends = selectedFriends.filter((f) => Boolean(f.from));
-
-  console.log('필터링된 selectedStations:', filteredStations);
-  console.log('필터링된 selectedFriends:', filteredFriends);
 
   if (
     !Array.isArray(selectedStations) ||
@@ -49,12 +45,6 @@ export const calcBestStation = async (
         );
         const resultList = await Promise.all(
           filteredFriends.map(async (friend) => {
-            // console.log(`[${friend}] 처리 중인 역 이름:`, stationName);
-            console.log(
-              `친구 이름: ${friend.name}, 출발역: ${friend.from}, 도착역: ${stationName}`,
-            );
-
-            // const from = await getStationSubwayCoords(friend.from);
             const from = await getStationSubwayCoords(
               getSafeStationName(friend.from),
             );
@@ -70,13 +60,6 @@ export const calcBestStation = async (
 
             const score = calcSatisfactionScore(time, transferCount);
 
-            // console.log(`역 "${stationName}" 평균 계산 중...`);
-            console.log(
-              `[${stationName}] ${friend.name} 경로`,
-              `출발: ${friend.from}, 도착: ${stationName},`,
-              `시간: ${time}분,
-                환승: ${transferCount}회, 점수: ${score.toFixed(2)}`,
-            );
             return {
               time: result.globalTravelTime ?? Infinity,
               transfers: transferCount,
@@ -93,9 +76,6 @@ export const calcBestStation = async (
             const score = calcSatisfactionScore(r.time, r.transfers);
             return sum + score;
           }, 0) / resultList.length;
-        console.log(
-          `[${stationName}] 평균 만족도 점수: ${averageScore.toFixed(2)}`,
-        );
         return { stationName, averageScore };
       } catch (err) {
         console.warn(`역 ${stationName} 처리 중 오류`, err);
@@ -114,7 +94,6 @@ export const calcBestStation = async (
   }[];
 
   if (validResults.length === 0) {
-    console.log('유효한 후보 결과 없음');
     return null;
   }
 
@@ -126,6 +105,5 @@ export const calcBestStation = async (
     (a, b) => (a.averageScore > b.averageScore ? a : b), // 높은 점수가 더 좋은 것
   );
 
-  console.log('추천된 역 계산 완료:', best);
   return best.stationName;
 };

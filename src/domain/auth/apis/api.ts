@@ -5,8 +5,6 @@ import type { UserInfoReQuest } from '@/domain/user/models/model';
 
 export const signupWithEmail = async (params: SignUpRequest) => {
   try {
-    console.log('sign up api 보내기 전 확인 : ', params);
-
     const { data, error } = await supabase.auth.signUp({
       email: params.email,
       password: params.password,
@@ -17,7 +15,6 @@ export const signupWithEmail = async (params: SignUpRequest) => {
       throw new Error(error.message);
     } else {
       const { user_name, user_start_station } = params;
-      console.log('추가 저장 정보  : ', user_name, user_start_station);
       const sendParams = {
         user_id: data.user.id,
         user_name,
@@ -36,7 +33,6 @@ export const signupWithEmail = async (params: SignUpRequest) => {
 
 export const loginWithEmail = async (params: LoginRequest) => {
   try {
-    console.log('login 보내기 전 확인 : ', params);
     const { data, error } = await supabase.auth.signInWithPassword({
       email: params.email,
       password: params.password,
@@ -46,8 +42,6 @@ export const loginWithEmail = async (params: LoginRequest) => {
       console.error('로그인 실패 원인:', error.message); // 여기서 원인 확인 가능
       throw new Error(error.message);
     }
-
-    console.log('loginWithEmail 정보 : ', data);
 
     return data;
   } catch (error) {

@@ -37,7 +37,6 @@ export const getCurrentUserInfo = async (): Promise<User | null> => {
       };
     }
 
-    console.log('GetCurrentUserInfo 사용자 정보 : ', userData);
     return userData;
   } catch (error) {
     throw new Error('fail to getCurrent user info');
@@ -65,7 +64,6 @@ export const getCurrentUserSubInfo = async (
 // 현재 로그인한 user가 가지고 있는 group list
 export const getCurrentUserGroup = async (id: string): Promise<Group[]> => {
   try {
-    console.log('현재 user의 id값 : ', id);
     const { data } = await supabase
       .from('friend_group')
       .select('*')
@@ -105,7 +103,6 @@ export const addNewGroup = async (
   params: AddNewGroupRequest,
 ): Promise<Group> => {
   try {
-    console.log('insert 전 받은 값 : ', params);
     const { data, error } = await supabase
       .from('friend_group')
       .insert(params)
@@ -115,8 +112,6 @@ export const addNewGroup = async (
     if (error) {
       throw error;
     }
-
-    console.log('반환된 data : ', data);
 
     return data;
   } catch (error) {
@@ -133,7 +128,6 @@ export const addNewFriend = async (
   params: AddNewFriendRequest,
 ): Promise<Friend> => {
   try {
-    console.log('api 전달 전의 값 : ', params);
     const { friend_group_id, ...friendInfo } = params;
 
     const { data, error } = await supabase
@@ -175,8 +169,6 @@ export const addFriendLinkGroup = async (
       .select()
       .single();
 
-    console.log('그룹 연결 추가 데이터 : ', data);
-
     return data;
   } catch (error) {
     throw new Error('fail to add friend link groups');
@@ -196,8 +188,6 @@ export const getUserNoGroupFriend = async (
       )
       .eq('user_id', id)
       .is('friend_link_group', null);
-
-    console.log('그룹이 없는 친구 정보 : ', data);
 
     return data;
   } catch (error) {
@@ -223,8 +213,6 @@ export const getUserFriendByGroup = async (
         )`,
       )
       .eq('user_id', id);
-
-    console.log('그룹별 친구 리스트 : ', data);
 
     return data;
   } catch (error) {
@@ -327,15 +315,11 @@ export const updateFriendInfo = async (params: UpdateFriendRequest) => {
 // 사용자 정보 추가
 export const createUserInfo = async (params: UserInfoReQuest) => {
   try {
-    console.log('api 보내기 전 데이터 : ', params);
-
     const { data } = await supabase
       .from('user_info')
       .insert(params)
       .select()
       .single();
-
-    console.log('받아온 데이터 확인 : ', data);
   } catch (error) {
     throw new Error('fail to create user info');
   }

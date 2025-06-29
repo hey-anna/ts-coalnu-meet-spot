@@ -146,9 +146,6 @@ const FriendGroupManagement: React.FC = () => {
   // 친구 추가
   const handleAddFriend = () => {
     if (!friendForm.name.trim() || !selectedStation) return;
-
-    // console.log(newFriend);
-    // {id: '1751015411462', name: '우석', station: '당산'}
     addNewFriend({
       user_id: user.id,
       name: friendForm.name,
@@ -175,15 +172,10 @@ const FriendGroupManagement: React.FC = () => {
 
   // 선택된 친구들을 그룹에 추가
   const handleAddSelectedFriendsToGroup = (groupId: number) => {
-    console.log('selectedFriendsForGroup', selectedFriendsForGroup);
-    console.log('friendGroupResponse', friendGroups);
-
     // 🔍 해당 그룹 찾기
     const targetGroup = friendGroups.find((group) => group.id === groupId);
     const existingMemberIds =
       targetGroup?.members.map((member) => member.id) ?? [];
-
-    console.log(targetGroup, existingMemberIds, selectedFriendsForGroup);
 
     if (existingMemberIds.length + selectedFriendsForGroup.length >= 4) {
       alert('그룹에는 3명이상의 친구를 추가할 수 없습니다.');

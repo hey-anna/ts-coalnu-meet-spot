@@ -1,4 +1,12 @@
-import { Box, Chip, Paper, styled, TextField, Typography, IconButton } from '@mui/material';
+import {
+  Box,
+  Chip,
+  Paper,
+  styled,
+  TextField,
+  Typography,
+  IconButton,
+} from '@mui/material';
 import { useState } from 'react';
 import useSignUp from '../hooks/useSignUp';
 import { useNavigate } from 'react-router';
@@ -49,9 +57,6 @@ const SignUpForm = () => {
       return; // 에러는 helperText로 표시됨
     }
 
-    console.log('Email:', email);
-    console.log('Password:', password);
-
     signupWithEmail({
       email: email,
       password: password,
@@ -94,20 +99,17 @@ const SignUpForm = () => {
 
   const handleStationSelect = (station: StationData) => {
     const displayText = `${station.station_nm} (${station.line_num})`;
-    console.log('setSelectedStation');
     setSelectedStation(station.station_nm);
     setStationSearchQuery(displayText);
     setShowStationDropdown(false);
   };
 
   const handleStationSearch = (query: string) => {
-    console.log('선택됨?');
     setStationSearchQuery(query);
     setShowStationDropdown(query.length > 0);
 
     // 검색어가 있으면 선택된 역 초기화 (새로 입력하는 경우)
     if (query !== selectedStation) {
-      console.log('setSelectedStation');
       setSelectedStation('');
     }
   };
@@ -281,16 +283,17 @@ const SignUpForm = () => {
                 sx={{
                   // 드롭다운이 열릴 때 하단 보더 제거
                   '& .MuiOutlinedInput-root': {
-                    ...(showStationDropdown && filteredStations.length > 0 && {
-                      '& fieldset': {
-                        borderBottomLeftRadius: 0,
-                        borderBottomRightRadius: 0,
-                      }
-                    })
-                  }
+                    ...(showStationDropdown &&
+                      filteredStations.length > 0 && {
+                        '& fieldset': {
+                          borderBottomLeftRadius: 0,
+                          borderBottomRightRadius: 0,
+                        },
+                      }),
+                  },
                 }}
               />
-              
+
               {/* 드롭다운 */}
               {showStationDropdown && filteredStations.length > 0 && (
                 <StationDropdown elevation={3}>
@@ -312,8 +315,8 @@ const SignUpForm = () => {
                             color: 'text.secondary',
                           }}
                         />
-                        <Typography 
-                          variant="body2" 
+                        <Typography
+                          variant="body2"
                           fontWeight={500}
                           sx={{ fontSize: { xs: '0.8rem', sm: '0.875rem' } }}
                         >
@@ -382,7 +385,7 @@ export default SignUpForm;
 const StationSearchContainer = styled(Box)(({ theme }) => ({
   position: 'relative',
   width: '100%',
-  
+
   // 모바일 최적화
   [theme.breakpoints.down('sm')]: {
     width: '100%',
@@ -416,7 +419,7 @@ const StationDropdown = styled(Paper)(({ theme }) => ({
     background: 'rgba(0,0,0,0.2)',
     borderRadius: '3px',
   },
-  
+
   // 모바일 최적화
   [theme.breakpoints.down('sm')]: {
     maxHeight: '180px',
@@ -424,7 +427,7 @@ const StationDropdown = styled(Paper)(({ theme }) => ({
       width: '4px',
     },
   },
-  
+
   // 아이폰 SE 대응
   '@media (max-width: 375px)': {
     maxHeight: '160px',
@@ -467,7 +470,7 @@ const LineChip = styled(Chip)(({ theme }) => ({
     padding: '0 8px',
     fontWeight: 500,
   },
-  
+
   // 모바일 최적화
   [theme.breakpoints.down('sm')]: {
     fontSize: '0.6rem',

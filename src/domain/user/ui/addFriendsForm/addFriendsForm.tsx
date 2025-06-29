@@ -60,7 +60,7 @@ const AddFriendsForm = ({ onClose }: { onClose: () => void }) => {
   };
 
   const handleAddFriend = () => {
-    console.log({ name, selectedStation, selectedGroup });
+    console.info({ name, selectedStation, selectedGroup });
   };
 
   return (

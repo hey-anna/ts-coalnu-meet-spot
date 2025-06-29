@@ -303,12 +303,6 @@ const TodayFriendSearch: React.FC<FriendSearchProps> = ({
       {searchResults.length > 0 && (
         <SearchResultsContainer>
           {searchResults.map((friend) => {
-            // console.log(selectedFriends);
-            // console.log(friend);
-
-            // const friendId = friend.id;
-            // const exists = selectedFriends.some((item) => item.id === friendId);
-
             return (
               <SearchResultCard
                 key={friend.id}

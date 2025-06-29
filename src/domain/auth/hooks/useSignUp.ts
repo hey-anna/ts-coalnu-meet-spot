@@ -6,8 +6,6 @@ const useSignUp = () => {
   return useMutation({
     mutationKey: ['signup'],
     mutationFn: (params: SignUpRequest) => {
-      console.log('params info : ', params);
-
       return signupWithEmail(params);
     },
   });

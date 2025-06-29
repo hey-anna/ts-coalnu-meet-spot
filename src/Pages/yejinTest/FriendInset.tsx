@@ -64,7 +64,6 @@ const FriendInset = () => {
     const error = addNewFriendError as ErrorMsg;
 
     if (error?.code == '23505') {
-      console.log('화면단에서 확인 : ', addNewFriendError);
       setNewFriendError({
         label: 'sameFriend',
         message: '같은 이름, 같은 출발지의 친구가 이미 있습니다.',
@@ -76,8 +75,6 @@ const FriendInset = () => {
 
   const handleSaveFriend = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    console.log('추가할 newFriend의 정보 : ', newFriend);
 
     if (!user) {
       return setNewFriendError({
