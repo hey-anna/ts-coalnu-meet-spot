@@ -59,7 +59,10 @@ export const GroupDialog = ({
       <DialogActions>
         <Button
           onClick={() => {
-            setEditingGroup(null);
+            setTimeout(() => {
+              setEditingGroup(null);
+            }, 1000);
+
             setGroupDialogOpen(false);
           }}
         >
