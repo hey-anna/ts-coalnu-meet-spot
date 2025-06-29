@@ -64,21 +64,23 @@ const MeetPointCard = ({
   return (
     <BasicStyledCard>
       <Box position="relative">
-        <CardContent sx={{ 
-          p: { xs: 2, sm: 3 } // 모바일에서 패딩 줄임
-        }}>
-          <Box 
-            position="absolute" 
-            top={{ xs: 12, sm: 16 }} 
-            right={{ xs: 12, sm: 16 }} 
+        <CardContent
+          sx={{
+            p: { xs: 2, sm: 3 }, // 모바일에서 패딩 줄임
+          }}
+        >
+          <Box
+            position="absolute"
+            top={{ xs: 12, sm: 16 }}
+            right={{ xs: 12, sm: 16 }}
             zIndex={1}
           >
             <SatisfactionTooltip />
           </Box>
-          
-          <Box 
-            display="flex" 
-            alignItems="center" 
+
+          <Box
+            display="flex"
+            alignItems="center"
             gap={{ xs: 1.5, sm: 2 }} // 모바일에서 간격 줄임
             mb={{ xs: 2, sm: 3 }}
           >
@@ -103,18 +105,18 @@ const MeetPointCard = ({
               >
                 {selectedStationName || '도착역 선택'}
               </Typography>
-              <Typography 
-                variant="body2" 
+              <Typography
+                variant="body2"
                 color="text.secondary"
                 sx={{
-                  fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                  fontSize: { xs: '0.75rem', sm: '0.875rem' },
                 }}
               >
                 모든 친구들의 중간 지점
               </Typography>
             </Box>
           </Box>
-          
+
           <Grid container spacing={{ xs: 1, sm: 2 }} mt={1}>
             <Grid size={4} textAlign="center">
               <Box
@@ -127,8 +129,8 @@ const MeetPointCard = ({
                   transition: 'all 0.2s ease',
                   '&:hover': {
                     boxShadow: 1,
-                    transform: 'translateY(-1px)'
-                  }
+                    transform: 'translateY(-1px)',
+                  },
                 }}
               >
                 <StatValue sx={{ color: 'primary.main' }}>
@@ -138,10 +140,11 @@ const MeetPointCard = ({
                   direction="row"
                   spacing={0.5}
                   justifyContent="center"
+                  alignItems="center"
                   sx={{ mt: 0.5, color: 'text.secondary' }}
                 >
-                  <AccessTime 
-                    fontSize="small" 
+                  <AccessTime
+                    fontSize="small"
                     color="inherit"
                     sx={{ fontSize: { xs: 14, sm: 16 } }}
                   />
@@ -149,7 +152,7 @@ const MeetPointCard = ({
                 </Stack>
               </Box>
             </Grid>
-            
+
             <Grid size={4} textAlign="center">
               <Box
                 sx={{
@@ -161,8 +164,8 @@ const MeetPointCard = ({
                   transition: 'all 0.2s ease',
                   '&:hover': {
                     boxShadow: 1,
-                    transform: 'translateY(-1px)'
-                  }
+                    transform: 'translateY(-1px)',
+                  },
                 }}
               >
                 <StatValue sx={{ color: 'primary.main' }}>
@@ -172,10 +175,11 @@ const MeetPointCard = ({
                   direction="row"
                   spacing={0.5}
                   justifyContent="center"
+                  alignItems="center"
                   sx={{ mt: 0.5, color: 'text.secondary' }}
                 >
-                  <DirectionsTransit 
-                    fontSize="small" 
+                  <DirectionsTransit
+                    fontSize="small"
                     color="inherit"
                     sx={{ fontSize: { xs: 14, sm: 16 } }}
                   />
@@ -183,7 +187,7 @@ const MeetPointCard = ({
                 </Stack>
               </Box>
             </Grid>
-            
+
             <Grid size={4} textAlign="center">
               <Box
                 sx={{
@@ -195,13 +199,13 @@ const MeetPointCard = ({
                   transition: 'all 0.2s ease',
                   '&:hover': {
                     boxShadow: 1,
-                    transform: 'translateY(-1px)'
-                  }
+                    transform: 'translateY(-1px)',
+                  },
                 }}
               >
                 <StatValue sx={{ color: 'primary.main' }}>
-                  <Box 
-                    component="span" 
+                  <Box
+                    component="span"
                     fontSize={{ xs: '1.25rem', sm: '1.75rem' }}
                   >
                     {satisfactionRate?.trim() ? satisfactionRate : '-'}
@@ -211,10 +215,11 @@ const MeetPointCard = ({
                   direction="row"
                   spacing={0.5}
                   justifyContent="center"
-                  sx={{ mt: 0.5, color: 'text.secondary' }}
+                  alignItems="center"
+                  sx={{ color: 'text.secondary' }}
                 >
-                  <SentimentSatisfiedAlt 
-                    fontSize="small" 
+                  <SentimentSatisfiedAlt
+                    fontSize="small"
                     color="inherit"
                     sx={{ fontSize: { xs: 14, sm: 16 } }}
                   />

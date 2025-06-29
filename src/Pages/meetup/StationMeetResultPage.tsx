@@ -359,7 +359,8 @@ const StationMeetResultPage = () => {
     if (validTransfers.length === 0) return null;
 
     return Math.round(
-      validTransfers.reduce((sum, cur) => sum + cur.transfers, 0) / validTransfers.length
+      validTransfers.reduce((sum, cur) => sum + cur.transfers, 0) /
+        validTransfers.length,
     );
   };
 
@@ -438,10 +439,9 @@ const StationMeetResultPage = () => {
   return (
     <Container sx={containerStyle}>
       <MeetHeader />
-
       {/* 선택된 정보 요약 */}
       {!isMobile && (
-        <Box sx={{ mb: { xs: 3, sm: 4 } }}>
+        <Box sx={{ mb: { xs: 3, sm: 3 } }}>
           <Alert severity="info" sx={alertStyle}>
             <Typography variant="body1" sx={alertTitleStyle}>
               선택된 정보
