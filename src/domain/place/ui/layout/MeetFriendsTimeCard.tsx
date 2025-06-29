@@ -92,7 +92,7 @@ const MeetFriendsTimeCard = ({ results }: MeetFriendsTimeCardProps) => {
                       fontSize: { xs: 14, sm: 16 } // 모바일에서 아이콘 크기 줄임
                     }} /> 
                     <Typography variant="caption" sx={{
-                      fontSize: { xs: '0.7rem', sm: '0.75rem' }
+                      fontSize: { xs: '0.5rem', sm: '0.75rem' }
                     }}>
                       이동역 : {res.transfers === 0 ? '0개' : `${res.transfers}개`}
                     </Typography>
