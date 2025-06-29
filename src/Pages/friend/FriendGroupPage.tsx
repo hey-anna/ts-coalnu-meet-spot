@@ -117,6 +117,7 @@ const FriendGroupManagement: React.FC = () => {
 
   // 그룹 생성/수정
   const handleSaveGroup = () => {
+    console.log('뭔데');
     if (!groupForm.name.trim()) return;
 
     if (editingGroup) {
@@ -320,6 +321,7 @@ const FriendGroupManagement: React.FC = () => {
           groupForm={groupForm}
           setGroupForm={setGroupForm}
           handleSaveGroup={handleSaveGroup}
+          setEditingGroup={setEditingGroup}
         />
 
         <FriendDialog

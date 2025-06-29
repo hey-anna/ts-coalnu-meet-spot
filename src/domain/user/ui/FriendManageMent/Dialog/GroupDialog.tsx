@@ -18,6 +18,7 @@ export const GroupDialog = ({
   groupForm,
   setGroupForm,
   handleSaveGroup,
+  setEditingGroup,
 }) => {
   return (
     <Dialog
@@ -56,7 +57,14 @@ export const GroupDialog = ({
         </ColorPicker>
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => setGroupDialogOpen(false)}>취소</Button>
+        <Button
+          onClick={() => {
+            setEditingGroup(null);
+            setGroupDialogOpen(false);
+          }}
+        >
+          취소
+        </Button>
         <Button onClick={handleSaveGroup} variant="contained">
           {editingGroup ? '수정' : '생성'}
         </Button>
