@@ -84,19 +84,14 @@ const YejinDeleteTest = () => {
   const [newFriendError, setNewFriendError] = useState<string>('');
 
   const handleDeleteFriendFromGroup = (group_id: number, friend_id: number) => {
-    console.log('group_id : ', group_id, ' friend_id : ', friend_id);
-
     deleteFriendFromGroup({ group_id, friend_id });
   };
 
   const handleDeleteGroup = (group_id: number) => {
-    console.log('삭제 대상 그룹 : ', group_id);
     deleteGroup(group_id);
   };
 
   const handleUpdateGroup = (group_id) => {
-    console.log(group_id);
-    console.log('updateGroupInfo : ', updateGroupInfo);
     // const isExisted = checkNewGroupName(updateGroupInfo.group_name);
 
     // console.log('isExisted : ', isExisted);
@@ -128,7 +123,6 @@ const YejinDeleteTest = () => {
   useEffect(() => {
     const error = updateFriendInfoError as ErrorMsg;
 
-    console.log('화면단 : ', error);
     if (error?.code == '23505') {
       setNewFriendError('같은 이름, 같은 출발지의 친구가 이미 있습니다.');
     } else {
@@ -155,9 +149,6 @@ const YejinDeleteTest = () => {
   }
 
   function handleUpdateFriend(friend_id) {
-    console.log('friend_id : ', friend_id);
-    console.log('updateFriendInfo : ', updateFriendInfo);
-
     updateFriendInfoHook({
       friend_id,
       ...(updateFriendInfo.name && {

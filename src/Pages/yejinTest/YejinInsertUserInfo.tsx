@@ -25,7 +25,6 @@ const YejinInsertUserInfo = () => {
   }, [user]);
 
   const handleSaveUserInfo = () => {
-    console.log('userInfo : ', userInfo);
     createUserInfo(userInfo);
   };
 

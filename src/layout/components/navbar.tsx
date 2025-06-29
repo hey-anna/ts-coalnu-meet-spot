@@ -25,7 +25,6 @@ import useUpdateUserInfo from '@/domain/auth/hooks/useUpdateUserInfo';
 import { useQueryClient } from '@tanstack/react-query';
 import { BorderColor } from '@mui/icons-material';
 
-
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   boxShadow: 'none',
@@ -190,10 +189,6 @@ const navbar = () => {
     }
   }, [fetchedUser]);
 
-  useEffect(() => {
-    console.log('loginUser 데이터 : ', loginUser);
-  }, [loginUser]);
-
   const handleLogin = () => {
     if (isLogin) {
       logout();
@@ -235,10 +230,7 @@ const navbar = () => {
 
   // 친구 추가
   const handleUpdateUserInfo = () => {
-    console.log('역 데이터 : ', selectedStation);
     if (!userUpdateInfo.name.trim() || !selectedStation) return;
-
-    console.log('userUpdateInfo : ', userUpdateInfo);
 
     updateUserInfo({
       user_id: loginUser.id,

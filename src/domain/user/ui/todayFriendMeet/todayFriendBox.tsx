@@ -587,7 +587,6 @@ const TodayFriendBox: React.FC<TodayFriendBoxProps> = ({
       }
 
       // 폼 초기화
-      console.log('setSelectedStation');
       setFriendName('');
       setSelectedStation('');
       setStationSearchQuery('');
@@ -596,20 +595,17 @@ const TodayFriendBox: React.FC<TodayFriendBoxProps> = ({
 
   // 지하철역 검색 기능
   const handleStationSearch = (query: string) => {
-    console.log('선택됨?');
     setStationSearchQuery(query);
     setShowStationDropdown(query.length > 0);
 
     // 검색어가 있으면 선택된 역 초기화 (새로 입력하는 경우)
     if (query !== selectedStation) {
-      console.log('setSelectedStation');
       setSelectedStation('');
     }
   };
 
   const handleStationSelect = (station: StationData) => {
     const displayText = `${station.station_nm} (${station.line_num})`;
-    console.log('setSelectedStation');
     setSelectedStation(station.station_nm);
     setStationSearchQuery(displayText);
     setShowStationDropdown(false);

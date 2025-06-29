@@ -12,8 +12,6 @@ const useLogin = () => {
   return useMutation({
     mutationKey: ['login'],
     mutationFn: (params: LoginRequest) => {
-      console.log('params info : ', params);
-
       return loginWithEmail(params);
     },
     onSuccess: async () => {

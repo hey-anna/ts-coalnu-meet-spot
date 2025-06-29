@@ -48,15 +48,10 @@ const YejinTestPage = () => {
     user_start_station: '',
   });
 
-  useEffect(() => {
-    console.log('현재 유저가 가지고 있는 group list : ', groupData);
-    console.log('현재 유저가 가지고 있는 friend list : ', friendData);
-  }, [groupData, friendData]);
+  useEffect(() => {}, [groupData, friendData]);
 
   useEffect(() => {
     const error = addNewGroupError as ErrorMsg;
-
-    console.log('화면단 : ', error);
 
     if (error?.code == '23505') {
       setNewGroupError('같은 이름의 그룹이 이미 있습니다.');
@@ -67,7 +62,6 @@ const YejinTestPage = () => {
 
   const handleSaveGroup = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('새로운 그룹 이름 : ', newGroupName);
 
     if (!user?.id) {
       return setNewGroupError('로그인 먼저 해주세요');

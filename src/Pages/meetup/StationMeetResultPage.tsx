@@ -134,11 +134,6 @@ const StationMeetResultPage = () => {
     return participants;
   }, [selectedFriends, user]);
 
-  console.log('받은 친구 데이터:', selectedFriends);
-  console.log('받은 역 데이터:', selectedStations);
-  console.log('내 정보:', user);
-  console.log('전체 참가자:', allParticipants);
-
   // 데이터가 없을 때 메인으로 돌려보내기
   useEffect(() => {
     if (
@@ -180,15 +175,9 @@ const StationMeetResultPage = () => {
                   const from = await getStationSubwayCoords(
                     participant.start_station,
                   );
-                  console.log('from:', participant.name, from.stationID);
-                  console.log('to:', station, to.stationID);
 
                   // 출발역과 목적지가 같은 경우 API 호출 없이 0으로 처리
                   if (participant.start_station === station) {
-                    console.log(
-                      `${participant.name} - 같은 역이므로 이동시간 0분`,
-                    );
-
                     // 참가자 좌표 저장 (중복 방지)
                     if (
                       !allParticipantCoords.find(
@@ -222,11 +211,6 @@ const StationMeetResultPage = () => {
                   const transferCount = result.driveInfoSet?.driveInfo
                     ? result.driveInfoSet.driveInfo.length - 1
                     : -1;
-                  console.log(`${participant.name} 경로 결과:`, result);
-                  console.log(
-                    `globalStationCount (${participant.name}):`,
-                    result.globalStationCount,
-                  );
 
                   // 참가자 좌표 저장 (중복 방지)
                   if (

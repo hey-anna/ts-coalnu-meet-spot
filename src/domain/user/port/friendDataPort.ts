@@ -20,8 +20,6 @@ interface FriendGroup {
 export const friendGroupResponsePort = (
   responseApiDatas: GetUserFriendByGroupResponse[],
 ): FriendGroup[] => {
-  console.log('실데이터', responseApiDatas);
-
   if (!responseApiDatas?.length) {
     return [];
   }
