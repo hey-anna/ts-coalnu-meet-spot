@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { getStationSubwayCoords } from '../../domain/place/apis/stationSubwayApi';
 import { getStationSubwayPathByID } from '../../domain/place/apis/stationSubwayApi';
 import {
@@ -57,6 +57,8 @@ const mapPlaceholderStyle = {
   mx: { xs: -1, sm: 0 },
 };
 const mapContainerStyle = {
+  py: { xs: 2, sm: 4 },
+  px: { xs: 1, sm: 3 },
   height: { xs: 300, sm: 400 },
   borderRadius: 2,
   overflow: 'hidden',
@@ -115,9 +117,26 @@ const StationMeetResultPage = () => {
   // zustand store에서 내 정보 가져오기
   const { user } = useUserStore();
   const { setStationRecommend, clearStationRecommend } = RecommendSideBar();
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // 메인에서 받은 데이터
   const { selectedFriends, selectedStations } = location.state || {};
+
+  useEffect(() => {
+    // 컨테이너가 렌더링된 후 스크롤
+    if (!isMobile) {
+      // 스크롤 리셋
+      window.scrollTo(0, 0);
+      if (containerRef.current) {
+        containerRef.current.scrollIntoView({ 
+          behavior: 'instant', 
+          block: 'start' 
+        });
+      }
+    } else {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    }
+  }, []);
 
   // 내 정보를 포함한 전체 사용자 리스트 생성
   const allParticipants = React.useMemo(() => {
@@ -421,7 +440,7 @@ const StationMeetResultPage = () => {
   }
 
   return (
-    <Container sx={containerStyle}>
+    <Container ref={containerRef} sx={containerStyle}>
       <MeetHeader />
       {/* 선택된 정보 요약 */}
       {!isMobile && (
