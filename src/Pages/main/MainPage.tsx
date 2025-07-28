@@ -10,6 +10,8 @@ import type { Friend } from '../../domain/user/models/model'; // 실제 경로�
 import { useUserStore } from '@/domain/user/store/userStore';
 import useGetUserFriendByGroupWithoutParams from '@/domain/user/hooks/useGetUserFriendByGroupWithoutParams';
 import useGetUserFriendListWithoutParams from '@/domain/user/hooks/useGetUserFriendListWithoutParams';
+import NoticeModal from '@/layout/components/modal/NoticeModal';
+import HowToUseModal from '@/layout/components/modal/HowToUseModal';
 const ResultSection = styled(Box)(({ theme }) => ({
   margin: theme.spacing(4, 0),
   padding: theme.spacing(3),
@@ -329,6 +331,7 @@ const MainPage: React.FC = () => {
   const { data: friends } = useGetUserFriendListWithoutParams();
   const [selectedFriends, setSelectedFriends] = useState<Friend[]>([]);
   const [selectedStations, setSelectedStations] = useState<string[]>([]);
+  const [howToOpen, setHowToOpen] = useState(false); // 사이트 가이드
 
   const isLogin = !!loginUser?.email && !!loginUser?.id;
 
@@ -452,6 +455,7 @@ const MainPage: React.FC = () => {
         selectedFriends={selectedFriends} // 선택된 친구 정보 전달
         mockFriendGroups={mockFriendGroups}
         friends={friends}
+        onClickHelp={() => setHowToOpen(true)}
       />
       <RecommendStationBox
         onStationsChange={handleStationsChange}
@@ -534,9 +538,7 @@ const MainPage: React.FC = () => {
                 )}
               </>
             ) : (
-              <EmptyState>
-                지하철역을 선택해주세요 (최대 4개)
-              </EmptyState>
+              <EmptyState>지하철역을 선택해주세요 (최대 4개)</EmptyState>
             )}
           </InfoContent>
         </InfoRow>
@@ -563,6 +565,8 @@ const MainPage: React.FC = () => {
           </AdditionalInfo>
         )}
       </ResultSection>
+      <NoticeModal />
+      <HowToUseModal open={howToOpen} onClose={() => setHowToOpen(false)} />
     </div>
   );
 };

@@ -16,6 +16,7 @@ import {
   Card,
   CardContent,
   IconButton,
+  Tooltip,
 } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import Diversity3Icon from '@mui/icons-material/Diversity3';
@@ -37,6 +38,7 @@ import type {
 } from '../../models/model';
 import { getLineColor, STATION_CONFIG } from '@/shared/config/stationConfig';
 import type { StationData } from '@/shared/models/station';
+import { InfoOutlined } from '@mui/icons-material';
 
 // Props 타입 정의
 interface TodayFriendBoxProps {
@@ -45,6 +47,7 @@ interface TodayFriendBoxProps {
   isLoggedIn?: boolean; // 로그인 상태를 받는 prop 추가
   mockFriendGroups: GetUserFriendByGroupResponse[];
   friends: FriendWithGroup[];
+  onClickHelp: () => void;
 }
 
 // Styled Components
@@ -483,6 +486,7 @@ const TodayFriendBox: React.FC<TodayFriendBoxProps> = ({
   isLoggedIn = false, // 기본값은 비로그인
   mockFriendGroups,
   friends,
+  onClickHelp,
 }) => {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -688,6 +692,28 @@ const TodayFriendBox: React.FC<TodayFriendBoxProps> = ({
         >
           오늘 만날 친구
         </Typography>
+        <Tooltip
+          title="사용법 보기"
+          open
+          arrow
+          placement="bottom"
+          slotProps={{
+            popper: {
+              modifiers: [
+                {
+                  name: 'offset',
+                  options: {
+                    offset: [0, -8],
+                  },
+                },
+              ],
+            },
+          }}
+        >
+          <IconButton size="small" onClick={onClickHelp}>
+            <InfoOutlined sx={{ fontSize: { xs: 20, sm: 22 } }} />
+          </IconButton>
+        </Tooltip>
         {isLoggedIn && (
           <ActionButton
             variant="outlined"
